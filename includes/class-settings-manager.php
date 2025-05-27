@@ -65,14 +65,14 @@ class AERP_HRM_Settings_Manager
         );
 
         // Menu chính: Google Drive
-        add_submenu_page(
-            'aerp_employees',
-            'Cấu hình Google Drive',
-            'Cấu hình Google Drive',
-            'manage_options',
-            'aerp_google_drive_settings',
-            ['AERP_HRM_Settings_Manager', 'google_drive_settings_page']
-        );
+        // add_submenu_page(
+        //     'aerp_employees',
+        //     'Cấu hình Google Drive',
+        //     'Cấu hình Google Drive',
+        //     'manage_options',
+        //     'aerp_google_drive_settings',
+        //     ['AERP_HRM_Settings_Manager', 'google_drive_settings_page']
+        // );
 
         // === Các menu con của Danh mục ===
         // Submenu: Quản lý công ty
@@ -540,82 +540,73 @@ class AERP_HRM_Settings_Manager
     }
 
     public static function google_drive_settings_page() {
-        // Đường dẫn credentials.json mới trong thư mục plugin
-        $credentials_path = AERP_HRM_PATH . 'credentials.json';
-
-        // Xử lý upload credentials.json
-        if (
-            isset($_FILES['aerp_credentials_json']) &&
-            isset($_POST['aerp_credentials_nonce']) &&
-            wp_verify_nonce($_POST['aerp_credentials_nonce'], 'aerp_upload_credentials')
-        ) {
-            $file = $_FILES['aerp_credentials_json'];
-            if ($file['name'] !== 'credentials.json') {
-                echo '<div class="error"><p>Tên file phải là <code>credentials.json</code>. Vui lòng đổi tên file trước khi upload.</p></div>';
-            } elseif ($file['type'] === 'application/json' && $file['error'] === UPLOAD_ERR_OK) {
-                move_uploaded_file($file['tmp_name'], $credentials_path);
-                echo '<div class="updated"><p>Upload credentials.json thành công!</p></div>';
-            } else {
-                echo '<div class="error"><p>Lỗi upload file. Hãy chọn đúng file credentials.json.</p></div>';
-            }
-        }
-
-        // Hiển thị form upload nếu chưa có file
-        if (!file_exists($credentials_path)) {
-            echo '<div class="wrap">';
-            echo '<h2>Upload Google Drive json</h2>';
-            echo '<p style="margin-top: 0px;">Vui lòng lưu tên file json từ Google Drive thành <code>credentials.json</code> trước khi upload lên.</p>';
-            echo '<form method="post" enctype="multipart/form-data">';
-            wp_nonce_field('aerp_upload_credentials', 'aerp_credentials_nonce');
-            echo '<input type="file" name="aerp_credentials_json" accept=".json" required> ';
-            echo '<button type="submit" class="button button-primary">Upload json</button>';
-            echo '</form>';
-            echo '</div>';
-            return;
-        } else {
-            echo '<p style="color:green;">Đã có file credentials.json. Bạn có thể upload lại nếu muốn thay đổi.</p>';
-            echo '<form method="post" enctype="multipart/form-data" style="margin-bottom:20px;">';
-            wp_nonce_field('aerp_upload_credentials', 'aerp_credentials_nonce');
-            echo '<input type="file" name="aerp_credentials_json" accept=".json" required> ';
-            echo '<button type="submit" class="button">Upload lại json</button>';
-            echo '</form>';
-        }
-
-        // Chỉ khởi tạo Google Client khi đã có file
-        require_once AERP_HRM_PATH . 'includes/class-google-drive-manager.php';
-        $drive = AERP_Google_Drive_Manager::get_instance();
-        $client = $drive->get_client();
-
-        // Xử lý callback xác thực
-        if (isset($_GET['code'])) {
-            $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
-            if (!isset($token['error'])) {
-                update_option('aerp_google_drive_token', $token);
-                echo '<div class="updated"><p>Kết nối Google Drive thành công!</p></div>';
-            } else {
-                echo '<div class="error"><p>Lỗi xác thực: ' . esc_html($token['error_description']) . '</p></div>';
-            }
-        }
-
-        // Kiểm tra trạng thái token
-        $token = get_option('aerp_google_drive_token');
-        if ($token) {
-            $client->setAccessToken($token);
-            if ($client->isAccessTokenExpired()) {
-                if ($client->getRefreshToken()) {
-                    $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-                    update_option('aerp_google_drive_token', $client->getAccessToken());
-                    echo '<div class="updated"><p>Đã làm mới token Google Drive.</p></div>';
-                } else {
-                    echo '<div class="error"><p>Token đã hết hạn, vui lòng kết nối lại.</p></div>';
-                }
-            } else {
-                echo '<div class="updated"><p>Đã kết nối Google Drive!</p></div>';
-            }
-        } else {
-            // Chưa có token, hiển thị nút xác thực
-            $auth_url = $client->createAuthUrl();
-            echo '<a href="' . esc_url($auth_url) . '" class="button button-primary">Kết nối Google Drive</a>';
-        }
+        // TẠM THỜI VÔ HIỆU HÓA CHỨC NĂNG GOOGLE DRIVE
+        // // Đường dẫn credentials.json mới trong thư mục plugin
+        // $credentials_path = AERP_HRM_PATH . 'credentials.json';
+        // // Xử lý upload credentials.json
+        // if (
+        //     isset($_FILES['aerp_credentials_json']) &&
+        //     isset($_POST['aerp_credentials_nonce']) &&
+        //     wp_verify_nonce($_POST['aerp_credentials_nonce'], 'aerp_upload_credentials')
+        // ) {
+        //     $file = $_FILES['aerp_credentials_json'];
+        //     if ($file['name'] !== 'credentials.json') {
+        //         echo '<div class="error"><p>Tên file phải là <code>credentials.json</code>. Vui lòng đổi tên file trước khi upload.</p></div>';
+        //     } elseif ($file['type'] === 'application/json' && $file['error'] === UPLOAD_ERR_OK) {
+        //         move_uploaded_file($file['tmp_name'], $credentials_path);
+        //         echo '<div class="updated"><p>Upload credentials.json thành công!</p></div>';
+        //     } else {
+        //         echo '<div class="error"><p>Lỗi upload file. Hãy chọn đúng file credentials.json.</p></div>';
+        //     }
+        // }
+        // if (!file_exists($credentials_path)) {
+        //     echo '<div class="wrap">';
+        //     echo '<h2>Upload Google Drive json</h2>';
+        //     echo '<p style="margin-top: 0px;">Vui lòng lưu tên file json từ Google Drive thành <code>credentials.json</code> trước khi upload lên.</p>';
+        //     echo '<form method="post" enctype="multipart/form-data">';
+        //     wp_nonce_field('aerp_upload_credentials', 'aerp_credentials_nonce');
+        //     echo '<input type="file" name="aerp_credentials_json" accept=".json" required> ';
+        //     echo '<button type="submit" class="button button-primary">Upload json</button>';
+        //     echo '</form>';
+        //     echo '</div>';
+        //     return;
+        // } else {
+        //     echo '<p style="color:green;">Đã có file credentials.json. Bạn có thể upload lại nếu muốn thay đổi.</p>';
+        //     echo '<form method="post" enctype="multipart/form-data" style="margin-bottom:20px;">';
+        //     wp_nonce_field('aerp_upload_credentials', 'aerp_credentials_nonce');
+        //     echo '<input type="file" name="aerp_credentials_json" accept=".json" required> ';
+        //     echo '<button type="submit" class="button">Upload lại json</button>';
+        //     echo '</form>';
+        // }
+        // require_once AERP_HRM_PATH . 'includes/class-google-drive-manager.php';
+        // $drive = AERP_Google_Drive_Manager::get_instance();
+        // $client = $drive->get_client();
+        // if (isset($_GET['code'])) {
+        //     $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+        //     if (!isset($token['error'])) {
+        //         update_option('aerp_google_drive_token', $token);
+        //         echo '<div class="updated"><p>Kết nối Google Drive thành công!</p></div>';
+        //     } else {
+        //         echo '<div class="error"><p>Lỗi xác thực: ' . esc_html($token['error_description']) . '</p></div>';
+        //     }
+        // }
+        // $token = get_option('aerp_google_drive_token');
+        // if ($token) {
+        //     $client->setAccessToken($token);
+        //     if ($client->isAccessTokenExpired()) {
+        //         if ($client->getRefreshToken()) {
+        //             $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
+        //             update_option('aerp_google_drive_token', $client->getAccessToken());
+        //             echo '<div class="updated"><p>Đã làm mới token Google Drive.</p></div>';
+        //         } else {
+        //             echo '<div class="error"><p>Token đã hết hạn, vui lòng kết nối lại.</p></div>';
+        //         }
+        //     } else {
+        //         echo '<div class="updated"><p>Đã kết nối Google Drive!</p></div>';
+        //     }
+        // } else {
+        //     $auth_url = $client->createAuthUrl();
+        //     echo '<a href="' . esc_url($auth_url) . '" class="button button-primary">Kết nối Google Drive</a>';
+        // }
     }
 }

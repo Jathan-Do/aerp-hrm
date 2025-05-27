@@ -30,10 +30,12 @@
                 <tr>
                     <th scope="row">Nơi lưu trữ</th>
                     <td>
-                        <select name="storage_type" required>
+                        <!-- <select name="storage_type" required>
                             <option value="local">Lưu trên máy chủ</option>
                             <option value="drive">Lưu trên Google Drive</option>
-                        </select>
+                        </select> -->
+                        <input type="hidden" name="storage_type" value="local">
+                        <span>Lưu trên máy chủ</span>
                     </td>
                 </tr>
                 <tr>

@@ -46,10 +46,10 @@ class AERP_Attachment_Manager
             
             if ($attachment) {
                 // Xóa file trên Drive nếu có
-                if ($attachment->storage_type === 'drive' && !empty($attachment->drive_file_id)) {
-                    $drive = AERP_Google_Drive_Manager::get_instance();
-                    $drive->delete_file($attachment->drive_file_id);
-                }
+                // if ($attachment->storage_type === 'drive' && !empty($attachment->drive_file_id)) {
+                //     $drive = AERP_Google_Drive_Manager::get_instance();
+                //     $drive->delete_file($attachment->drive_file_id);
+                // }
                 
                 // Xóa record trong DB
                 $wpdb->delete($wpdb->prefix . 'aerp_hrm_attachments', ['id' => absint($_GET['delete_attachment'])]);
@@ -77,20 +77,25 @@ class AERP_Attachment_Manager
         $storage_type = isset($data['storage_type']) ? $data['storage_type'] : 'local';
         
         if ($storage_type === 'drive') {
-            // Upload lên Google Drive
-            $drive = AERP_Google_Drive_Manager::get_instance();
-            $result = $drive->upload_file(
-                $file['tmp_name'],
-                $file['name'],
-                $file['type']
-            );
-            
-            if (!$result) {
-                wp_die('Lỗi upload lên Google Drive');
+            // Upload lên Google Drive (TẠM THỜI TẮT)
+            // $drive = AERP_Google_Drive_Manager::get_instance();
+            // $result = $drive->upload_file(
+            //     $file['tmp_name'],
+            //     $file['name'],
+            //     $file['type']
+            // );
+            // if (!$result) {
+            //     wp_die('Lỗi upload lên Google Drive');
+            // }
+            // $file_url = $result['file_url'];
+            // $drive_file_id = $result['file_id'];
+            // Tạm thời chuyển sang upload local
+            $upload = wp_upload_bits($file['name'], null, file_get_contents($file['tmp_name']));
+            if ($upload['error']) {
+                wp_die('Lỗi upload: ' . $upload['error']);
             }
-            
-            $file_url = $result['file_url'];
-            $drive_file_id = $result['file_id'];
+            $file_url = $upload['url'];
+            $drive_file_id = null;
         } else {
             // Upload local như cũ
             $upload = wp_upload_bits($file['name'], null, file_get_contents($file['tmp_name']));
@@ -109,7 +114,7 @@ class AERP_Attachment_Manager
             'file_type'       => $ext,
             'attachment_type' => sanitize_text_field($data['attachment_type']),
             'uploaded_by'     => get_current_user_id(),
-            'uploaded_at'     => current_time('mysql'),
+            'uploaded_at'     => (new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh')))->format('Y-m-d H:i:s'),
             'storage_type'    => $storage_type,
             'drive_file_id'   => $drive_file_id
         ]);
@@ -130,7 +135,7 @@ class AERP_Attachment_Manager
             'file_type'       => $file_type,
             'attachment_type' => sanitize_text_field($data['attachment_type']),
             'uploaded_by'     => get_current_user_id(),
-            'uploaded_at'     => current_time('mysql'),
+            'uploaded_at'     => (new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh')))->format('Y-m-d H:i:s'),
             'storage_type'    => 'manual',
             'drive_file_id'   => null
         ]);
@@ -172,20 +177,25 @@ class AERP_Attachment_Manager
                 $storage_type = isset($data['storage_type']) ? $data['storage_type'] : 'local';
                 
                 if ($storage_type === 'drive') {
-                    // Upload lên Google Drive
-                    $drive = AERP_Google_Drive_Manager::get_instance();
-                    $result = $drive->upload_file(
-                        $file['tmp_name'],
-                        $file['name'],
-                        $file['type']
-                    );
-                    
-                    if (!$result) {
-                        wp_die('Lỗi upload lên Google Drive');
+                    // Upload lên Google Drive (TẠM THỜI TẮT)
+                    // $drive = AERP_Google_Drive_Manager::get_instance();
+                    // $result = $drive->upload_file(
+                    //     $file['tmp_name'],
+                    //     $file['name'],
+                    //     $file['type']
+                    // );
+                    // if (!$result) {
+                    //     wp_die('Lỗi upload lên Google Drive');
+                    // }
+                    // $file_url = $result['file_url'];
+                    // $drive_file_id = $result['file_id'];
+                    // Tạm thời chuyển sang upload local
+                    $upload = wp_upload_bits($file['name'], null, file_get_contents($file['tmp_name']));
+                    if ($upload['error']) {
+                        wp_die('Lỗi upload: ' . $upload['error']);
                     }
-                    
-                    $file_url = $result['file_url'];
-                    $drive_file_id = $result['file_id'];
+                    $file_url = $upload['url'];
+                    $drive_file_id = null;
                 } else {
                     // Upload local như cũ
                     $upload = wp_upload_bits($file['name'], null, file_get_contents($file['tmp_name']));
@@ -203,7 +213,7 @@ class AERP_Attachment_Manager
                     'file_type'       => $ext,
                     'attachment_type' => $attachment_type,
                     'uploaded_by'     => get_current_user_id(),
-                    'uploaded_at'     => current_time('mysql'),
+                    'uploaded_at'     => (new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh')))->format('Y-m-d H:i:s'),
                     'storage_type'    => $storage_type,
                     'drive_file_id'   => $drive_file_id
                 ], ['id' => $id]);
@@ -217,44 +227,44 @@ class AERP_Attachment_Manager
 
                 // Chuyển từ Drive sang Local
                 if ($old_storage_type === 'drive' && $new_storage_type === 'local' && $old_drive_file_id) {
-                    $drive = AERP_Google_Drive_Manager::get_instance();
-                    // Tải file từ Google Drive về
-                    $response = $drive->get_client()->getHttpClient()->request(
-                        'GET',
-                        'https://www.googleapis.com/drive/v3/files/' . $old_drive_file_id . '?alt=media',
-                        [
-                            'headers' => [
-                                'Authorization' => 'Bearer ' . $drive->get_client()->getAccessToken()['access_token']
-                            ]
-                        ]
-                    );
-                    $file_content = $response->getBody()->getContents();
-                    $upload = wp_upload_bits($file_name, null, $file_content);
-                    if ($upload['error']) {
-                        wp_die('Lỗi tải file từ Google Drive về máy chủ: ' . $upload['error']);
-                    }
-                    $file_url = $upload['url'];
-                    $drive_file_id = null;
-                    $file_type = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-                    // (Tùy chọn) Xóa file trên Drive
-                    $drive->delete_file($old_drive_file_id);
+                    // TẠM THỜI TẮT CHỨC NĂNG LẤY FILE TỪ DRIVE
+                    // $drive = AERP_Google_Drive_Manager::get_instance();
+                    // $response = $drive->get_client()->getHttpClient()->request(
+                    //     'GET',
+                    //     'https://www.googleapis.com/drive/v3/files/' . $old_drive_file_id . '?alt=media',
+                    //     [
+                    //         'headers' => [
+                    //             'Authorization' => 'Bearer ' . $drive->get_client()->getAccessToken()['access_token']
+                    //         ]
+                    //     ]
+                    // );
+                    // $file_content = $response->getBody()->getContents();
+                    // $upload = wp_upload_bits($file_name, null, $file_content);
+                    // if ($upload['error']) {
+                    //     wp_die('Lỗi tải file từ Google Drive về máy chủ: ' . $upload['error']);
+                    // }
+                    // $file_url = $upload['url'];
+                    // $drive_file_id = null;
+                    // $file_type = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                    // $drive->delete_file($old_drive_file_id);
+                    // Tạm thời giữ nguyên file cũ
                 }
                 // Chuyển từ Local sang Drive
                 elseif ($old_storage_type === 'local' && $new_storage_type === 'drive') {
-                    $drive = AERP_Google_Drive_Manager::get_instance();
-                    // Lấy đường dẫn file local
-                    $file_path = str_replace(wp_get_upload_dir()['baseurl'], wp_get_upload_dir()['basedir'], $old_file_url);
-                    $mime_type = wp_check_filetype($file_path)['type'] ?: 'application/octet-stream';
-                    $result = $drive->upload_file($file_path, $file_name, $mime_type);
-                    if (!$result) {
-                        wp_die('Lỗi upload file từ máy chủ lên Google Drive');
-                    }
-                    $file_url = $result['file_url'];
-                    $drive_file_id = $result['file_id'];
-                    $file_type = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-                    // (Tùy chọn) Xóa file local
-                    $file_path = str_replace(wp_get_upload_dir()['baseurl'], wp_get_upload_dir()['basedir'], $old_file_url);
-                    @unlink($file_path);
+                    // TẠM THỜI TẮT CHỨC NĂNG UPLOAD LÊN DRIVE
+                    // $drive = AERP_Google_Drive_Manager::get_instance();
+                    // $file_path = str_replace(wp_get_upload_dir()['baseurl'], wp_get_upload_dir()['basedir'], $old_file_url);
+                    // $mime_type = wp_check_filetype($file_path)['type'] ?: 'application/octet-stream';
+                    // $result = $drive->upload_file($file_path, $file_name, $mime_type);
+                    // if (!$result) {
+                    //     wp_die('Lỗi upload file từ máy chủ lên Google Drive');
+                    // }
+                    // $file_url = $result['file_url'];
+                    // $drive_file_id = $result['file_id'];
+                    // $file_type = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                    // $file_path = str_replace(wp_get_upload_dir()['baseurl'], wp_get_upload_dir()['basedir'], $old_file_url);
+                    // @unlink($file_path);
+                    // Tạm thời giữ nguyên file cũ
                 }
 
                 $wpdb->update($wpdb->prefix . 'aerp_hrm_attachments', [
@@ -263,7 +273,7 @@ class AERP_Attachment_Manager
                     'file_type'       => $file_type,
                     'attachment_type' => $attachment_type,
                     'uploaded_by'     => get_current_user_id(),
-                    'uploaded_at'     => current_time('mysql'),
+                    'uploaded_at'     => (new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh')))->format('Y-m-d H:i:s'),
                     'storage_type'    => $new_storage_type,
                     'drive_file_id'   => $drive_file_id
                 ], ['id' => $id]);

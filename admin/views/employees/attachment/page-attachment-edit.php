@@ -48,10 +48,12 @@ if (!$employee) {
                 <tr>
                     <th scope="row">Nơi lưu trữ</th>
                     <td>
-                        <select name="storage_type" required>
+                        <!-- <select name="storage_type" required>
                             <option value="local" <?= selected($record->storage_type, 'local') ?>>Lưu trên máy chủ</option>
                             <option value="drive" <?= selected($record->storage_type, 'drive') ?>>Lưu trên Google Drive</option>
-                        </select>
+                        </select> -->
+                        <input type="hidden" name="storage_type" value="local">
+                        <span>Lưu trên máy chủ</span>
                     </td>
                 </tr>
                 <tr>
@@ -61,9 +63,9 @@ if (!$employee) {
                         <p class="description">
                             File hiện tại:
                             <a href="<?= esc_url($record->file_url) ?>" target="_blank"><?= esc_html($record->file_name) ?></a>
-                            <?php if ($record->storage_type === 'drive'): ?>
+                            <!-- <?php if ($record->storage_type === 'drive'): ?>
                                 <span class="dashicons dashicons-google" title="Lưu trên Google Drive"></span>
-                            <?php endif; ?>
+                            <?php endif; ?> -->
                         </p>
                     </td>
                 </tr>
