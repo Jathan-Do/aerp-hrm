@@ -1,0 +1,254 @@
+#wpfooter{
+    position:  relative !important;
+}
+.aerp-hrm-reports {
+    padding: 20px;
+}
+
+/* Filters */
+.report-filters {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.report-filters label {
+    margin-right: 15px;
+}
+
+.report-filters input[type="date"] {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Summary Cards */
+.report-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.summary-card h3 {
+    margin: 0 0 10px;
+    color: #23282d;
+    font-size: 16px;
+}
+
+.summary-card .number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0073aa;
+}
+
+/* Charts Section */
+.report-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.chart-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chart-container h3 {
+    margin: 0 0 15px;
+    color: #23282d;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* Export Section */
+.report-exports {
+    background: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.report-exports h3 {
+    margin: 0 0 15px;
+    color: #23282d;
+    font-size: 16px;
+}
+
+.report-exports button {
+    margin-right: 10px;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 782px) {
+    .report-charts {
+        grid-template-columns: 1fr;
+    }
+    
+    .report-filters label {
+        display: block;
+        margin-bottom: 10px;
+    }
+    
+    .report-filters input[type="date"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+} 
+
+.aerp-timeline {
+    list-style: none;
+    padding-left: 0;
+    border-left: 3px solid #ccc;
+    margin-left: 20px;
+}
+
+.aerp-timeline li {
+    position: relative;
+    padding: 10px 0 10px 30px;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: -16px;
+    top: 30px;
+    background: #37B34A;
+    color: white;
+    border-radius: 50%;
+    padding: 4px 6px;
+    font-size: 13px;
+}
+
+.timeline-content {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.timeline-date {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* 
+.aerp-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+.aerp-category-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+.aerp-category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.aerp-category-card h3 {
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #2271b1;
+}
+.aerp-category-card p {
+    color: #646970;
+    margin: 0 0 15px 0;
+}
+.aerp-category-card .button {
+    width: 100%;
+    text-align: center;
+    margin-top: auto;
+} */
+
+.aerp-category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.aerp-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+}
+.aerp-category-card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    background: #fff;
+    border: 1px solid #e2e4e7;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    min-height: 140px;
+    transition: all 0.2s ease;
+}
+.aerp-category-card:hover {
+    border-color: #2271b1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.aerp-category-card:hover h3{
+    color: #2271b1;
+}
+.aerp-category-card h3 {
+    font-size: 18px;
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1d2327;
+    font-weight: 600;
+}
+.aerp-category-card .dashicons {
+    color: #2271b1;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+.aerp-category-card p {
+    color: #50575e;
+    margin: 0 0 16px;
+    font-size: 15px;
+    line-height: 1.4;
+    flex-grow: 1;
+}
+.aerp-category-card .button {
+    width: 100%;
+    text-align: center;
+    padding: 4px 12px;
+    height: auto;
+    font-size: 13px;
+    font-weight: 500;
+}
+.aerp-category-card .button-primary {
+    background: #2271b1;
+    border-color: #2271b1;
+}
+.aerp-category-card .button-primary:hover {
+    background: #135e96;
+    border-color: #135e96;
+}
+@media screen and (min-width: 1200px) {
+    .aerp-category-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

@@ -1,0 +1,685 @@
+/* === PROFILE (aerp-*) === */
+
+.aerp-hrm-profile-container {
+    max-width: 1000px !important;
+    margin: 40px auto !important;
+    padding: 0 20px !important;
+}
+
+.aerp-hrm-card {
+    background: #ffffff !important;
+    border-radius: 14px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04) !important;
+    margin-bottom: 32px !important;
+    padding: 32px !important;
+    transition: all 0.3s ease-in-out !important;
+    position: relative !important;
+}
+
+.aerp-hrm-card:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06) !important;
+}
+
+.aerp-hrm-title {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    margin-bottom: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.aerp-hrm-title i {
+    color: #2563eb !important;
+    font-size: 22px !important;
+}
+
+.aerp-hrm-row {
+    display: grid !important;
+    grid-template-columns: 200px 1fr !important;
+    gap: 16px !important;
+    padding: 10px 0 !important;
+    border-bottom: 1px dashed #e2e8f0 !important;
+}
+
+.aerp-hrm-label {
+    font-weight: 500 !important;
+    color: #64748b !important;
+}
+
+.aerp-hrm-value {
+    font-weight: 600 !important;
+    color: #1e293b !important;
+}
+
+.aerp-hrm-row:last-child {
+    border-bottom: none !important;
+}
+
+.aerp-hrm-btn {
+    display: inline-block !important;
+    background: linear-gradient(135deg, #2563eb, #1e40af) !important;
+    color: #fff !important;
+    padding: 12px 26px !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3) !important;
+    transition: all 0.3s ease-in-out !important;
+    margin-top: 24px !important;
+}
+
+.aerp-hrm-btn:hover {
+    transform: scale(1.03) !important;
+    box-shadow: 0 8px 20px rgba(30, 64, 175, 0.4) !important;
+}
+
+@media (max-width: 640px) {
+    .aerp-hrm-row {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* === TASK LIST (task-*) === */
+
+.aerp-hrm-task-container {
+    max-width: 960px !important;
+    margin: 40px auto !important;
+    padding: 0 20px !important;
+    font-family: "Inter", sans-serif !important;
+    color: #1e293b !important;
+}
+
+.aerp-hrm-task-card {
+    background: #ffffff !important;
+    border-radius: 14px !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05) !important;
+    margin-bottom: 30px !important;
+    padding: 24px !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+.aerp-hrm-task-card:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07) !important;
+}
+
+.aerp-hrm-task-title {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    margin-bottom: 6px !important;
+}
+
+.aerp-hrm-task-meta {
+    font-size: 14px !important;
+    color: #64748b !important;
+    margin-bottom: 12px !important;
+}
+
+.aerp-hrm-task-comments {
+    background: #f8fafc !important;
+    border-radius: 10px !important;
+    padding: 14px 18px !important;
+    font-size: 14px !important;
+    margin-top: 10px !important;
+    list-style: none !important;
+    border: 1px solid #e2e8f0 !important;
+    overflow-x: auto !important;
+}
+
+.aerp-hrm-task-comments li {
+    position: relative !important;
+    margin-bottom: 12px !important;
+    padding-left: 0 !important;
+    line-height: 1.6 !important;
+    word-break: break-word !important;
+}
+
+.aerp-hrm-task-comments li:last-child {
+    margin-bottom: 0 !important;
+}
+
+.aerp-hrm-task-badge {
+    text-align: center !important;
+    min-width: 70px !important;
+    display: inline-block !important;
+    padding: 2px 8px !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    margin-right: 6px !important;
+    color: #fff !important;
+    font-weight: 500 !important;
+}
+
+.aerp-hrm-badge-admin {
+    background-color: #16a34a !important;
+}
+
+.aerp-hrm-badge-user {
+    background-color: #2563eb !important;
+}
+
+.aerp-hrm-task-form textarea {
+    resize: vertical !important;
+    max-width: 100% !important;
+}
+
+.aerp-hrm-task-form select,
+.aerp-hrm-task-form textarea,
+.aerp-hrm-task-form input[type="text"],
+.aerp-hrm-task-form input[type="datetime-local"],
+.aerp-hrm-task-form input[type="date"],
+.aerp-hrm-task-form input[type="number"] {
+    width: 100% !important;
+    padding: 10px !important;
+    margin-top: 6px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    font-size: 15px !important;
+    box-sizing: border-box !important;
+}
+
+.aerp-hrm-task-filter-form button,
+.aerp-hrm-task-form.button,
+.aerp-hrm-task-form button {
+    background: linear-gradient(135deg, #2563eb, #1e40af) !important;
+    color: white !important;
+    padding: 10px 22px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+.aerp-hrm-task-filter-form button:hover,
+.aerp-hrm-task-form.button:hover,
+.aerp-hrm-task-form button:hover {
+    transform: scale(1.03) !important;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3) !important;
+}
+
+.aerp-hrm-task-form button.button-submit {
+    margin-top: 12px !important;
+}
+
+.aerp-hrm-task-add-section {
+    margin-top: 40px !important;
+}
+
+.aerp-hrm-task-section-title {
+    font-size: 20px !important;
+    font-weight: bold !important;
+    margin: 20px 0 !important;
+}
+
+.aerp-hrm-task-popup {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.3) !important;
+    display: none !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 999 !important;
+}
+
+.aerp-hrm-task-popup.active {
+    display: flex !important;
+}
+
+.aerp-hrm-task-popup-inner {
+    background: #fff !important;
+    padding: 30px !important;
+    border-radius: 12px !important;
+    width: 90% !important;
+    max-width: 500px !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2) !important;
+    position: relative !important;
+    animation: fadeIn 0.3s ease !important;
+}
+
+.aerp-hrm-task-popup-close {
+    position: absolute !important;
+    top: 12px !important;
+    right: 16px !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    color: #888 !important;
+    cursor: pointer !important;
+    transition: 0.2s !important;
+}
+
+.aerp-hrm-task-popup-close:hover {
+    color: #111 !important;
+    transform: scale(1.1) !important;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.aerp-hrm-custom-select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background: white
+        url('data:image/svg+xml;utf8,<svg fill="%2364748b" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>')
+        no-repeat right 12px center !important;
+    background-size: 16px 16px !important;
+    padding-right: 36px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    height: 42px !important;
+    font-size: 15px !important;
+    transition: 0.2s !important;
+}
+
+.aerp-hrm-toast {
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    background: #2563eb !important;
+    color: #fff !important;
+    padding: 14px 18px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    font-size: 14px !important;
+    animation: fadeInToast 0.3s ease !important;
+}
+
+.aerp-hrm-toast.warning {
+    background: #fbbf24 !important;
+}
+
+.aerp-hrm-toast button {
+    padding: 0 !important;
+    background: transparent !important;
+    color: #fff !important;
+    border: none !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+    opacity: 0.8 !important;
+}
+
+.aerp-hrm-toast button:hover {
+    color: #fff !important;
+    opacity: 1 !important;
+}
+
+@keyframes fadeInToast {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.aerp-hrm-task-pagination {
+    text-align: center !important;
+    margin-top: 20px !important;
+}
+
+.aerp-hrm-page-link {
+    display: inline-block !important;
+    margin: 0 5px !important;
+    padding: 6px 12px !important;
+    background: #e5eef3 !important;
+    border-radius: 5px !important;
+    text-decoration: none !important;
+}
+
+.aerp-hrm-page-link.active {
+    background: #2563eb !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.aerp-hrm-task-filter-form {
+    justify-content: end !important;
+    margin-right: 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+    align-items: center !important;
+    border-radius: 10px !important;
+}
+
+.aerp-hrm-task-filter-form input[type="text"],
+.aerp-hrm-task-filter-form select {
+    padding: 10px 14px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    font-size: 15px !important;
+    color: #1e293b !important;
+    transition: all 0.2s ease !important;
+    width: 200px !important;
+    max-width: 100% !important;
+}
+
+.aerp-hrm-task-filter-form input[type="text"]:focus,
+.aerp-hrm-task-filter-form select:focus {
+    outline: none !important;
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
+}
+
+.aerp-hrm-task-filter-form button {
+    margin-top: 0 !important;
+}
+
+@media (max-width: 600px) {
+    .aerp-hrm-task-filter-form {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    /* .aerp-hrm-task-filter-form input[type="text"]{
+        width: 94% !important;
+    } */
+    .aerp-hrm-task-filter-form select,
+    .aerp-hrm-task-filter-form button {
+        width: 100% !important;
+    }
+}
+
+#aerp-hrm-employee-table-wrapper.loading {
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+}
+
+.aerp-hrm-text-success {
+    color: #2ecc71 !important;
+}
+
+.aerp-hrm-salary-timeline {
+    display: flex !important;
+    gap: 40px !important;
+    padding: 20px 10px !important;
+    overflow-x: auto !important;
+    position: relative !important;
+    margin-top: 10px !important;
+    border-left: 3px solid #e0e0e0 !important;
+}
+
+.aerp-hrm-timeline-item {
+    position: relative !important;
+    flex-shrink: 0 !important;
+    text-align: center !important;
+}
+
+.aerp-hrm-timeline-item .dot {
+    background: #37b34a !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    border-radius: 20px !important;
+    padding: 6px 12px !important;
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+}
+
+.aerp-hrm-timeline-item .info {
+    font-size: 14px !important;
+    color: #333 !important;
+}
+
+.aerp-hrm-timeline-item .info small {
+    display: block !important;
+    font-size: 12px !important;
+    color: #777 !important;
+}
+
+.aerp-hrm-adjustment-list ul {
+    margin: 0 !important;
+    padding-left: 18px !important;
+    list-style: disc !important;
+    color: #334155 !important;
+}
+
+.aerp-hrm-adjustment-list li {
+    margin-bottom: 4px !important;
+}
+.aerp-accordion-item:not(:last-child) {
+    margin-bottom: 10px !important;
+}
+.aerp-hrm-accordion-header {
+    border-radius: 8px !important;
+    background: #f8f8f8 !important;
+    border: none !important;
+    width: 100% !important;
+    text-align: left !important;
+    padding: 10px 15px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    transition: background 0.2s !important;
+}
+
+.aerp-hrm-accordion-header:hover {
+    background: #eee !important;
+}
+
+.aerp-hrm-accordion-header:focus {
+    outline-width: 0 !important;
+    outline-style: solid !important;
+}
+
+.aerp-hrm-accordion-body {
+    display: none;
+    padding: 15px !important;
+    border-left: 4px solid #ccc !important;
+    border-radius: 6px !important;
+    margin-top: 5px !important;
+}
+
+.aerp-hrm-accordion-body.bg-reward {
+    background: #e9f9f0 !important;
+    border-color: #3bb77e !important;
+}
+
+.aerp-hrm-accordion-body.bg-fine {
+    background: #fff3e0 !important;
+    border-color: #f39c12 !important;
+}
+
+.aerp-hrm-item-row {
+    margin-bottom: 8px !important;
+}
+
+.aerp-hrm-accordion-icon {
+    transition: transform 0.2s ease !important;
+}
+
+.aerp-hrm-accordion-header.active .aerp-hrm-accordion-icon {
+    transform: rotate(180deg) !important;
+}
+
+.aerp-hrm-accordion-body.active {
+    height: auto !important;
+    opacity: 1 !important;
+}
+
+.aerp-hrm-accordion-item {
+    margin-bottom: 8px !important;
+}
+
+#aerp-hrm-adjustmentPopup {
+    max-width: 100% !important;
+}
+
+/* === MODERN PROFILE === */
+.aerp-hrm-profile-container.modern {
+    max-width: 1100px !important;
+    margin: 40px auto !important;
+    padding: 0 20px !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+@media (max-width: 900px) {
+    .aerp-hrm-profile-container.modern {
+        grid-template-columns: 1fr;
+    }
+}
+.profile-card {
+    grid-column: 1 / -1;
+    padding-bottom: 0 !important;
+}
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 18px;
+}
+.profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #fff;
+    font-size: 36px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.12);
+}
+.profile-info {
+    flex: 1;
+}
+.profile-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+.profile-meta {
+    color: #64748b;
+    font-size: 1rem;
+    font-weight: 500;
+}
+.profile-details-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.profile-details-grid .icon {
+    margin-right: 6px;
+}
+.salary-card .salary-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 24px;
+    margin-top: 10px;
+}
+.salary-card .salary-table > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    padding: 6px 0;
+}
+.salary-card .salary-table .salary-total {
+    grid-column: 1 / -1;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2563eb;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 8px;
+    padding-top: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+.text-primary { color: #2563eb !important; }
+.text-success { color: #16a34a !important; }
+.text-danger { color: #dc2626 !important; }
+.text-total { color: #1e40af !important; font-size: 1.3em; }
+.big-btn {
+    font-size: 1.1rem !important;
+    padding: 16px 36px !important;
+    border-radius: 12px !important;
+    margin-top: 18px !important;
+    background: linear-gradient(135deg, #2563eb, #1e40af) !important;
+    box-shadow: 0 6px 18px rgba(37,99,235,0.13) !important;
+}
+.salary-timeline-card .modern-timeline {
+    display: flex;
+    gap: 32px;
+    padding: 18px 0 0 0;
+    overflow-x: auto;
+    align-items: flex-end;
+}
+.salary-timeline-card .aerp-hrm-timeline-item {
+    text-align: center;
+    min-width: 90px;
+}
+.salary-timeline-card .dot {
+    background: #2563eb;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 20px;
+    padding: 7px 14px;
+    font-size: 15px;
+    margin-bottom: 7px;
+    box-shadow: 0 2px 5px rgba(37,99,235,0.08);
+}
+.salary-timeline-card .info {
+    font-size: 14px;
+    color: #333;
+}
+.salary-timeline-card .info small {
+    display: block;
+    font-size: 12px;
+    color: #64748b;
+}
+/* Card nâng cấp */
+.aerp-hrm-card {
+    background: #fff !important;
+    border-radius: 18px !important;
+    box-shadow: 0 8px 32px rgba(37,99,235,0.07) !important;
+    margin-bottom: 32px !important;
+    padding: 36px !important;
+    transition: all 0.3s;
+    position: relative !important;
+}
+.aerp-hrm-title .icon {
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+/* Responsive */
+@media (max-width: 700px) {
+    .aerp-hrm-profile-container.modern {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+    .aerp-hrm-card {
+        padding: 18px !important;
+    }
+    .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .salary-card .salary-table {
+        grid-template-columns: 1fr;
+    }
+}
