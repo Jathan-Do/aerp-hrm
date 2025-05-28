@@ -56,7 +56,7 @@ class AERP_Excel_Export_Helper
         }
 
         // Format tiền
-        $moneyCols = ['final_salary', 'bonus', 'deduction'];
+        $moneyCols = ['final_salary', 'bonus', 'deduction', 'base_salary', 'advance_paid'];
         $colIndex = 1;
         foreach ($headers as $key => $label) {
             if (in_array($key, $moneyCols)) {

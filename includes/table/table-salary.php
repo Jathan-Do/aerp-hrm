@@ -30,6 +30,8 @@ class AERP_Salary_Table extends AERP_Base_Table
             'advance_paid'     => 'Ứng lương',
             'final_salary'     => 'Thực lãnh',
             'work_days'        => 'Ngày công',
+            'off_days'         => 'Ngày nghỉ',
+            'ot_days'          => 'Tăng ca',
             'ranking'          => 'Xếp loại',
             'points_total'     => 'Điểm',
             'note'             => 'Ghi chú',
@@ -57,6 +59,25 @@ class AERP_Salary_Table extends AERP_Base_Table
 
         if ($column_name === 'salary_month') {
             return date('m/Y', strtotime($item[$column_name]));
+        }
+        if ($column_name === 'work_days') {
+            // Tính lại số ngày làm việc chuẩn trong tháng
+            $month = $item['salary_month'];
+            $start = new DateTime($month);
+            $end = new DateTime($month);
+            $end->modify('last day of this month');
+            $work_days_standard = 0;
+            for ($d = clone $start; $d <= $end; $d->modify('+1 day')) {
+                $w = (int)$d->format('N');
+                if ($w < 6) $work_days_standard++;
+            }
+            return $work_days_standard;
+        }
+        if (in_array($column_name, ['work_days', 'ot_days'])) {
+            return number_format((float)$item[$column_name], 1, ',', '');
+        }
+        if ($column_name === 'off_days') {
+            return (int)$item[$column_name];
         }
 
         return esc_html($item[$column_name] ?? '');

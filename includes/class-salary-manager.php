@@ -29,17 +29,40 @@ class AERP_Salary_Manager
         $allowance = floatval($config->allowance);
 
         // 2. Chấm công: tính tổng lương ngày công
-        $attendance = $wpdb->get_results($wpdb->prepare("
-        SELECT work_ratio FROM {$wpdb->prefix}aerp_hrm_attendance
-        WHERE employee_id = %d AND work_date BETWEEN %s AND %s
-    ", $employee_id, $month_start, $month_end));
-
-        $total_salary = 0;
-        foreach ($attendance as $row) {
-            $daily = ($base + $allowance) / 26 * floatval($row->work_ratio);
-            $total_salary += $daily;
+        // --- BẮT ĐẦU SỬA LOGIC ---
+        // 2.1. Số ngày làm việc chuẩn trong tháng (trừ T7, CN)
+        $start = new DateTime($month_start);
+        $end = new DateTime($month_end);
+        $work_days_standard = 0;
+        for ($d = clone $start; $d <= $end; $d->modify('+1 day')) {
+            $w = (int)$d->format('N'); // 6: T7, 7: CN
+            if ($w < 6) $work_days_standard++;
         }
-        $work_days = count($attendance);
+
+        // 2.2. Lấy các dòng chấm công trong tháng
+        $attendance = $wpdb->get_results($wpdb->prepare("
+            SELECT shift, work_ratio FROM {$wpdb->prefix}aerp_hrm_attendance
+            WHERE employee_id = %d AND work_date BETWEEN %s AND %s
+        ", $employee_id, $month_start, $month_end));
+
+        $off_days = 0;
+        $ot_total = 0;
+        foreach ($attendance as $row) {
+            if ($row->shift === 'off' && floatval($row->work_ratio) == 0) {
+                $off_days++;
+            } elseif ($row->shift === 'ot' && floatval($row->work_ratio) > 0) {
+                $ot_total += floatval($row->work_ratio);
+            }
+        }
+
+        // 2.3. Số ngày công thực tế
+        $actual_work_days = $work_days_standard - $off_days;
+        // 2.4. Tổng hệ số tăng ca (có thể cộng vào lương riêng hoặc vào actual_work_days tuỳ chính sách)
+        // Ở đây cộng vào lương riêng:
+        $salary_per_day = ($base + $allowance) / $work_days_standard;
+        $total_salary = $actual_work_days * $salary_per_day + $ot_total * $salary_per_day;
+        $work_days = $work_days_standard;
+        // --- KẾT THÚC SỬA LOGIC ---
 
         // 3. Thưởng & phạt thủ công
         $adjustments = $wpdb->get_results($wpdb->prepare("
@@ -121,8 +144,8 @@ class AERP_Salary_Manager
         // 10. Tổng lương
         $final_salary = $total_salary + $bonus + $auto_bonus - $deduction - $advance;
 
-        // 11. Ghi vào bảng lương
-        $wpdb->insert($wpdb->prefix . 'aerp_hrm_salaries', [
+        // 11. Ghi vào bảng lương (update nếu đã có, insert nếu chưa)
+        $data = [
             'employee_id'      => $employee_id,
             'salary_month'     => $month_start,
             'base_salary'      => $base,
@@ -131,11 +154,30 @@ class AERP_Salary_Manager
             'adjustment'       => 0,
             'advance_paid'     => $advance,
             'work_days'        => $work_days,
+            'off_days'         => $off_days,
+            'ot_days'          => $ot_total,
             'auto_bonus'       => $auto_bonus,
             'final_salary'     => $final_salary,
             'ranking'          => $ranking,
             'points_total'     => $total_points,
             'created_at'       => (new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh')))->format('Y-m-d H:i:s')
-        ]);
+        ];
+
+        // Kiểm tra đã có bản ghi lương cho nhân viên-tháng này chưa
+        $salary_row = $wpdb->get_row($wpdb->prepare(
+            "SELECT id FROM {$wpdb->prefix}aerp_hrm_salaries WHERE employee_id = %d AND salary_month = %s",
+            $employee_id,
+            $month_start
+        ));
+
+        if ($salary_row) {
+            // Đã có, update
+            $wpdb->update($wpdb->prefix . 'aerp_hrm_salaries', $data, [
+                'id' => $salary_row->id
+            ]);
+        } else {
+            // Chưa có, insert
+            $wpdb->insert($wpdb->prefix . 'aerp_hrm_salaries', $data);
+        }
     }
 }

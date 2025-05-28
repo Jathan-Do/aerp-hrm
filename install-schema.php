@@ -78,6 +78,8 @@ function aerp_hrm_install_schema()
         deduction FLOAT DEFAULT 0,
         adjustment FLOAT DEFAULT 0,
         work_days INT DEFAULT 0,
+        off_days INT DEFAULT 0,
+        ot_days FLOAT DEFAULT 0,
         final_salary FLOAT DEFAULT 0,
         advance_paid FLOAT DEFAULT 0,
         ranking VARCHAR(10),

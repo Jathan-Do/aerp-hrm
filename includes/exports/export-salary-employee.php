@@ -14,8 +14,9 @@ function salary_employee_export()
     $query = "
         SELECT 
             e.employee_code, e.full_name, e.bank_account, e.bank_name,
-            s.salary_month, s.base_salary, s.bonus, s.deduction, s.adjustment, 
-            s.final_salary, s.advance_paid, s.points_total
+            s.salary_month, s.base_salary, s.bonus, s.deduction, s.auto_bonus, 
+            s.final_salary, s.advance_paid, s.points_total,
+            s.work_days, s.off_days, s.ot_days
         FROM {$wpdb->prefix}aerp_hrm_salaries s
         LEFT JOIN {$wpdb->prefix}aerp_hrm_employees e ON s.employee_id = e.id
         WHERE s.employee_id = %d AND s.salary_month = %s
@@ -32,7 +33,10 @@ function salary_employee_export()
         'base_salary'    => 'Lương cơ bản',
         'bonus'          => 'Thưởng',
         'deduction'      => 'Phạt',
-        'adjustment'     => 'Điều chỉnh',
+        'auto_bonus'     => 'Thưởng tự động',
+        'work_days'      => 'Ngày công',
+        'off_days'       => 'Ngày nghỉ',
+        'ot_days'        => 'Tăng ca',
         'advance_paid'   => 'Tạm ứng',
         'final_salary'   => 'Lương cuối',
         'points_total'   => 'Điểm tổng',

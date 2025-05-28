@@ -34,6 +34,9 @@ class AERP_Attendance_Manager
 
         $employee_id = absint($_POST['employee_id']);
         $work_date   = sanitize_text_field($_POST['work_date']);
+        $shift_type  = sanitize_text_field($_POST['shift_type']);
+        $work_ratio  = floatval($_POST['work_ratio']);
+        $note        = sanitize_text_field($_POST['note']);
 
         // ✅ Kiểm tra trùng
         if (self::check_duplicate($employee_id, $work_date)) {
@@ -43,12 +46,15 @@ class AERP_Attendance_Manager
             return;
         }
 
+        // Xác định shift
+        $shift = ($shift_type === 'off') ? 'off' : 'ot';
+
         $wpdb->insert($wpdb->prefix . 'aerp_hrm_attendance', [
             'employee_id' => $employee_id,
             'work_date'   => $work_date,
-            'shift'       => sanitize_text_field($_POST['shift']),
-            'work_ratio'  => floatval($_POST['work_ratio']),
-            'note'        => sanitize_text_field($_POST['note']),
+            'shift'       => $shift,
+            'work_ratio'  => $work_ratio,
+            'note'        => $note,
             'created_at'  => (new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh')))->format('Y-m-d H:i:s')
         ]);
 
@@ -65,6 +71,9 @@ class AERP_Attendance_Manager
         $id          = absint($_POST['id']);
         $employee_id = absint($_POST['employee_id']);
         $work_date   = sanitize_text_field($_POST['work_date']);
+        $shift_type  = sanitize_text_field($_POST['shift_type']);
+        $work_ratio  = floatval($_POST['work_ratio']);
+        $note        = sanitize_text_field($_POST['note']);
 
         // ✅ Kiểm tra trùng – trừ chính bản ghi hiện tại
         $is_duplicate = $wpdb->get_var($wpdb->prepare("
@@ -79,11 +88,14 @@ class AERP_Attendance_Manager
             return;
         }
 
+        // Xác định shift
+        $shift = ($shift_type === 'off') ? 'off' : 'ot';
+
         $wpdb->update($wpdb->prefix . 'aerp_hrm_attendance', [
             'work_date'   => $work_date,
-            'shift'       => sanitize_text_field($_POST['shift']),
-            'work_ratio'  => floatval($_POST['work_ratio']),
-            'note'        => sanitize_text_field($_POST['note']),
+            'shift'       => $shift,
+            'work_ratio'  => $work_ratio,
+            'note'        => $note,
         ], ['id' => $id]);
 
         add_action('admin_notices', function () {
