@@ -96,6 +96,129 @@ if ($salary) {
     }
 }
 
+$calc_month = isset($_GET['calc_month']) ? $_GET['calc_month'] : date('Y-m');
+$calc_data = null;
+if (isset($_GET['calc_month'])) {
+    $month_start = date('Y-m-01 00:00:00', strtotime($calc_month));
+    $month_end   = date('Y-m-t 23:59:59', strtotime($calc_month));
+    // Lấy cấu hình lương
+    $config = $wpdb->get_row($wpdb->prepare("
+        SELECT * FROM {$wpdb->prefix}aerp_hrm_salary_config
+        WHERE employee_id = %d AND start_date <= %s AND end_date >= %s
+        ORDER BY start_date DESC LIMIT 1
+    ", $employee_id, $month_start, $month_start));
+    $base      = $config ? floatval($config->base_salary) : 0;
+    $allowance = $config ? floatval($config->allowance) : 0;
+    // Số ngày làm việc chuẩn
+    $start = new DateTime($month_start);
+    $end = new DateTime($month_end);
+    $work_days_standard = 0;
+    for ($d = clone $start; $d <= $end; $d->modify('+1 day')) {
+        $w = (int)$d->format('N');
+        if ($w < 6) $work_days_standard++;
+    }
+    // Chấm công
+    $attendance = $wpdb->get_results($wpdb->prepare("
+        SELECT shift, work_ratio FROM {$wpdb->prefix}aerp_hrm_attendance
+        WHERE employee_id = %d AND work_date BETWEEN %s AND %s
+    ", $employee_id, $month_start, $month_end));
+    $off_days = 0;
+    $ot_total = 0;
+    foreach ($attendance as $row) {
+        if ($row->shift === 'off' && floatval($row->work_ratio) == 0) {
+            $off_days++;
+        } elseif ($row->shift === 'ot' && floatval($row->work_ratio) > 0) {
+            $ot_total += floatval($row->work_ratio);
+        }
+    }
+    $actual_work_days = $work_days_standard - $off_days;
+    $salary_per_day = ($base + $allowance) / ($work_days_standard ?: 1);
+    $total_salary = $actual_work_days * $salary_per_day + $ot_total * $salary_per_day;
+    // Thưởng & phạt thủ công
+    $adjustments = $wpdb->get_results($wpdb->prepare("
+        SELECT * FROM {$wpdb->prefix}aerp_hrm_adjustments
+        WHERE employee_id = %d AND date_effective BETWEEN %s AND %s
+    ", $employee_id, $month_start, $month_end));
+    $bonus = 0;
+    $deduction = 0;
+    $cost_items = [];
+    foreach ($adjustments as $a) {
+        if ($a->type === 'reward') {
+            $bonus += floatval($a->amount);
+        } elseif ($a->type === 'fine') {
+            $deduction += floatval($a->amount);
+        }
+    }
+
+    // Thêm chi phí tăng ca
+    if ($ot_total > 0) {
+        $ot_amount = $ot_total * $salary_per_day;
+        $cost_items[] = ['type' => 'plus', 'label' => 'Tăng ca (' . $ot_total . ' ngày)', 'amount' => $ot_amount];
+    }
+
+    // Thêm chi phí nghỉ không lương
+    if ($off_days > 0) {
+        $off_amount = $off_days * $salary_per_day;
+        $cost_items[] = ['type' => 'minus', 'label' => 'Nghỉ không lương (' . $off_days . ' ngày)', 'amount' => -$off_amount];
+    }
+
+    // Thưởng KPI theo task
+    $total_kpi = (int)$wpdb->get_var($wpdb->prepare("
+        SELECT SUM(score) FROM {$wpdb->prefix}aerp_hrm_tasks
+        WHERE employee_id = %d AND status = 'done' AND deadline BETWEEN %s AND %s
+    ", $employee_id, $month_start, $month_end));
+    $kpi_bonus = 0;
+    $kpi_levels  = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}aerp_hrm_kpi_settings ORDER BY min_score DESC");
+    foreach ($kpi_levels  as $level) {
+        if ($total_kpi >= $level->min_score) {
+            $kpi_bonus = floatval($level->reward_amount);
+            break;
+        }
+    }
+    $bonus += $kpi_bonus;
+
+    // Thưởng động từ hook (tết, sinh nhật...)
+    $auto_bonus = apply_filters('aerp_hrm_auto_bonus', 0, $employee_id, $calc_month);
+    $bonus += $auto_bonus;
+
+    // Phạt vi phạm
+    $disciplines = $wpdb->get_results($wpdb->prepare("
+        SELECT dr.penalty_point, dr.fine_amount FROM {$wpdb->prefix}aerp_hrm_disciplinary_logs dl
+        INNER JOIN {$wpdb->prefix}aerp_hrm_disciplinary_rules dr ON dr.id = dl.rule_id
+        WHERE dl.employee_id = %d AND dl.date_violation BETWEEN %s AND %s
+    ", $employee_id, $month_start, $month_end));
+    $total_points = 100;
+    $violation_deduction = 0;
+    foreach ($disciplines as $v) {
+        $total_points -= intval($v->penalty_point);
+        $violation_deduction += floatval($v->fine_amount);
+    }
+    $total_points = max(0, $total_points);
+    $deduction += $violation_deduction;
+
+    // Ứng lương
+    $advance = floatval($wpdb->get_var($wpdb->prepare("
+        SELECT SUM(amount) FROM {$wpdb->prefix}aerp_hrm_advance_salaries
+        WHERE employee_id = %d AND advance_date BETWEEN %s AND %s
+    ", $employee_id, $month_start, $month_end))) ?: 0;
+    if ($advance) $cost_items[] = ['type' => 'minus', 'label' => 'Ứng lương', 'amount' => -$advance];
+    // Xếp loại
+    $ranking = '--';
+    $ranks = $wpdb->get_results("
+        SELECT * FROM {$wpdb->prefix}aerp_hrm_ranking_settings
+        ORDER BY min_point DESC
+    ");
+    foreach ($ranks as $r) {
+        if ($total_points >= $r->min_point) {
+            $ranking = $r->rank_code;
+            break;
+        }
+    }
+    // Tổng lương
+    $final_salary = $total_salary + $bonus - $deduction - $advance;
+    $calc_data = compact('base', 'allowance', 'work_days_standard', 'off_days', 'ot_total', 'actual_work_days', 'salary_per_day', 'total_salary', 'bonus', 'deduction', 'advance', 'final_salary', 'cost_items', 'total_kpi', 'kpi_bonus', 'auto_bonus', 'total_points', 'ranking');
+}
+
 ?>
 
 <div class="aerp-hrm-profile-container modern">
@@ -139,7 +262,41 @@ if ($salary) {
         <?php else: ?>
             <p><em>Chưa có dữ liệu lương.</em></p>
         <?php endif; ?>
+        <form method="get" class="aerp-hrm-task-form" style="display:flex;gap:12px;align-items:center;justify-content: end;">
+            <input type="hidden" name="page" value="aerp_employee_profile">
+            <input type="month" style="margin-top: 0 !important;" name="calc_month" value="<?= esc_attr($calc_month) ?>">
+            <button type="submit" style="margin-top: 0 !important;" class="aerp-hrm-btn">Tính lương</button>
+        </form>
     </div>
+
+    <!-- Form chọn tháng và nút tính lương -->
+    <?php if ($calc_data): ?>
+        <div class="aerp-hrm-card salary-card">
+            <div class="aerp-hrm-title"><span class="icon">💰</span> Lương/thưởng/phạt tháng <?= date('m/Y', strtotime($calc_month)) ?></div>
+            <div class="salary-table">
+                <div><span>Lương cơ bản:</span> <strong class="text-primary"><?= number_format($calc_data['base'], 0, ',', '.') ?> đ</strong></div>
+                <div><span>Phụ cấp:</span> <strong><?= number_format($calc_data['allowance'], 0, ',', '.') ?> đ</strong></div>
+                <div><span>Ngày công chuẩn:</span> <strong><?= $calc_data['work_days_standard'] ?></strong></div>
+                <div><span>Ngày nghỉ:</span> <strong><?= $calc_data['off_days'] ?></strong></div>
+                <div><span>Tăng ca:</span> <strong><?= $calc_data['ot_total'] ?></strong></div>
+                <div><span>Thưởng:</span> <strong class="text-success">+<?= number_format($calc_data['bonus'], 0, ',', '.') ?> đ</strong></div>
+                <div><span>Phạt:</span> <strong class="text-danger">-<?= number_format($calc_data['deduction'], 0, ',', '.') ?> đ</strong></div>
+                <div><span>Ứng lương:</span> <strong>-<?= number_format($calc_data['advance'], 0, ',', '.') ?> đ</strong></div>
+                <div class="salary-total"><span><strong>Tổng nhận:</strong></span> <strong class="text-total"><?= number_format($calc_data['final_salary'], 0, ',', '.') ?> đ</strong></div>
+            </div>
+        </div>
+        <div class="aerp-hrm-card">
+            <div class="aerp-hrm-title"><span class="icon">📊</span> Chi phí tăng/giảm</div>
+            <div class="cost-table">
+                <?php foreach ($calc_data['cost_items'] as $item): ?>
+                    <div class="cost-row <?= $item['type'] ?>">
+                        <span><?= esc_html($item['label']) ?></span>
+                        <span><?= ($item['amount'] > 0 ? '+' : '') . number_format($item['amount'], 0, ',', '.') ?> đ</span>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
     <?php
     $configs = $wpdb->get_results($wpdb->prepare("
         SELECT * FROM {$wpdb->prefix}aerp_hrm_salary_config
@@ -249,6 +406,29 @@ if ($salary) {
         </form>
     </div>
 </div>
+
+
+<style>
+    .cost-table {
+        display: grid;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .cost-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 15px;
+    }
+
+    .cost-row.plus {
+        color: #16a34a;
+    }
+
+    .cost-row.minus {
+        color: #dc2626;
+    }
+</style>
 
 <script>
     jQuery(function($) {

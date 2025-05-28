@@ -80,7 +80,7 @@ function aerp_hrm_install_schema()
         work_days INT DEFAULT 0,
         off_days INT DEFAULT 0,
         ot_days FLOAT DEFAULT 0,
-        final_salary FLOAT DEFAULT 0,
+        final_salary DECIMAL(15,0) DEFAULT 0,
         advance_paid FLOAT DEFAULT 0,
         ranking VARCHAR(10),
         points_total INT DEFAULT 100,

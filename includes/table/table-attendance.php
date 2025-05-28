@@ -19,8 +19,8 @@ class AERP_Attendance_Table extends AERP_Base_Table
     {
         return [
             'cb'          => '<input type="checkbox" />',
-            'work_date'   => 'Ngày làm việc',
-            'shift'       => 'Ca làm',
+            'work_date'   => 'Ngày chấm công',
+            'shift'       => 'Loại chấm công',
             'work_ratio'  => 'Hệ số',
             'note'        => 'Ghi chú',
         ];

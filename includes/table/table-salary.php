@@ -147,12 +147,13 @@ class AERP_Salary_Table extends AERP_Base_Table
         // Fallback tính final_salary nếu thiếu
         foreach ($this->items as &$row) {
             if (!isset($row['final_salary'])) {
-                $row['final_salary'] =
+                $row['final_salary'] = round(
                     floatval($row['base_salary']) +
                     floatval($row['bonus']) +
                     floatval($row['auto_bonus'] ?? 0) -
                     floatval($row['deduction']) -
-                    floatval($row['advance_paid'] ?? 0);
+                    floatval($row['advance_paid'] ?? 0)
+                );
             }
         }
 

@@ -162,7 +162,14 @@
     resize: vertical !important;
     max-width: 100% !important;
 }
-
+.aerp-hrm-task-form input[type="month"]{
+    padding: 10px !important;
+    margin-top: 6px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    font-size: 15px !important;
+    box-sizing: border-box !important;
+}
 .aerp-hrm-task-form select,
 .aerp-hrm-task-form textarea,
 .aerp-hrm-task-form input[type="text"],
