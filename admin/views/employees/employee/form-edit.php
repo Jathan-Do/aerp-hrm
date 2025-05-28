@@ -98,9 +98,13 @@ $data = get_object_vars($employee);
                     <select name="user_id">
                         <option value="0">Không liên kết</option>
                         <?php
-                        $users = get_users(['fields' => ['ID', 'display_name']]);
+                        $users = get_users();
                         foreach ($users as $user) {
-                            echo '<option value="' . esc_attr($user->ID) . '"' . selected($data['user_id'], $user->ID, false) . '>' . esc_html($user->display_name) . '</option>';
+                            $user_roles = array_map(function($role) {
+                                return translate_user_role(wp_roles()->roles[$role]['name']);
+                            }, $user->roles);
+                            $role_display = !empty($user_roles) ? ' (' . implode(', ', $user_roles) . ')' : '';
+                            echo '<option value="' . esc_attr($user->ID) . '"' . selected($data['user_id'], $user->ID, false) . '>' . esc_html($user->display_name . ' - ' . $user->user_email . $role_display) . '</option>';
                         }
                         ?>
                     </select>
