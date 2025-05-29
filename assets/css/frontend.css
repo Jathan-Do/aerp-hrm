@@ -490,6 +490,8 @@
 }
 
 .aerp-hrm-accordion-body {
+    overflow-y: scroll;
+    height: 150px;
     display: none;
     padding: 15px !important;
     border-left: 4px solid #ccc !important;

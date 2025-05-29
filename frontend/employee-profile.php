@@ -112,9 +112,9 @@ $auto_rewards = $wpdb->get_results($wpdb->prepare("
     WHERE er.employee_id = %d AND er.month BETWEEN %s AND %s
 ", $employee_id, $month_start, $month_end));
 
-// Phân loại adjustments
-$rewards = array_filter($adjustments, fn($a) => $a->type === 'reward');
-$fines = array_filter($adjustments, fn($a) => $a->type === 'fine');
+// Phân loại adjustments (bổ sung trường date)
+$rewards = array_map(function($a) { $a->date = $a->date_effective ?? ''; return $a; }, array_filter($adjustments, fn($a) => $a->type === 'reward'));
+$fines = array_map(function($a) { $a->date = $a->date_effective ?? ''; return $a; }, array_filter($adjustments, fn($a) => $a->type === 'fine'));
 
 // Gộp tất cả lại
 $all_rewards = array_merge(
@@ -380,6 +380,7 @@ if (isset($_GET['calc_month'])) {
                             <div class="aerp-hrm-item-row">
                                 <strong><?= number_format($r->amount, 0, ',', '.') ?> đ</strong>
                                 <em>(<?= esc_html($r->reason) ?>)</em>
+                                <?php if (!empty($r->date)): ?><span class="aerp-hrm-date"><?= date('d/m/Y', strtotime($r->date)) ?></span><?php endif; ?>
                                 <div><?= esc_html($r->description) ?></div>
                             </div>
                         <?php endforeach; ?>
@@ -399,6 +400,7 @@ if (isset($_GET['calc_month'])) {
                             <div class="aerp-hrm-item-row">
                                 <strong><?= number_format($f->amount, 0, ',', '.') ?> đ</strong>
                                 <em>(<?= esc_html($f->reason) ?>)</em>
+                                <?php if (!empty($f->date)): ?><span class="aerp-hrm-date"><?= date('d/m/Y', strtotime($f->date)) ?></span><?php endif; ?>
                                 <div><?= esc_html($f->description) ?></div>
                             </div>
                         <?php endforeach; ?>

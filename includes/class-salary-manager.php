@@ -60,7 +60,6 @@ class AERP_Salary_Manager
         // 2.4. Tổng hệ số tăng ca (có thể cộng vào lương riêng hoặc vào actual_work_days tuỳ chính sách)
         // Ở đây cộng vào lương riêng:
         $salary_per_day = ($base + $allowance) / $work_days_standard;
-        echo $salary_per_day;
         $total_salary = $actual_work_days * $salary_per_day + $ot_total * $salary_per_day;
         $work_days = $work_days_standard;
         // --- KẾT THÚC SỬA LOGIC ---
