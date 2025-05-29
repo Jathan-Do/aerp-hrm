@@ -162,7 +162,7 @@
     resize: vertical !important;
     max-width: 100% !important;
 }
-.aerp-hrm-task-form input[type="month"]{
+.aerp-hrm-task-form input[type="month"] {
     padding: 10px !important;
     margin-top: 6px !important;
     border: 1px solid #e2e8f0 !important;
@@ -567,7 +567,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 16px rgba(37,99,235,0.12);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.12);
 }
 .profile-info {
     flex: 1;
@@ -605,28 +605,40 @@
     font-size: 15px;
     padding: 6px 0;
 }
+.salary-card .salary-table .salary-total:last-child {
+    color: #2563eb;
+}
 .salary-card .salary-table .salary-total {
     grid-column: 1 / -1;
     font-size: 1.2rem;
     font-weight: 700;
-    color: #2563eb;
+    color: #4d4d4d;
     border-top: 1px solid #e2e8f0;
     margin-top: 8px;
     padding-top: 8px;
     display: flex;
     justify-content: space-between;
 }
-.text-primary { color: #2563eb !important; }
-.text-success { color: #16a34a !important; }
-.text-danger { color: #dc2626 !important; }
-.text-total { color: #1e40af !important; font-size: 1.3em; }
+.text-primary {
+    color: #2563eb !important;
+}
+.text-success {
+    color: #16a34a !important;
+}
+.text-danger {
+    color: #dc2626 !important;
+}
+.text-total {
+    color: #1e40af !important;
+    font-size: 1.3em;
+}
 .big-btn {
     font-size: 1.1rem !important;
     padding: 16px 36px !important;
     border-radius: 12px !important;
     margin-top: 18px !important;
     background: linear-gradient(135deg, #2563eb, #1e40af) !important;
-    box-shadow: 0 6px 18px rgba(37,99,235,0.13) !important;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.13) !important;
 }
 .salary-timeline-card .modern-timeline {
     display: flex;
@@ -647,7 +659,7 @@
     padding: 7px 14px;
     font-size: 15px;
     margin-bottom: 7px;
-    box-shadow: 0 2px 5px rgba(37,99,235,0.08);
+    box-shadow: 0 2px 5px rgba(37, 99, 235, 0.08);
 }
 .salary-timeline-card .info {
     font-size: 14px;
@@ -662,7 +674,7 @@
 .aerp-hrm-card {
     background: #fff !important;
     border-radius: 18px !important;
-    box-shadow: 0 8px 32px rgba(37,99,235,0.07) !important;
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.07) !important;
     margin-bottom: 32px !important;
     padding: 36px !important;
     transition: all 0.3s;

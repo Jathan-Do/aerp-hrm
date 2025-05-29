@@ -73,18 +73,19 @@ function aerp_hrm_install_schema()
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         employee_id BIGINT NOT NULL,
         salary_month DATE NOT NULL,
-        base_salary FLOAT DEFAULT 0,
-        bonus FLOAT DEFAULT 0,
-        deduction FLOAT DEFAULT 0,
-        adjustment FLOAT DEFAULT 0,
+        base_salary DOUBLE DEFAULT 0,
+        salary_per_day DOUBLE DEFAULT 0,
+        bonus DOUBLE DEFAULT 0,
+        deduction DOUBLE DEFAULT 0,
+        adjustment DOUBLE DEFAULT 0,
         work_days INT DEFAULT 0,
         off_days INT DEFAULT 0,
         ot_days FLOAT DEFAULT 0,
         final_salary DECIMAL(15,0) DEFAULT 0,
-        advance_paid FLOAT DEFAULT 0,
+        advance_paid DOUBLE DEFAULT 0,
         ranking VARCHAR(10),
         points_total INT DEFAULT 100,
-        auto_bonus FLOAT DEFAULT 0,
+        auto_bonus DOUBLE DEFAULT 0,
         finance_synced TINYINT(1) DEFAULT 0,
         finance_ref_id BIGINT,
         note TEXT,
@@ -129,7 +130,7 @@ function aerp_hrm_install_schema()
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         employee_id BIGINT,
         reason VARCHAR(255),
-        amount FLOAT,
+        amount DOUBLE,
         type ENUM('reward','fine','adjust'),
         description TEXT,
         date_effective DATE,
@@ -156,8 +157,8 @@ function aerp_hrm_install_schema()
         employee_id BIGINT NOT NULL,
         start_date DATE NOT NULL,
         end_date DATE NOT NULL,
-        base_salary FLOAT DEFAULT 0,
-        allowance FLOAT DEFAULT 0,
+        base_salary DOUBLE DEFAULT 0,
+        allowance DOUBLE DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     ) $charset_collate;";
 
@@ -167,7 +168,7 @@ function aerp_hrm_install_schema()
         rule_name VARCHAR(255) NOT NULL,
         system_key VARCHAR(100) DEFAULT NULL,
         penalty_point INT DEFAULT 0,
-        fine_amount FLOAT DEFAULT 0,
+        fine_amount DOUBLE DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     ) $charset_collate;";
 
@@ -184,7 +185,7 @@ function aerp_hrm_install_schema()
     $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_hrm_advance_salaries (
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         employee_id BIGINT NOT NULL,
-        amount FLOAT DEFAULT 0,
+        amount DOUBLE DEFAULT 0,
         advance_date DATE NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     ) $charset_collate;";
@@ -193,7 +194,7 @@ function aerp_hrm_install_schema()
     $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_hrm_reward_definitions (
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
-        amount FLOAT DEFAULT 0,
+        amount DOUBLE DEFAULT 0,
         trigger_type VARCHAR(255) DEFAULT NULL,
         day_trigger DATE,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -223,7 +224,7 @@ function aerp_hrm_install_schema()
     $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_hrm_kpi_settings (
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         min_score INT NOT NULL,
-        reward_amount  FLOAT DEFAULT 0,
+        reward_amount DOUBLE DEFAULT 0,
         note TEXT,
         sort_order INT DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP

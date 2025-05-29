@@ -20,7 +20,7 @@ if (
 ) {
     $wpdb->update($table, [
         'min_score'     => absint($_POST['min_score']),
-        'reward_amount' => floatval($_POST['reward_amount']),
+        'reward_amount' => doubleval($_POST['reward_amount']),
         'note'          => sanitize_text_field($_POST['note']),
         'sort_order'    => absint($_POST['sort_order']),
     ], ['id' => $id]);

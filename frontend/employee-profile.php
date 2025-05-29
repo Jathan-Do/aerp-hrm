@@ -96,6 +96,36 @@ if ($salary) {
     }
 }
 
+// Lấy thêm phạt từ bảng vi phạm
+$discipline_fines = $wpdb->get_results($wpdb->prepare("
+    SELECT dr.fine_amount AS amount, dr.rule_name AS reason, dl.date_violation AS date, '' AS description
+    FROM {$wpdb->prefix}aerp_hrm_disciplinary_logs dl
+    INNER JOIN {$wpdb->prefix}aerp_hrm_disciplinary_rules dr ON dr.id = dl.rule_id
+    WHERE dl.employee_id = %d AND dl.date_violation BETWEEN %s AND %s
+", $employee_id, $month_start, $month_end));
+
+// Lấy thêm thưởng từ bảng tự động
+$auto_rewards = $wpdb->get_results($wpdb->prepare("
+    SELECT rd.amount AS amount, rd.name AS reason, er.month AS date, er.note AS description
+    FROM {$wpdb->prefix}aerp_hrm_employee_rewards er
+    INNER JOIN {$wpdb->prefix}aerp_hrm_reward_definitions rd ON rd.id = er.reward_id
+    WHERE er.employee_id = %d AND er.month BETWEEN %s AND %s
+", $employee_id, $month_start, $month_end));
+
+// Phân loại adjustments
+$rewards = array_filter($adjustments, fn($a) => $a->type === 'reward');
+$fines = array_filter($adjustments, fn($a) => $a->type === 'fine');
+
+// Gộp tất cả lại
+$all_rewards = array_merge(
+    array_map(function($r) { $r->type = 'reward'; return $r; }, $rewards),
+    array_map(function($r) { $r->type = 'reward'; return $r; }, $auto_rewards)
+);
+$all_fines = array_merge(
+    array_map(function($f) { $f->type = 'fine'; return $f; }, $fines),
+    array_map(function($f) { $f->type = 'fine'; return $f; }, $discipline_fines)
+);
+
 $calc_month = isset($_GET['calc_month']) ? $_GET['calc_month'] : date('Y-m');
 $calc_data = null;
 if (isset($_GET['calc_month'])) {
@@ -214,9 +244,12 @@ if (isset($_GET['calc_month'])) {
             break;
         }
     }
+    // Thưởng thủ công
+    $bonus_thu_cong = $bonus - $kpi_bonus - $auto_bonus;
+    $tong_nhan = $base + $allowance + ($ot_total * $salary_per_day) + $auto_bonus + $kpi_bonus + $bonus_thu_cong;
     // Tổng lương
     $final_salary = $total_salary + $bonus - $deduction - $advance;
-    $calc_data = compact('base', 'allowance', 'work_days_standard', 'off_days', 'ot_total', 'actual_work_days', 'salary_per_day', 'total_salary', 'bonus', 'deduction', 'advance', 'final_salary', 'cost_items', 'total_kpi', 'kpi_bonus', 'auto_bonus', 'total_points', 'ranking');
+    $calc_data = compact('base', 'allowance', 'work_days_standard', 'off_days', 'ot_total', 'actual_work_days', 'salary_per_day', 'total_salary', 'bonus', 'deduction', 'advance', 'final_salary', 'cost_items', 'total_kpi', 'kpi_bonus', 'auto_bonus', 'total_points', 'ranking', 'tong_nhan');
 }
 
 ?>
@@ -243,21 +276,30 @@ if (isset($_GET['calc_month'])) {
     </div>
 
     <div class="aerp-hrm-card salary-card">
-        <div class="aerp-hrm-title"><span class="icon">💰</span> Lương tháng gần nhất</div>
+        <div class="aerp-hrm-title"><span class="icon">💰</span> Lương tháng hiện tại</div>
         <?php if ($salary): ?>
             <div class="salary-table">
                 <div><span>Tháng:</span> <strong><?= date('m/Y', strtotime($salary->salary_month)) ?></strong></div>
                 <div><span>Lương cơ bản:</span> <strong class="text-primary"><?= number_format($salary->base_salary, 0, ',', '.') ?> đ</strong></div>
                 <div><span>Phụ cấp:</span> <strong><?= number_format($config->allowance, 0, ',', '.') ?> đ</strong></div>
-                <div><span>Thưởng KPI / động:</span> <strong><?= number_format($salary->auto_bonus, 0, ',', '.') ?> đ</strong></div>
+                <div><span>Công/ngày:</span> <strong><?= isset($salary->salary_per_day) ? number_format($salary->salary_per_day, 0, ',', '.') . ' đ' : '' ?></strong></div>
+                <div><span>Thưởng KPI / động:</span> <strong class="text-success"><?= number_format($salary->auto_bonus, 0, ',', '.') ?> đ</strong></div>
                 <div><span>Tổng ngày công:</span> <strong><?= $work_days ?></strong></div>
                 <div><span>Thưởng:</span> <strong class="text-success">+<?= number_format($salary->bonus, 0, ',', '.') ?> đ</strong></div>
                 <div><span>Phạt:</span> <strong class="text-danger">-<?= number_format($salary->deduction, 0, ',', '.') ?> đ</strong></div>
-                <div><span>Tạm ứng:</span> <strong><?= number_format($salary->advance_paid, 0, ',', '.') ?> đ</strong></div>
+                <div><span>Điểm chuyên cần:</span> <strong><?= esc_html($salary->points_total) ?></strong></div>
                 <div><span>Xếp loại:</span> <strong><?= esc_html($salary->ranking ?: '--') ?></strong></div>
-                <div><span>Điểm tháng:</span> <strong><?= esc_html($salary->points_total) ?></strong></div>
-                <div><span>Tổng điểm KPI:</span> <strong><?= esc_html($total_kpi) ?> (<?= number_format($kpi_bonus, 0, ',', '.') ?> đ)</strong></div>
-                <div class="salary-total"><span><strong>Tổng nhận:</strong></span> <strong class="text-total"><?= number_format($total, 0, ',', '.') ?> đ</strong></div>
+                <div><span>Thưởng KPI:</span> <strong><?= esc_html($total_kpi) ?> (<?= number_format($kpi_bonus, 0, ',', '.') ?> đ)</strong></div>
+                <div><span>Ứng lương:</span> <strong><?= number_format($salary->advance_paid, 0, ',', '.') ?> đ</strong></div>
+                <?php
+                $tong_nhan = ($salary->base_salary ?? 0)
+                    + ($salary->auto_bonus ?? 0)
+                    + ($salary->bonus ?? 0)
+                    + (isset($salary->allowance) ? $salary->allowance : ($config->allowance ?? 0))
+                    + ($salary->salary_per_day * $salary->ot_days);
+                ?>
+                <div class="salary-total"><span><strong>Tổng nhận:</strong></span> <strong><?= number_format($tong_nhan, 0, ',', '.') ?> đ</strong></div>
+                <div class="salary-total"><span><strong>Tổng thực lãnh:</strong></span> <strong class="text-total"><?= number_format($total, 0, ',', '.') ?> đ</strong></div>
             </div>
         <?php else: ?>
             <p><em>Chưa có dữ liệu lương.</em></p>
@@ -276,13 +318,16 @@ if (isset($_GET['calc_month'])) {
             <div class="salary-table">
                 <div><span>Lương cơ bản:</span> <strong class="text-primary"><?= number_format($calc_data['base'], 0, ',', '.') ?> đ</strong></div>
                 <div><span>Phụ cấp:</span> <strong><?= number_format($calc_data['allowance'], 0, ',', '.') ?> đ</strong></div>
-                <div><span>Ngày công chuẩn:</span> <strong><?= $calc_data['work_days_standard'] ?></strong></div>
+                <div><span>Tổng ngày công:</span> <strong><?= $calc_data['work_days_standard'] ?></strong></div>
+                <div><span>Công/ngày:</span> <strong><?= isset($calc_data['salary_per_day']) ? number_format($calc_data['salary_per_day'], 0, ',', '.') . ' đ' : '' ?></strong></div>
                 <div><span>Ngày nghỉ:</span> <strong><?= $calc_data['off_days'] ?></strong></div>
                 <div><span>Tăng ca:</span> <strong><?= $calc_data['ot_total'] ?></strong></div>
                 <div><span>Thưởng:</span> <strong class="text-success">+<?= number_format($calc_data['bonus'], 0, ',', '.') ?> đ</strong></div>
                 <div><span>Phạt:</span> <strong class="text-danger">-<?= number_format($calc_data['deduction'], 0, ',', '.') ?> đ</strong></div>
+                <div><span>Thưởng KPI:</span> <strong><?= esc_html($calc_data['total_kpi']) ?> (<?= number_format($calc_data['kpi_bonus'], 0, ',', '.') ?> đ)</strong></div>
                 <div><span>Ứng lương:</span> <strong>-<?= number_format($calc_data['advance'], 0, ',', '.') ?> đ</strong></div>
-                <div class="salary-total"><span><strong>Tổng nhận:</strong></span> <strong class="text-total"><?= number_format($calc_data['final_salary'], 0, ',', '.') ?> đ</strong></div>
+                <div class="salary-total"><span><strong>Tổng nhận:</strong></span> <strong><?= number_format($calc_data['tong_nhan'], 0, ',', '.') ?> đ</strong></div>
+                <div class="salary-total"><span><strong>Tổng thực lãnh:</strong></span> <strong class="text-total"><?= number_format($calc_data['final_salary'], 0, ',', '.') ?> đ</strong></div>
             </div>
         </div>
         <div class="aerp-hrm-card">
@@ -333,22 +378,17 @@ if (isset($_GET['calc_month'])) {
             </div>
         <?php endif; ?>
 
-        <?php
-        $rewards = array_filter($adjustments, fn($a) => $a->type === 'reward');
-        $fines = array_filter($adjustments, fn($a) => $a->type === 'fine');
-        ?>
-
         <div class="aerp-accordion-group">
             <div class="aerp-accordion-item">
                 <button class="aerp-hrm-accordion-header" type="button">
-                    🎁 Thưởng (<?= count($rewards) ?> mục)
+                    🎁 Thưởng (<?= count($all_rewards) ?> mục)
                     <span class="aerp-hrm-accordion-icon">▼</span>
                 </button>
                 <div class="aerp-hrm-accordion-body bg-reward">
-                    <?php if (empty($rewards)): ?>
+                    <?php if (empty($all_rewards)): ?>
                         <p><em>Không có mục thưởng.</em></p>
                     <?php else: ?>
-                        <?php foreach ($rewards as $r): ?>
+                        <?php foreach ($all_rewards as $r): ?>
                             <div class="aerp-hrm-item-row">
                                 <strong><?= number_format($r->amount, 0, ',', '.') ?> đ</strong>
                                 <em>(<?= esc_html($r->reason) ?>)</em>
@@ -360,14 +400,14 @@ if (isset($_GET['calc_month'])) {
             </div>
             <div class="aerp-accordion-item">
                 <button class="aerp-hrm-accordion-header" type="button">
-                    ⚠️ Phạt (<?= count($fines) ?> mục)
+                    ⚠️ Phạt (<?= count($all_fines) ?> mục)
                     <span class="aerp-hrm-accordion-icon">▼</span>
                 </button>
                 <div class="aerp-hrm-accordion-body bg-fine">
-                    <?php if (empty($fines)): ?>
+                    <?php if (empty($all_fines)): ?>
                         <p><em>Không có mục phạt.</em></p>
                     <?php else: ?>
-                        <?php foreach ($fines as $f): ?>
+                        <?php foreach ($all_fines as $f): ?>
                             <div class="aerp-hrm-item-row">
                                 <strong><?= number_format($f->amount, 0, ',', '.') ?> đ</strong>
                                 <em>(<?= esc_html($f->reason) ?>)</em>

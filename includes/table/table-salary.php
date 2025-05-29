@@ -28,10 +28,11 @@ class AERP_Salary_Table extends AERP_Base_Table
             'auto_bonus'       => 'Thưởng động',
             'deduction'        => 'Phạt',
             'advance_paid'     => 'Ứng lương',
-            'final_salary'     => 'Thực lãnh',
+            'salary_per_day'   => 'Công/ngày',
             'work_days'        => 'Ngày công',
             'off_days'         => 'Ngày nghỉ',
             'ot_days'          => 'Tăng ca',
+            'final_salary'     => 'Thực lãnh',
             'ranking'          => 'Xếp loại',
             'points_total'     => 'Điểm',
             'note'             => 'Ghi chú',
@@ -78,6 +79,9 @@ class AERP_Salary_Table extends AERP_Base_Table
         }
         if ($column_name === 'off_days') {
             return (int)$item[$column_name];
+        }
+        if ($column_name === 'salary_per_day') {
+            return number_format((float)$item[$column_name], 0, ',', '.') . ' đ';
         }
 
         return esc_html($item[$column_name] ?? '');

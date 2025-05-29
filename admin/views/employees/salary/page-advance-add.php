@@ -25,7 +25,19 @@ if (isset($_GET['edit']) && $selected_id && current_user_can('manage_options')) 
         $selected_id
     ));
 }
-
+// Lấy tên nhân viên
+$edit_employee_name = '';
+if ($edit_data) {
+    $edit_employee = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT full_name FROM {$wpdb->prefix}aerp_hrm_employees WHERE id = %d",
+            $edit_data->employee_id
+        )
+    );
+    if ($edit_employee) {
+        $edit_employee_name = $edit_employee->full_name;
+    }
+}
 // Xử lý lưu sửa
 if (isset($_POST['aerp_edit_advance']) && $selected_id && current_user_can('manage_options')) {
     $edit_id = absint($_POST['edit_id']);
@@ -92,7 +104,7 @@ $table->prepare_items();
                 <tr>
                     <th>Nhân viên</th>
                     <td>
-                        <input type="text" value="<?= esc_html($edit_data->employee_id) ?>" disabled>
+                        <input type="text" value="<?= esc_html($edit_employee_name) ?>" disabled>
                     </td>
                 </tr>
                 <tr>
