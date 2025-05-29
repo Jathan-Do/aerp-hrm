@@ -4,9 +4,9 @@ if (!defined('ABSPATH')) exit;
 require_once AERP_HRM_PATH . 'includes/table/table-advance.php';
 
 global $wpdb;
-$employees = $wpdb->get_results("SELECT id, full_name FROM {$wpdb->prefix}aerp_hrm_employees WHERE status = 'active' ORDER BY full_name ASC");
 $today = date('Y-m-d');
 $selected_id = absint($_GET['employee_id']);
+$employee = $wpdb->get_row($wpdb->prepare("SELECT id, full_name FROM {$wpdb->prefix}aerp_hrm_employees WHERE status = 'active' and id = %d", $selected_id));
 
 // Xử lý xóa
 if (isset($_GET['delete']) && $selected_id && current_user_can('manage_options')) {
@@ -71,14 +71,8 @@ $table->prepare_items();
                 <tr>
                     <th><label for="employee_id">Nhân viên</label></th>
                     <td>
-                        <select name="employee_id" required>
-                            <option value="">-- Chọn nhân viên --</option>
-                            <?php foreach ($employees as $emp): ?>
-                                <option value="<?= esc_attr($emp->id) ?>" <?= selected($emp->id, $selected_id) ?>>
-                                    <?= esc_html($emp->full_name) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <input type="text" value="<?= esc_html($employee->full_name) ?>" disabled>
+                        <input type="hidden" name="employee_id" value="<?= esc_attr($employee->id) ?>">
                     </td>
                 </tr>
                 <tr>

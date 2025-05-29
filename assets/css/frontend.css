@@ -605,14 +605,14 @@
     font-size: 15px;
     padding: 6px 0;
 }
-.salary-card .salary-table .salary-total:last-child {
-    color: #2563eb;
+.salary-card .salary-table .salary-total strong,
+.salary-card .salary-table .salary-total span {
+    color: #4d4d4d;
 }
 .salary-card .salary-table .salary-total {
     grid-column: 1 / -1;
     font-size: 1.2rem;
     font-weight: 700;
-    color: #4d4d4d;
     border-top: 1px solid #e2e8f0;
     margin-top: 8px;
     padding-top: 8px;
