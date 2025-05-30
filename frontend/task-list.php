@@ -110,18 +110,35 @@ $total_pages = ceil($total / $limit);
 ?>
 
 
-<div class="aerp-hrm-task-container">
-    <form method="get" class="aerp-hrm-task-filter-form" style="margin-bottom: 20px;">
-        <input type="hidden" name="page_id" value="<?= esc_attr(get_the_ID()) ?>">
-        <input type="text" name="keyword" placeholder="Tìm kiếm tiêu đề..." value="<?= esc_attr($_GET['keyword'] ?? '') ?>">
-        <select name="status" class="aerp-hrm-custom-select">
-            <option value="">-- Tất cả trạng thái --</option>
-            <option value="assigned" <?= selected($_GET['status'] ?? '', 'assigned') ?>>Đã giao</option>
-            <option value="done" <?= selected($_GET['status'] ?? '', 'done') ?>>Hoàn thành</option>
-            <option value="failed" <?= selected($_GET['status'] ?? '', 'failed') ?>>Thất bại</option>
-        </select>
-        <button type="submit" class="button">Lọc</button>
-    </form>
+<div class="aerp-hrm-dashboard">
+    <!-- Header và Filter -->
+    <div class="aerp-card aerp-task-header">
+        <div class="aerp-card-header">
+            <h2><i class="dashicons dashicons-list-view"></i> Quản lý công việc</h2>
+            <button type="button" class="aerp-btn aerp-btn-primary" data-open-aerp-hrm-task-popup>
+                <i class="dashicons dashicons-plus"></i> Thêm công việc
+            </button>
+        </div>
+
+        <form method="get" class="aerp-hrm-task-filter-form">
+            <input type="hidden" name="page_id" value="<?= esc_attr(get_the_ID()) ?>">
+            <div class="form-group">
+                <input type="text" name="keyword" placeholder="Tìm kiếm công việc..." value="<?= esc_attr($keyword) ?>">
+            </div>
+            <div class="form-group">
+                <select name="status" class="aerp-hrm-custom-select">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="assigned" <?= selected($status, 'assigned') ?>>Đã giao</option>
+                    <option value="done" <?= selected($status, 'done') ?>>Hoàn thành</option>
+                    <option value="failed" <?= selected($status, 'failed') ?>>Thất bại</option>
+                </select>
+            </div>
+            <button type="submit" class="aerp-btn aerp-btn-primary">
+                <i class="dashicons dashicons-filter"></i> Lọc
+            </button>
+        </form>
+    </div>
+
     <?php if (!empty($notification)): ?>
         <div id="aerp-hrm-toast" class="aerp-hrm-toast">
             <span><?= esc_html($notification) ?></span>
@@ -129,126 +146,215 @@ $total_pages = ceil($total / $limit);
         </div>
     <?php endif; ?>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 class="aerp-hrm-task-section-title">📋 Danh sách công việc</h2>
-        <button type="button" class="aerp-hrm-task-form button" data-open-aerp-hrm-task-popup>Thêm công việc</button>
+    <!-- Danh sách công việc -->
+    <div class="aerp-card aerp-task-list">
+        <?php if ($tasks): ?>
+            <?php foreach ($tasks as $task): ?>
+                <div class="aerp-task-item <?= $task->status ?>">
+                    <div class="aerp-task-header">
+                        <div class="aerp-task-title">
+                            <h3><?= esc_html($task->task_title) ?></h3>
+                            <div class="aerp-task-meta">
+                                <span class="task-deadline">
+                                    <i class="dashicons dashicons-calendar-alt"></i> Deadline: <?= date('H:i d/m/Y', strtotime($task->deadline)) ?>
+                                </span>
+                                <?php if ($task->score): ?>
+                                    <span class="task-score">
+                                        <i class="dashicons dashicons-star-filled"></i> Điểm KPI: <?= esc_html($task->score) ?> điểm
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
 
-    </div>
-
-    <?php if ($tasks): foreach ($tasks as $task): ?>
-            <div class="aerp-hrm-task-card">
-                <div style="display: flex; justify-content: space-between;">
-                    <div>
-                        <div class="aerp-hrm-task-title"><?= esc_html($task->task_title) ?></div>
-                        <div class="aerp-hrm-task-meta">
-                            🗓 Deadline: <?= esc_html($task->deadline) ?>
-                            <?php if ($task->score): ?>
-                                | 📊 Điểm KPI: <?= esc_html($task->score) ?>
+                        <div class="aerp-task-actions">
+                            <?php if ($task->created_by == $user_id && $task->status != 'done'): ?>
+                                <button class="aerp-btn aerp-btn-primary" onclick='openEditTaskPopup(<?= json_encode([
+                                                                                                            "id" => $task->id,
+                                                                                                            "task_title" => $task->task_title,
+                                                                                                            "task_desc" => $task->task_desc,
+                                                                                                            "deadline" => $task->deadline,
+                                                                                                            "score" => $task->score
+                                                                                                        ]) ?>)'>
+                                    <i class="dashicons dashicons-edit"></i>
+                                    Sửa công việc
+                                </button>
                             <?php endif; ?>
                         </div>
                     </div>
-                    <?php if ($task->created_by == $user_id && $task->status != 'done'): ?>
-                        <div>
-                            <button class="aerp-hrm-task-form button"
-                                onclick='openEditTaskPopup(<?= json_encode(
-                                                                [
-                                                                    "id" => $task->id,
-                                                                    "task_title" => $task->task_title,
-                                                                    "task_desc" => $task->task_desc,
-                                                                    "deadline" => $task->deadline,
-                                                                    "score" => $task->score
-                                                                ]
-                                                            ) ?>)'>Sửa
-                            </button>
+
+                    <div class="aerp-task-content aerp-comment-form">
+                        <textarea rows="4" readonly><?= esc_html($task->task_desc) ?></textarea>
+
+                        <div class="aerp-task-status-form">
+                            <form method="post" class="aerp-status-form">
+                                <?php wp_nonce_field('aerp_update_task_action', 'aerp_update_task_nonce'); ?>
+                                <input type="hidden" name="task_id" value="<?= esc_attr($task->id) ?>">
+                                <select name="status" class="aerp-status-select aerp-hrm-custom-select">
+                                    <option value="assigned" <?= selected($task->status, 'assigned') ?>>
+                                        <i class="dashicons dashicons-yes"></i> Đã giao
+                                    </option>
+                                    <option value="done" <?= selected($task->status, 'done') ?>>
+                                        <i class="dashicons dashicons-yes"></i> Hoàn thành
+                                    </option>
+                                    <option value="failed" <?= selected($task->status, 'failed') ?>>
+                                        <i class="dashicons dashicons-no"></i> Thất bại
+                                    </option>
+                                </select>
+                                <button type="submit" name="aerp_update_task_status" class="aerp-btn aerp-btn-secondary">
+                                    <i class="dashicons dashicons-yes"></i> Cập nhật
+                                </button>
+                            </form>
                         </div>
-                    <?php endif; ?>
+
+                        <!-- Bình luận -->
+                        <div class="aerp-task-comments">
+                            <h4><i class="dashicons dashicons-format-status"></i> Bình luận</h4>
+
+                            <?php $comments = AERP_Task_Manager::get_comments($task->id); ?>
+                            <?php if (!empty($comments)): ?>
+                                <div class="aerp-comment-list">
+                                    <?php foreach ($comments as $c): ?>
+                                        <?php
+                                        $is_admin = user_can($c->user_id, 'manage_options');
+                                        $badge_class = $is_admin ? 'aerp-badge-admin' : 'aerp-badge-user';
+                                        ?>
+                                        <div class="aerp-comment-item">
+                                            <div class="aerp-comment-header">
+                                                <div class="aerp-comment-author <?= $badge_class ?>">
+                                                    <?= esc_html($c->display_name) ?>
+                                                </div>
+                                                <div class="aerp-comment-date">
+                                                    <?= date('d/m/Y H:i', strtotime($c->created_at)) ?>
+                                                </div>
+                                            </div>
+                                            <div class="aerp-comment-content">
+                                                <?= esc_html($c->comment) ?>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="aerp-no-comments">Chưa có bình luận nào
+                                </div>
+                            <?php endif; ?>
+
+                            <form method="post" class="aerp-comment-form">
+                                <?php wp_nonce_field('aerp_comment_task_action', 'aerp_comment_task_nonce'); ?>
+                                <input type="hidden" name="task_id" value="<?= esc_attr($task->id) ?>">
+                                <textarea rows="2" name="comment" placeholder="Viết bình luận..."></textarea>
+                                <button type="submit" name="aerp_add_task_comment" class="aerp-btn aerp-btn-secondary">
+                                    <i class="dashicons dashicons-email"></i> Gửi
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <p><?= esc_html($task->task_desc) ?></p>
-                <form method="post" class="aerp-hrm-task-form">
-                    <?php wp_nonce_field('aerp_update_task_action', 'aerp_update_task_nonce'); ?>
-                    <input type="hidden" name="task_id" value="<?= esc_attr($task->id) ?>">
-                    <select name="status" class="aerp-hrm-custom-select">
-                        <option value="assigned" <?= selected($task->status, 'assigned') ?>>🟡 Đã giao</option>
-                        <option value="done" <?= selected($task->status, 'done') ?>>✅ Hoàn thành</option>
-                        <option value="failed" <?= selected($task->status, 'failed') ?>>❌ Thất bại</option>
-                    </select>
-                    <button class="button-submit" type="submit" name="aerp_update_task_status">Cập nhật trạng thái</button>
-                </form>
+            <?php endforeach; ?>
 
-                <?php $comments = AERP_Task_Manager::get_comments($task->id); ?>
-                <?php if (!empty($comments)): ?>
-                    <h4 style="margin-top: 20px;">💬 Phản hồi</h4>
-                    <ul class="aerp-hrm-task-comments">
-                        <?php foreach ($comments as $c): ?>
-                            <?php
-                            $is_admin = user_can($c->user_id, 'manage_options');
-                            $role_label = $is_admin ? 'Quản lý' : 'Nhân viên';
-                            $badge_class = $is_admin ? 'aerp-hrm-badge-admin' : 'aerp-hrm-badge-user';
-                            ?>
-                            <li>
-                                <span class="aerp-hrm-task-badge <?= $badge_class ?>"><?= esc_html($role_label) ?></span>
-                                <strong><?= esc_html($c->display_name) ?>:</strong>
-                                <?= esc_html($c->comment) ?>
-                                <em>(<?= date('d/m/Y H:i', strtotime($c->created_at)) ?>)</em>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php else: ?>
-                    <p style="color: #999; font-style: italic; font-size: 16px;">Không có phản hồi nào.</p>
-                <?php endif; ?>
-
-                <form method="post" class="aerp-hrm-task-form">
-                    <?php wp_nonce_field('aerp_comment_task_action', 'aerp_comment_task_nonce'); ?>
-                    <input type="hidden" name="task_id" value="<?= esc_attr($task->id) ?>">
-                    <textarea name="comment" rows="2" placeholder="Nhập phản hồi..."></textarea>
-                    <button type="submit" name="aerp_add_task_comment">Gửi phản hồi</button>
-                </form>
+            <!-- Phân trang -->
+            <?php if ($total_pages > 1): ?>
+                <div class="aerp-pagination">
+                    <?php
+                    $big = 999999999;
+                    echo paginate_links(array(
+                        'base'    => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+                        'format'  => '?paged=%#%',
+                        'current' => max(1, $paged),
+                        'total'   => $total_pages,
+                        'prev_text' => '<i class="dashicons dashicons-arrow-left-alt2"></i>',
+                        'next_text' => '<i class="dashicons dashicons-arrow-right-alt2"></i>',
+                    ));
+                    ?>
+                </div>
+            <?php endif; ?>
+        <?php else: ?>
+            <div class="aerp-no-tasks">
+                <i class="dashicons dashicons-folder-open"></i>
+                <p>Không có công việc nào được giao</p>
             </div>
-        <?php endforeach;
-    else: ?>
-        <p>Không có công việc nào được giao.</p>
-    <?php endif; ?>
-    <?php if ($total_pages > 1): ?>
-        <div class="aerp-hrm-task-pagination">
-            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <a class="aerp-hrm-page-link <?= $i == $paged ? 'active' : '' ?>"
-                    href="<?= esc_url(add_query_arg(['paged' => $i])) ?>">
-                    <?= $i ?>
-                </a>
-            <?php endfor; ?>
-        </div>
-    <?php endif; ?>
-
-    <!-- Form popup thêm công việc -->
-    <div class="aerp-hrm-task-popup" id="taskPopup">
-        <div class="aerp-hrm-task-popup-inner">
-            <div class="aerp-hrm-task-popup-close">×</div>
-            <h3>➕ Thêm công việc mới</h3>
-            <form method="post" class="aerp-hrm-task-form">
-                <?php wp_nonce_field('aerp_add_task_action', 'aerp_add_task_nonce'); ?>
-                <input type="text" name="task_title" placeholder="Tiêu đề công việc" required>
-                <textarea name="task_desc" rows="3" placeholder="Mô tả chi tiết..."></textarea>
-                <input type="datetime-local" name="deadline" required>
-                <input type="number" name="score" min="0" max="100" placeholder="Điểm KPI (0-100)" required>
-                <button class="button-submit" type="submit" name="aerp_add_task">Thêm công việc</button>
-            </form>
-        </div>
+        <?php endif; ?>
     </div>
-    <!-- Popup sửa task -->
-    <div class="aerp-hrm-task-popup" id="editTaskPopup">
-        <div class="aerp-hrm-task-popup-inner">
-            <div class="aerp-hrm-task-popup-close">×</div>
-            <h3>✏️ Chỉnh sửa công việc</h3>
-            <form method="post" class="aerp-hrm-task-form">
-                <?php wp_nonce_field('aerp_edit_own_task_action', 'aerp_edit_own_task_nonce'); ?>
-                <input type="hidden" name="edit_task_id" id="edit_task_id">
-                <input type="text" name="edit_task_title" id="edit_task_title" required placeholder="Tiêu đề công việc">
-                <textarea name="edit_task_desc" id="edit_task_desc" rows="3" placeholder="Mô tả công việc"></textarea>
-                <input type="datetime-local" name="edit_task_deadline" id="edit_task_deadline" required>
-                <input type="number" name="edit_task_score" id="edit_task_score" min="0" max="100" placeholder="Điểm KPI (0-100)" required>
-                <button class="button-submit" type="submit" name="aerp_update_own_task">💾 Lưu chỉnh sửa</button>
-            </form>
-        </div>
-    </div>
+    <!-- Quick Links -->
+    <?php include(AERP_HRM_PATH . 'frontend/quick-links.php'); ?>
+</div>
 
+<!-- Popup thêm công việc -->
+<div class="aerp-hrm-task-popup" id="taskPopup">
+    <div class="aerp-hrm-task-popup-inner">
+        <div class="aerp-hrm-task-popup-close">×</div>
+        <h3>➕ Thêm công việc mới</h3>
+        <form method="post" class="aerp-hrm-task-form">
+            <?php wp_nonce_field('aerp_add_task_action', 'aerp_add_task_nonce'); ?>
+
+            <div class="form-group">
+                <label style="font-weight: 600; font-size: 16px;" for="task_title">Tiêu đề</label>
+                <input type="text" id="task_title" name="task_title" placeholder="Nhập tiêu đề công việc" required>
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight: 600; font-size: 16px;" for="task_desc"> Mô tả</label>
+                <textarea id="task_desc" name="task_desc" rows="3" placeholder="Nhập mô tả chi tiết"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight: 600; font-size: 16px;" for="deadline">Deadline</label>
+                <input type="datetime-local" id="deadline" name="deadline" required>
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight: 600; font-size: 16px;" for="score">Điểm KPI</label>
+                <input type="number" id="score" name="score" min="0" max="100" placeholder="0-100" required>
+            </div>
+
+            <div class="aerp-form-actions">
+                <button type="submit" name="aerp_add_task" class="aerp-btn aerp-btn-primary">
+                    <i class="dashicons dashicons-yes"></i> Lưu công việc
+                </button>
+                <button type="button" class="aerp-btn aerp-btn-secondary aerp-popup-close">
+                    <i class="dashicons dashicons-no"></i> Hủy bỏ
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Popup sửa công việc -->
+<div class="aerp-hrm-task-popup" id="editTaskPopup">
+    <div class="aerp-hrm-task-popup-inner">
+        <div class="aerp-hrm-task-popup-close">×</div>
+        <h3>✏️ Chỉnh sửa công việc</h3>
+        <form method="post" class="aerp-hrm-task-form">
+            <?php wp_nonce_field('aerp_edit_own_task_action', 'aerp_edit_own_task_nonce'); ?>
+            <input type="hidden" name="edit_task_id" id="edit_task_id">
+
+            <div class="form-group">
+                <label style="font-weight: 600; font-size: 16px;" for="edit_task_title"> Tiêu đề</label>
+                <input type="text" id="edit_task_title" name="edit_task_title" placeholder="Nhập tiêu đề công việc" required>
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight: 600; font-size: 16px;" for="edit_task_desc"> Mô tả</label>
+                <textarea id="edit_task_desc" name="edit_task_desc" rows="3" placeholder="Nhập mô tả chi tiết"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight: 600; font-size: 16px;" for="edit_task_deadline"> Deadline</label>
+                <input type="datetime-local" id="edit_task_deadline" name="edit_task_deadline" required>
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight: 600; font-size: 16px;" for="edit_task_score"> Điểm KPI</label>
+                <input type="number" id="edit_task_score" name="edit_task_score" min="0" max="100" placeholder="0-100" required>
+            </div>
+
+            <div class="aerp-form-actions">
+                <button type="submit" name="aerp_update_own_task" class="aerp-btn aerp-btn-primary">
+                    <i class="dashicons dashicons-yes"></i> Lưu thay đổi
+                </button>
+                <button type="button" class="aerp-btn aerp-btn-secondary aerp-popup-close">
+                    <i class="dashicons dashicons-no"></i> Hủy bỏ
+                </button>
+            </div>
+        </form>
+    </div>
 </div>

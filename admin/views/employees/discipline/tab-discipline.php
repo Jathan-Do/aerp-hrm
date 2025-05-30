@@ -9,7 +9,7 @@ $table->process_bulk_action();
 $table->prepare_items();
 ?>
 
-<div class="aerp-hrm-card">
+<div class="">
     <p>
         <a href="<?= admin_url('admin.php?page=aerp_discipline_add&employee_id=' . $employee_id) ?>" class="button button-primary">
             + Ghi nhận vi phạm

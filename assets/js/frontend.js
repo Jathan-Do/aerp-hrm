@@ -7,8 +7,8 @@ jQuery(function ($) {
   $('#editTaskPopup .aerp-hrm-task-popup-close').on('click', () => $('#editTaskPopup').removeClass('active'));
 
   // ===== Thêm thưởng/phạt
-  $('#aerp-hrm-adjustmentPopup .aerp-hrm-task-popup-close').on('click', () => $('#aerp-hrm-adjustmentPopup').removeClass('active'));
-  $('[data-open-adjustment-popup]').on('click', () => $('#aerp-hrm-adjustmentPopup').addClass('active'));
+  $('#aerp-adjustment-popup .aerp-popup-close').on('click', () => $('#aerp-adjustment-popup').removeClass('active'));
+  $('[data-open-adjustment-popup]').on('click', () => $('#aerp-adjustment-popup').addClass('active'));
 
   window.openEditTaskPopup = function (task) {
     $('#edit_task_id').val(task.id);
@@ -31,8 +31,11 @@ jQuery(function ($) {
     if ($('#editTaskPopup').hasClass('active') && !$(e.target).closest('#editTaskPopup .aerp-hrm-task-popup-inner, [onclick^="openEditTaskPopup"]').length) {
       $('#editTaskPopup').removeClass('active');
     }
-    if ($('#aerp-hrm-adjustmentPopup').hasClass('active') && !$(e.target).closest('#aerp-hrm-adjustmentPopup .aerp-hrm-task-popup-inner, [data-open-adjustment-popup]').length) {
-      $('#aerp-hrm-adjustmentPopup').removeClass('active');
+    if (
+      $('#aerp-adjustment-popup').hasClass('active') &&
+      !$(e.target).closest('#aerp-adjustment-popup .aerp-popup-content, [data-open-adjustment-popup]').length
+    ) {
+      $('#aerp-adjustment-popup').removeClass('active');
     }
   });
 
@@ -44,4 +47,12 @@ jQuery(function ($) {
   if ($('#aerp-hrm-toast').length) {
     setTimeout(() => $('#aerp-hrm-toast').fadeOut(300, function () { $(this).remove(); }), 5000);
   }
+
+  // ===== Đóng popup cho tất cả các popup sử dụng .aerp-popup-close
+  $('.aerp-popup-close').on('click', function () {
+    $(this).closest('.aerp-popup, .aerp-hrm-task-popup').removeClass('active');
+    $(this).closest('.aerp-popup-content, .aerp-hrm-task-popup-inner').parent().removeClass('active');
+    // Hỗ trợ cho cả popup dạng .aerp-popup và .aerp-hrm-task-popup
+    $('#taskPopup, #editTaskPopup, #aerp-adjustment-popup').removeClass('active');
+  });
 });

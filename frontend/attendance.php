@@ -82,84 +82,134 @@ $recent_attendance = $wpdb->get_results($wpdb->prepare(
 
 $total_pages = ceil($total / $limit);
 ?>
-<div class="aerp-hrm-profile-container">
-    <div class="aerp-hrm-card">
-        <div class="aerp-hrm-title"><i>🕒</i> Chấm công</div>
+<div class="aerp-hrm-dashboard">
+    <div class="aerp-card attendance-card">
+        <div class="aerp-card-header">
+            <h2><i class="fas fa-clock"></i> Chấm công hôm nay</h2>
+        </div>
 
         <?= $status_msg ?>
 
-        <form method="post" class="aerp-hrm-task-form">
+        <form method="post" class="aerp-form">
             <?php wp_nonce_field('aerp_frontend_attendance'); ?>
 
-            <div class="aerp-hrm-task-form-row">
-                <label for="work_date">Ngày chấm công:</label>
-                <input type="date" name="work_date" value="<?= esc_attr($today) ?>" required>
+            <div class="form-group">
+                <label for="work_date"><i class="far fa-calendar-alt"></i> Ngày chấm công</label>
+                <input type="date" id="work_date" name="work_date" value="<?= esc_attr($today) ?>" required>
             </div>
 
-            <div class="aerp-hrm-task-form-row">
-                <label for="shift_type">Loại chấm công:</label>
-                <select name="shift_type" id="shift_type" onchange="onShiftTypeChange()" required>
+            <div class="form-group">
+                <label for="shift_type"><i class="fas fa-user-clock"></i> Loại chấm công</label>
+                <select id="shift_type" name="shift_type" onchange="onShiftTypeChange()" required>
                     <option value="off">Nghỉ (OFF)</option>
                     <option value="ot">Tăng ca (OT)</option>
                 </select>
             </div>
-            <div class="aerp-hrm-task-form-row" id="work_ratio_row">
-                <label for="work_ratio">Hệ số công:</label>
-                <select name="work_ratio_select" id="work_ratio_select" onchange="onWorkRatioSelectChange()">
-                    <option value="1">1.0</option>
-                    <option value="1.5">1.5</option>
-                    <option value="custom">Tự nhập</option>
-                </select>
-                <input type="number" step="0.1" min="0" name="work_ratio" id="work_ratio" value="1" style="width:80px;display:none;">
+
+            <div class="form-group" id="work_ratio_row">
+                <label for="work_ratio"><i class="fas fa-calculator"></i> Hệ số công</label>
+                <div class="aerp-ratio-selector">
+                    <select id="work_ratio_select" name="work_ratio_select" onchange="onWorkRatioSelectChange()">
+                        <option value="1">1.0</option>
+                        <option value="1.5">1.5</option>
+                        <option value="custom">Tự nhập</option>
+                    </select>
+                    <input type="number" step="0.1" min="0" id="work_ratio" name="work_ratio" value="1" style="display:none;">
+                </div>
             </div>
-            <div class="aerp-hrm-task-form-row">
-                <label for="note">Ghi chú:</label>
-                <input type="text" name="note" placeholder="(Tùy chọn)">
+
+            <div class="form-group">
+                <label for="note"><i class="far fa-comment-dots"></i> Ghi chú</label>
+                <input type="text" id="note" name="note" placeholder="Nhập ghi chú (nếu có)">
             </div>
-            <div class="aerp-hrm-task-form-row">
-                <button type="submit" name="aerp_frontend_attendance" class="aerp-hrm-task-form button button-submit">Chấm công</button>
+
+            <div class="aerp-form-actions">
+                <button type="submit" name="aerp_frontend_attendance" class="aerp-btn aerp-btn-primary">
+                    <i class="fas fa-check-circle"></i> Chấm công
+                </button>
             </div>
         </form>
+    </div>
 
-        <div class="aerp-hrm-task-section-title">🔍 Công đã chấm gần đây</div>
+    <div class="aerp-card aerp-attendance-history">
+        <div class="aerp-card-header">
+            <h2><i class="fas fa-history"></i> Lịch sử chấm công</h2>
+        </div>
+
         <?php if ($recent_attendance): ?>
-            <ul class="aerp-hrm-task-comments">
+            <div class="aerp-attendance-list">
                 <?php foreach ($recent_attendance as $row): ?>
                     <?php
                     $shift_label = isset($shifts[$row->shift]['label']) ? $shifts[$row->shift]['label'] : ucfirst($row->shift);
+                    $is_off = $row->shift === 'off';
                     ?>
-                    <li>
-                        <?= date('d/m/Y H:i', strtotime($row->work_date)) ?> — <?= esc_html($shift_label) ?> (x<?= $row->work_ratio ?>)
-                        <?php if (!empty($row->note)) echo ' – ' . esc_html($row->note); ?>
-                    </li>
+                    <div class="aerp-attendance-item <?= $is_off ? 'off-day' : '' ?>">
+                        <div class="aerp-attendance-date">
+                            <div class="aerp-attendance-day"><?= date('d', strtotime($row->work_date)) ?></div>
+                            <div class="aerp-attendance-month"><?= date('m/Y', strtotime($row->work_date)) ?></div>
+                        </div>
+                        <div class="aerp-attendance-info">
+                            <div class="aerp-attendance-type">
+                                <span class="badge <?= $is_off ? 'badge-danger' : 'badge-success' ?>">
+                                    <?= esc_html($shift_label) ?>
+                                </span>
+                                <?php if (!$is_off): ?>
+                                    <span class="aerp-attendance-ratio">x<?= $row->work_ratio ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <?php if (!empty($row->note)): ?>
+                                <div class="aerp-attendance-note">
+                                    <i class="far fa-comment"></i> <?= esc_html($row->note) ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="aerp-attendance-time">
+                            <?= date('H:i', strtotime($row->work_date)) ?>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
-            </ul>
+            </div>
 
             <?php if ($total_pages > 1): ?>
-                <div class="aerp-hrm-task-pagination">
-                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <a class="aerp-hrm-page-link <?= $i == $paged ? 'active' : '' ?>" href="<?= esc_url(add_query_arg(['paged' => $i])) ?>">
-                            <?= $i ?>
-                        </a>
-                    <?php endfor; ?>
+                <div class="aerp-pagination">
+                    <?php
+                    $big = 999999999;
+                    echo paginate_links(array(
+                        'base'    => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+                        'format'  => '?paged=%#%',
+                        'current' => max(1, $paged),
+                        'total'   => $total_pages,
+                        'prev_text' => '<i class="fas fa-chevron-left"></i>',
+                        'next_text' => '<i class="fas fa-chevron-right"></i>',
+                    ));
+                    ?>
                 </div>
             <?php endif; ?>
         <?php else: ?>
-            <p>Bạn chưa chấm công gần đây.</p>
+            <div class="aerp-no-data">
+                <i class="far fa-folder-open"></i>
+                <p>Bạn chưa chấm công gần đây</p>
+            </div>
         <?php endif; ?>
     </div>
+
+    <!-- Quick Links -->
+    <?php include(AERP_HRM_PATH . 'frontend/quick-links.php'); ?>
+    
 </div>
+
 <script>
     function onShiftTypeChange() {
         var type = document.getElementById('shift_type').value;
         var ratioRow = document.getElementById('work_ratio_row');
         var ratioSelect = document.getElementById('work_ratio_select');
         var ratioInput = document.getElementById('work_ratio');
+
         if (type === 'off') {
             ratioRow.style.display = 'none';
             ratioInput.value = 0;
         } else {
-            ratioRow.style.display = '';
+            ratioRow.style.display = 'block';
             ratioSelect.value = '1';
             ratioInput.value = 1;
             ratioInput.style.display = 'none';
@@ -169,8 +219,9 @@ $total_pages = ceil($total / $limit);
     function onWorkRatioSelectChange() {
         var ratioSelect = document.getElementById('work_ratio_select');
         var ratioInput = document.getElementById('work_ratio');
+
         if (ratioSelect.value === 'custom') {
-            ratioInput.style.display = '';
+            ratioInput.style.display = 'block';
             ratioInput.value = '';
             ratioInput.focus();
         } else {
@@ -178,10 +229,10 @@ $total_pages = ceil($total / $limit);
             ratioInput.value = ratioSelect.value;
         }
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         onShiftTypeChange();
         document.getElementById('shift_type').addEventListener('change', onShiftTypeChange);
         document.getElementById('work_ratio_select').addEventListener('change', onWorkRatioSelectChange);
     });
 </script>
-</div>

@@ -1,161 +1,5 @@
-/* === PROFILE (aerp-*) === */
-
-.aerp-hrm-profile-container {
-    max-width: 1000px !important;
-    margin: 40px auto !important;
-    padding: 0 20px !important;
-}
-
-.aerp-hrm-card {
-    background: #ffffff !important;
-    border-radius: 14px !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04) !important;
-    margin-bottom: 32px !important;
-    padding: 32px !important;
-    transition: all 0.3s ease-in-out !important;
-    position: relative !important;
-}
-
-.aerp-hrm-card:hover {
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06) !important;
-}
-
-.aerp-hrm-title {
-    font-size: 22px !important;
-    font-weight: 700 !important;
-    margin-bottom: 24px !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-}
-
-.aerp-hrm-title i {
-    color: #2563eb !important;
-    font-size: 22px !important;
-}
-
-.aerp-hrm-row {
-    display: grid !important;
-    grid-template-columns: 200px 1fr !important;
-    gap: 16px !important;
-    padding: 10px 0 !important;
-    border-bottom: 1px dashed #e2e8f0 !important;
-}
-
-.aerp-hrm-label {
-    font-weight: 500 !important;
-    color: #64748b !important;
-}
-
-.aerp-hrm-value {
-    font-weight: 600 !important;
-    color: #1e293b !important;
-}
-
-.aerp-hrm-row:last-child {
-    border-bottom: none !important;
-}
-
-.aerp-hrm-btn {
-    display: inline-block !important;
-    background: linear-gradient(135deg, #2563eb, #1e40af) !important;
-    color: #fff !important;
-    padding: 12px 26px !important;
-    border-radius: 10px !important;
-    font-weight: 600 !important;
-    text-decoration: none !important;
-    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3) !important;
-    transition: all 0.3s ease-in-out !important;
-    margin-top: 24px !important;
-}
-
-.aerp-hrm-btn:hover {
-    transform: scale(1.03) !important;
-    box-shadow: 0 8px 20px rgba(30, 64, 175, 0.4) !important;
-}
-
-@media (max-width: 640px) {
-    .aerp-hrm-row {
-        grid-template-columns: 1fr !important;
-    }
-}
-
-/* === TASK LIST (task-*) === */
-
-.aerp-hrm-task-container {
-    max-width: 960px !important;
-    margin: 40px auto !important;
-    padding: 0 20px !important;
-    font-family: "Inter", sans-serif !important;
-    color: #1e293b !important;
-}
-
-.aerp-hrm-task-card {
-    background: #ffffff !important;
-    border-radius: 14px !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05) !important;
-    margin-bottom: 30px !important;
-    padding: 24px !important;
-    transition: all 0.3s ease-in-out !important;
-}
-
-.aerp-hrm-task-card:hover {
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07) !important;
-}
-
-.aerp-hrm-task-title {
-    font-size: 18px !important;
-    font-weight: 600 !important;
-    margin-bottom: 6px !important;
-}
-
-.aerp-hrm-task-meta {
-    font-size: 14px !important;
-    color: #64748b !important;
-    margin-bottom: 12px !important;
-}
-
-.aerp-hrm-task-comments {
-    background: #f8fafc !important;
-    border-radius: 10px !important;
-    padding: 14px 18px !important;
-    font-size: 14px !important;
-    margin-top: 10px !important;
-    list-style: none !important;
-    border: 1px solid #e2e8f0 !important;
-    overflow-x: auto !important;
-}
-
-.aerp-hrm-task-comments li {
-    position: relative !important;
-    margin-bottom: 12px !important;
-    padding-left: 0 !important;
-    line-height: 1.6 !important;
-    word-break: break-word !important;
-}
-
-.aerp-hrm-task-comments li:last-child {
-    margin-bottom: 0 !important;
-}
-
-.aerp-hrm-task-badge {
-    text-align: center !important;
-    min-width: 70px !important;
-    display: inline-block !important;
-    padding: 2px 8px !important;
-    border-radius: 999px !important;
-    font-size: 12px !important;
-    margin-right: 6px !important;
-    color: #fff !important;
-    font-weight: 500 !important;
-}
-
-.aerp-hrm-badge-admin {
-    background-color: #16a34a !important;
-}
-
-.aerp-hrm-badge-user {
-    background-color: #2563eb !important;
+.dashicons::before {
+    font-size: 20px;
 }
 
 .aerp-hrm-task-form textarea {
@@ -188,8 +32,6 @@
 .aerp-hrm-task-filter-form button,
 .aerp-hrm-task-form.button,
 .aerp-hrm-task-form button {
-    background: linear-gradient(135deg, #2563eb, #1e40af) !important;
-    color: white !important;
     padding: 10px 22px !important;
     font-weight: 600 !important;
     border-radius: 8px !important;
@@ -198,12 +40,6 @@
     transition: all 0.3s ease-in-out !important;
 }
 
-.aerp-hrm-task-filter-form button:hover,
-.aerp-hrm-task-form.button:hover,
-.aerp-hrm-task-form button:hover {
-    transform: scale(1.03) !important;
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3) !important;
-}
 
 .aerp-hrm-task-form button.button-submit {
     margin-top: 12px !important;
@@ -230,6 +66,7 @@
     justify-content: center !important;
     align-items: center !important;
     z-index: 999 !important;
+    max-width: 100vw;
 }
 
 .aerp-hrm-task-popup.active {
@@ -337,27 +174,8 @@
     }
 }
 
-.aerp-hrm-task-pagination {
-    text-align: center !important;
-    margin-top: 20px !important;
-}
-
-.aerp-hrm-page-link {
-    display: inline-block !important;
-    margin: 0 5px !important;
-    padding: 6px 12px !important;
-    background: #e5eef3 !important;
-    border-radius: 5px !important;
-    text-decoration: none !important;
-}
-
-.aerp-hrm-page-link.active {
-    background: #2563eb !important;
-    color: white !important;
-    font-weight: bold !important;
-}
-
 .aerp-hrm-task-filter-form {
+    padding: 20px 25px;
     justify-content: end !important;
     margin-right: 0 !important;
     display: flex !important;
@@ -405,149 +223,6 @@
     }
 }
 
-#aerp-hrm-employee-table-wrapper.loading {
-    opacity: 0.5 !important;
-    pointer-events: none !important;
-}
-
-.aerp-hrm-text-success {
-    color: #2ecc71 !important;
-}
-
-.aerp-hrm-salary-timeline {
-    display: flex !important;
-    gap: 40px !important;
-    padding: 20px 10px !important;
-    overflow-x: auto !important;
-    position: relative !important;
-    margin-top: 10px !important;
-    border-left: 3px solid #e0e0e0 !important;
-}
-
-.aerp-hrm-timeline-item {
-    position: relative !important;
-    flex-shrink: 0 !important;
-    text-align: center !important;
-}
-
-.aerp-hrm-timeline-item .dot {
-    background: #37b34a !important;
-    color: #fff !important;
-    font-weight: bold !important;
-    border-radius: 20px !important;
-    padding: 6px 12px !important;
-    font-size: 14px !important;
-    margin-bottom: 8px !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
-}
-
-.aerp-hrm-timeline-item .info {
-    font-size: 14px !important;
-    color: #333 !important;
-}
-
-.aerp-hrm-timeline-item .info small {
-    display: block !important;
-    font-size: 12px !important;
-    color: #777 !important;
-}
-
-.aerp-hrm-adjustment-list ul {
-    margin: 0 !important;
-    padding-left: 18px !important;
-    list-style: disc !important;
-    color: #334155 !important;
-}
-
-.aerp-hrm-adjustment-list li {
-    margin-bottom: 4px !important;
-}
-.aerp-accordion-item:not(:last-child) {
-    margin-bottom: 10px !important;
-}
-.aerp-hrm-accordion-header {
-    border-radius: 8px !important;
-    background: #f8f8f8 !important;
-    border: none !important;
-    width: 100% !important;
-    text-align: left !important;
-    padding: 10px 15px !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    transition: background 0.2s !important;
-}
-
-.aerp-hrm-accordion-header:hover {
-    background: #eee !important;
-}
-
-.aerp-hrm-accordion-header:focus {
-    outline-width: 0 !important;
-    outline-style: solid !important;
-}
-
-.aerp-hrm-accordion-body {
-    overflow-y: scroll;
-    height: 150px;
-    display: none;
-    padding: 15px !important;
-    border-left: 4px solid #ccc !important;
-    border-radius: 6px !important;
-    margin-top: 5px !important;
-}
-
-.aerp-hrm-accordion-body.bg-reward {
-    background: #e9f9f0 !important;
-    border-color: #3bb77e !important;
-}
-
-.aerp-hrm-accordion-body.bg-fine {
-    background: #fff3e0 !important;
-    border-color: #f39c12 !important;
-}
-
-.aerp-hrm-item-row {
-    margin-bottom: 8px !important;
-}
-
-.aerp-hrm-accordion-icon {
-    transition: transform 0.2s ease !important;
-}
-
-.aerp-hrm-accordion-header.active .aerp-hrm-accordion-icon {
-    transform: rotate(180deg) !important;
-}
-
-.aerp-hrm-accordion-body.active {
-    height: auto !important;
-    opacity: 1 !important;
-}
-
-.aerp-hrm-accordion-item {
-    margin-bottom: 8px !important;
-}
-
-#aerp-hrm-adjustmentPopup {
-    max-width: 100% !important;
-}
-
-/* === MODERN PROFILE === */
-.aerp-hrm-profile-container.modern {
-    max-width: 1100px !important;
-    margin: 40px auto !important;
-    padding: 0 20px !important;
-    display: grid !important;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-}
-@media (max-width: 900px) {
-    .aerp-hrm-profile-container.modern {
-        grid-template-columns: 1fr;
-    }
-}
 .profile-card {
     grid-column: 1 / -1;
     padding-bottom: 0 !important;
@@ -580,127 +255,1374 @@
     color: #1e293b;
     margin-bottom: 4px;
 }
-.profile-meta {
+.aerp-profile-meta {
     color: #64748b;
     font-size: 1rem;
     font-weight: 500;
 }
-.profile-details-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-.profile-details-grid .icon {
-    margin-right: 6px;
-}
-.salary-card .salary-table {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 24px;
-    margin-top: 10px;
-}
-.salary-card .salary-table > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 15px;
-    padding: 6px 0;
-}
-.salary-card .salary-table .salary-total strong,
-.salary-card .salary-table .salary-total span {
-    color: #4d4d4d;
-}
-.salary-card .salary-table .salary-total {
-    grid-column: 1 / -1;
-    font-size: 1.2rem;
-    font-weight: 700;
-    border-top: 1px solid #e2e8f0;
-    margin-top: 8px;
-    padding-top: 8px;
-    display: flex;
-    justify-content: space-between;
-}
+
 .text-primary {
     color: #2563eb !important;
-}
-.text-success {
-    color: #16a34a !important;
-}
-.text-danger {
-    color: #dc2626 !important;
 }
 .text-total {
     color: #1e40af !important;
     font-size: 1.3em;
 }
-.big-btn {
-    font-size: 1.1rem !important;
-    padding: 16px 36px !important;
-    border-radius: 12px !important;
-    margin-top: 18px !important;
-    background: linear-gradient(135deg, #2563eb, #1e40af) !important;
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.13) !important;
-}
-.salary-timeline-card .modern-timeline {
-    display: flex;
-    gap: 32px;
-    padding: 18px 0 0 0;
-    overflow-x: auto;
-    align-items: flex-end;
-}
-.salary-timeline-card .aerp-hrm-timeline-item {
-    text-align: center;
-    min-width: 90px;
-}
-.salary-timeline-card .dot {
-    background: #2563eb;
-    color: #fff;
-    font-weight: bold;
-    border-radius: 20px;
-    padding: 7px 14px;
-    font-size: 15px;
-    margin-bottom: 7px;
-    box-shadow: 0 2px 5px rgba(37, 99, 235, 0.08);
-}
-.salary-timeline-card .info {
-    font-size: 14px;
-    color: #333;
-}
-.salary-timeline-card .info small {
-    display: block;
-    font-size: 12px;
-    color: #64748b;
-}
-/* Card nâng cấp */
-.aerp-hrm-card {
-    background: #fff !important;
-    border-radius: 18px !important;
-    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.07) !important;
-    margin-bottom: 32px !important;
-    padding: 36px !important;
-    transition: all 0.3s;
-    position: relative !important;
-}
-.aerp-hrm-title .icon {
-    margin-right: 8px;
-    font-size: 1.2em;
-}
 /* Responsive */
 @media (max-width: 700px) {
-    .aerp-hrm-profile-container.modern {
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
-    .aerp-hrm-card {
-        padding: 18px !important;
-    }
     .profile-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
     }
-    .salary-card .salary-table {
+}
+
+/* Base Styles */
+.aerp-hrm-dashboard {
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #333;
+}
+
+/* Header Profile */
+.aerp-profile-header {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.aerp-profile-avatar {
+    margin-right: 25px;
+}
+
+.aerp-avatar-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.aerp-profile-info h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #1e293b;
+}
+
+.aerp-profile-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 10px 0;
+    color: #64748b;
+}
+
+.aerp-profile-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+.aerp-profile-meta i {
+    font-size: 16px;
+    color: #64748b;
+}
+/* .dashicons:before{
+    font-size: large;
+} */
+
+.aerp-profile-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.aerp-profile-contact a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.aerp-profile-contact a:hover {
+    text-decoration: underline;
+}
+
+/* Cards */
+.aerp-card {
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+.aerp-card.aerp-task-list {
+    box-shadow: none !important;
+    margin-bottom: 0 !important;
+}
+.aerp-card-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.aerp-card-header h2 {
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #1e293b;
+}
+
+.aerp-card-header h2 i {
+    color: #3b82f6;
+}
+
+/* Salary Overview */
+.aerp-salary-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+@media (max-width: 900px) {
+    .aerp-salary-overview {
         grid-template-columns: 1fr;
+    }
+}
+
+.aerp-salary-summary {
+    padding-bottom: 20px;
+}
+
+.aerp-salary-month-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: end;
+    padding: 20px;
+}
+
+.aerp-salary-month-form .form-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.aerp-salary-month-form label {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.aerp-salary-month-form input[type="month"] {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.aerp-salary-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding: 0 20px 20px;
+}
+
+.aerp-stat-card {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.aerp-stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.aerp-stat-icon.bg-blue {
+    background: #3b82f6;
+}
+
+.aerp-stat-icon.bg-green {
+    background: #10b981;
+}
+
+.aerp-stat-icon.bg-orange {
+    background: #f97316;
+}
+
+.aerp-stat-icon.bg-purple {
+    background: #8b5cf6;
+}
+
+.aerp-stat-info {
+    flex: 1;
+}
+
+.aerp-stat-label {
+    display: block;
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 3px;
+}
+
+.aerp-stat-value {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.aerp-salary-total-card {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 0 20px;
+}
+
+.aerp-total-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.aerp-total-item:first-child {
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.aerp-total-value {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.aerp-total-value.positive {
+    color: #10b981;
+}
+
+.aerp-total-value.highlight {
+    color: #1d4ed8;
+    font-size: 18px;
+}
+
+/* Salary Details */
+.aerp-salary-details {
+    padding-bottom: 20px;
+}
+
+.aerp-detail-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+@media (max-width: 900px) {
+    .aerp-detail-sections {
+        grid-template-columns: 1fr;
+    }
+}
+
+.aerp-detail-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1e293b;
+}
+
+.aerp-detail-section h3 i {
+    font-size: 14px;
+}
+
+.aerp-detail-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.aerp-detail-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+    border-bottom: 1px dashed #f1f5f9;
+}
+
+.aerp-detail-list li:last-child {
+    border-bottom: none;
+}
+
+.aerp-text-success {
+    color: #10b981 !important;
+}
+
+.aerp-text-danger {
+    color: #ef4444 !important;
+}
+
+.aerp-text-info {
+    color: #3b82f6 !important;
+}
+
+.badge-info {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+/* Calculation Results */
+.aerp-salary-calculation {
+    padding-bottom: 20px;
+}
+
+.aerp-calculation-results {
+    padding: 20px;
+}
+
+.aerp-result-section {
+    margin-bottom: 25px;
+}
+
+.aerp-result-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1e293b;
+}
+
+.aerp-result-section h3 i {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.aerp-result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.aerp-result-item {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 12px 15px;
+}
+
+.aerp-result-item span {
+    display: block;
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 5px;
+}
+
+.aerp-result-item strong {
+    display: block;
+    font-size: 15px;
+    color: #1e293b;
+}
+
+.aerp-result-totals {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+/* Cost Breakdown */
+.aerp-cost-breakdown {
+    padding-bottom: 20px;
+}
+
+.aerp-cost-items {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.aerp-cost-items::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+
+.aerp-cost-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed #f1f5f9;
+}
+
+.aerp-cost-item:last-child {
+    border-bottom: none;
+}
+
+.aerp-cost-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.aerp-cost-item.positive .aerp-cost-icon {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.aerp-cost-item.negative .aerp-cost-icon {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.aerp-cost-details {
+    flex: 1;
+}
+
+.aerp-cost-details span {
+    display: block;
+    font-size: 14px;
+    color: #1e293b;
+    margin-bottom: 3px;
+}
+
+.aerp-cost-details strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.aerp-cost-item.positive .aerp-cost-details strong {
+    color: #10b981;
+}
+
+.aerp-cost-item.negative .aerp-cost-details strong {
+    color: #ef4444;
+}
+
+/* Rewards & Fines */
+.aerp-rewards-fines {
+    padding-bottom: 20px;
+}
+
+.aerp-rf-tabs {
+    display: flex;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 0 20px;
+}
+
+.aerp-rf-tab {
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.aerp-rf-tab.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+}
+
+.aerp-rf-content {
+    padding: 20px;
+    display: none;
+}
+
+.aerp-rf-content.active {
+    display: block;
+}
+
+.aerp-rf-items {
+    max-height: 400px;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.aerp-rf-items::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+.aerp-rf-item {
+    display: flex;
+    padding: 15px 0;
+    border-bottom: 1px dashed #f1f5f9;
+}
+
+.aerp-rf-item:last-child {
+    border-bottom: none;
+}
+
+.aerp-rf-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.aerp-rf-item.positive .aerp-rf-icon {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.aerp-rf-item.negative .aerp-rf-icon {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.aerp-rf-details {
+    flex: 1;
+}
+
+.aerp-rf-amount {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 3px;
+}
+
+.aerp-rf-item.positive .aerp-rf-amount {
+    color: #10b981;
+}
+
+.aerp-rf-item.negative .aerp-rf-amount {
+    color: #ef4444;
+}
+
+.aerp-rf-reason {
+    font-size: 14px;
+    color: #1e293b;
+    margin-bottom: 5px;
+}
+
+.aerp-rf-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.aerp-rf-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.aerp-rf-meta i {
+    font-size: 12px;
+}
+
+/* Salary Timeline */
+.aerp-salary-timeline {
+    padding-bottom: 20px;
+}
+
+.aerp-timeline-container {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.aerp-timeline-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+.aerp-timeline-item {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 25px;
+}
+
+.aerp-timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.aerp-timeline-date {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 5px;
+}
+
+.aerp-timeline-content {
+    display: flex;
+}
+
+.aerp-timeline-dot {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #3b82f6;
+    border: 3px solid #dbeafe;
+}
+
+.aerp-timeline-info {
+    flex: 1;
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 12px 15px;
+}
+
+.aerp-timeline-salary {
+    font-weight: 500;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.aerp-timeline-allowance {
+    font-size: 13px;
+    color: #64748b;
+    margin-left: 10px;
+}
+
+/* Quick Links */
+.aerp-quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.aerp-quick-link {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #1e293b;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.aerp-quick-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.aerp-link-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    color: white;
+    font-size: 20px;
+}
+
+.aerp-link-icon.bg-blue {
+    background: #3b82f6;
+}
+
+.aerp-link-icon.bg-green {
+    background: #10b981;
+}
+
+.aerp-link-icon.bg-orange {
+    background: #f97316;
+}
+
+.aerp-link-icon.bg-purple {
+    background: #8b5cf6;
+}
+
+.aerp-quick-link span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Popup */
+.aerp-popup {
+    max-width: 100vw !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.aerp-popup.active {
+    display: flex;
+}
+
+.aerp-popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.aerp-popup-content {
+    margin: 50px auto;
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    animation: popupFadeIn 0.3s ease;
+}
+
+.aerp-popup-header {
+    padding: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.aerp-popup-header h3 {
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.aerp-popup-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #64748b;
+    padding: 5px;
+    line-height: 1;
+}
+
+.aerp-popup-body {
+    padding: 20px;
+    overflow: hidden;
+}
+
+/* Form Styles */
+.aerp-form .form-group {
+    margin-bottom: 20px;
+}
+
+.aerp-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.aerp-form label i {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.aerp-form select,
+.aerp-form input[type="text"],
+.aerp-form input[type="number"],
+.aerp-form input[type="date"],
+.aerp-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.aerp-form select:focus,
+.aerp-form input[type="text"]:focus,
+.aerp-form input[type="number"]:focus,
+.aerp-form input[type="date"]:focus,
+.aerp-form textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.aerp-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.aerp-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+/* Buttons */
+.aerp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    gap: 8px;
+}
+
+.aerp-btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.aerp-btn-primary:hover {
+    background: #2563eb;
+}
+
+.aerp-btn-secondary {
+    background: #e1e5e9;
+    color: #64748b;
+}
+
+.aerp-btn-secondary:hover {
+    background: #e2e8f0;
+}
+
+/* No Data */
+.aerp-no-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+}
+
+.aerp-no-data i {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: #cbd5e1;
+}
+
+.aerp-no-data p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Notices */
+.aerp-notice {
+    padding: 12px 20px;
+    margin: 0 20px 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.aerp-notice.success {
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.aerp-notice.warning {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.aerp-notice-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.aerp-notice-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    padding: 5px;
+}
+
+/* Animations */
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .aerp-profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .aerp-profile-avatar {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .aerp-profile-meta,
+    .aerp-profile-contact {
+        justify-content: center;
+    }
+
+    .aerp-salary-month-form {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .aerp-form-actions {
+        flex-direction: column;
+    }
+
+    .aerp-btn {
+        width: 100%;
+    }
+}
+
+/* Attendance Card */
+
+.aerp-ratio-selector {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.aerp-ratio-selector select {
+    flex: 1;
+}
+
+.aerp-ratio-selector input[type="number"] {
+    width: 80px;
+}
+
+/* Attendance History */
+.aerp-attendance-history {
+    padding-bottom: 20px;
+}
+
+.aerp-attendance-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.aerp-attendance-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.2s;
+}
+
+.aerp-attendance-item:hover {
+    background: #f8fafc;
+}
+
+.aerp-attendance-item.off-day {
+    opacity: 0.7;
+}
+
+.aerp-attendance-date {
+    width: 60px;
+    text-align: center;
+    margin-right: 15px;
+}
+
+.aerp-attendance-day {
+    font-size: 24px;
+    font-weight: 600;
+    color: #3b82f6;
+}
+
+.aerp-attendance-month {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.aerp-attendance-info {
+    flex: 1;
+}
+
+.aerp-attendance-type {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.aerp-attendance-ratio {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.aerp-attendance-note {
+    font-size: 13px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.aerp-attendance-time {
+    font-size: 14px;
+    color: #64748b;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-success {
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.badge-danger {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+/* aerp-pagination */
+.aerp-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    padding: 0px 20px 20px;
+}
+
+.aerp-pagination a,
+.aerp-pagination span {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0 3px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.aerp-pagination a {
+    background: #f1f5f9;
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.aerp-pagination a:hover {
+    background: #e2e8f0;
+}
+
+.aerp-pagination .current {
+    background: #3b82f6;
+    color: white;
+}
+
+.aerp-pagination .dots {
+    background: transparent;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .aerp-attendance-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .aerp-attendance-date {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .aerp-attendance-day {
+        font-size: 18px;
+    }
+
+    .aerp-attendance-time {
+        align-self: flex-end;
+        margin-top: 5px;
+    }
+}
+
+/* Task List Styles */
+.aerp-task-list {
+    padding: 0;
+}
+
+.aerp-task-item {
+    padding: 20px;
+    border: 1px solid #f1f5f9;
+    transition: background 0.2s;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+}
+
+.aerp-task-item:hover {
+    background: #f8fafc;
+}
+
+.aerp-task-item.assigned {
+    border-left: 4px solid #f59e0b;
+}
+
+.aerp-task-item.done {
+    border-left: 4px solid #10b981;
+}
+
+.aerp-task-item.failed {
+    border-left: 4px solid #ef4444;
+}
+
+.aerp-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+.aerp-card.aerp-task-header {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+.aerp-task-title h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #1e293b;
+}
+
+.aerp-task-meta {
+    display: flex;
+    gap: 15px;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.aerp-task-meta i {
+    margin-right: 5px;
+}
+
+.aerp-task-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.aerp-task-content {
+    margin-top: 15px;
+}
+
+.aerp-task-content p {
+    margin: 0 0 15px 0;
+    color: #334155;
+    line-height: 1.6;
+    word-break: break-all;
+}
+
+.aerp-task-status-form {
+    margin: 15px 0;
+}
+
+.aerp-status-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.aerp-status-select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+/* Comment Styles */
+.aerp-task-comments {
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.aerp-task-comments h4 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.aerp-comment-list {
+    margin-bottom: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.aerp-comment-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+.aerp-comment-item {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.aerp-comment-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.aerp-comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.aerp-comment-author {
+    font-weight: 500;
+    font-size: 14px;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.aerp-badge-admin {
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.aerp-badge-user {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.aerp-comment-date {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.aerp-comment-content {
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.aerp-no-comments {
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.aerp-no-comments i {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.aerp-comment-form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+/* No Tasks */
+.aerp-no-tasks {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+}
+
+.aerp-no-tasks i {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: #cbd5e1;
+}
+
+.aerp-no-tasks p {
+    margin: 0;
+    font-size: 16px;
+}
+.aerp-popup.active {
+    display: block;
+}
+/* Responsive */
+@media (max-width: 768px) {
+    .aerp-task-header {
+        flex-direction: column;
+    }
+
+    .aerp-task-actions {
+        margin-top: 10px;
+        align-self: flex-end;
+    }
+
+    .aerp-status-form {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
