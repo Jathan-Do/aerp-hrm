@@ -104,6 +104,7 @@ function aerp_hrm_init()
     add_action('wp_enqueue_scripts', function () {
         if (!is_admin()) {
             wp_enqueue_style('aerp-hrm-frontend', AERP_HRM_URL . 'assets/css/frontend.css', [], '1.0');
+            wp_enqueue_style('dashicons');
             wp_enqueue_script('aerp-hrm-frontend', AERP_HRM_URL . 'assets/js/frontend.js', ['jquery'], '1.0', true);
         }
     });
