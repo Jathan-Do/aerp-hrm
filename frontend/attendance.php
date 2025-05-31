@@ -82,6 +82,8 @@ $recent_attendance = $wpdb->get_results($wpdb->prepare(
 
 $total_pages = ceil($total / $limit);
 ?>
+<!-- Quick Links -->
+<?php include(AERP_HRM_PATH . 'frontend/quick-links.php'); ?>
 <div class="aerp-hrm-dashboard">
     <div class="aerp-card attendance-card">
         <div class="aerp-card-header">
@@ -192,9 +194,6 @@ $total_pages = ceil($total / $limit);
             </div>
         <?php endif; ?>
     </div>
-
-    <!-- Quick Links -->
-    <?php include(AERP_HRM_PATH . 'frontend/quick-links.php'); ?>
 
 </div>
 

@@ -69,6 +69,7 @@ function aerp_hrm_init()
     require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-hr-profile.php';
     require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-task-list.php';
     require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-attendance.php';
+    require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-login.php';
 
     // Xử lý form và logic
     $managers = [
@@ -125,19 +126,24 @@ register_activation_hook(__FILE__, function () {
     // Tạo các trang mặc định với shortcode
     $pages = [
         [
-            'title'   => 'Hồ sơ nhân viên',
-            'slug'    => 'ho-so-nhan-vien',
+            'title'   => 'AERP Hồ sơ nhân viên',
+            'slug'    => 'aerp-ho-so-nhan-vien',
             'content' => '[aerp_hr_profile]'
         ],
         [
-            'title'   => 'Chấm công',
-            'slug'    => 'cham-cong',
+            'title'   => 'AERP Chấm công',
+            'slug'    => 'aerp-cham-cong',
             'content' => '[aerp_attendance]'
         ],
         [
-            'title'   => 'Danh sách công việc',
-            'slug'    => 'danh-sach-cong-viec',
+            'title'   => 'AERP Danh sách công việc',
+            'slug'    => 'aerp-danh-sach-cong-viec',
             'content' => '[aerp_task_list]'
+        ],
+        [
+            'title'   => 'AERP Đăng nhập',
+            'slug'    => 'aerp-dang-nhap',
+            'content' => '[aerp_login]'
         ],
     ];
 

@@ -108,8 +108,8 @@ $total = AERP_Task_Manager::count_tasks_by_employee($employee_id, $filter);
 $total_pages = ceil($total / $limit);
 
 ?>
-
-
+<!-- Quick Links -->
+<?php include(AERP_HRM_PATH . 'frontend/quick-links.php'); ?>
 <div class="aerp-hrm-dashboard">
     <!-- Header và Filter -->
     <div class="aerp-card aerp-task-header">
@@ -274,8 +274,6 @@ $total_pages = ceil($total / $limit);
             </div>
         <?php endif; ?>
     </div>
-    <!-- Quick Links -->
-    <?php include(AERP_HRM_PATH . 'frontend/quick-links.php'); ?>
 </div>
 
 <!-- Popup thêm công việc -->

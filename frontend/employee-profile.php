@@ -304,6 +304,8 @@ if (isset($_GET['calc_month'])) {
 }
 
 ?>
+<!-- Quick Links -->
+<?php include(AERP_HRM_PATH . 'frontend/quick-links.php'); ?>
 
 <div class="aerp-hrm-dashboard">
     <!-- Header Profile -->
@@ -479,7 +481,7 @@ if (isset($_GET['calc_month'])) {
             </div>
         <?php endif; ?>
     </div>
-<!-- Cost Breakdown -->
+    <!-- Cost Breakdown -->
     <div class="aerp-card aerp-cost-breakdown">
         <div class="aerp-card-header">
             <h2><i class="dashicons dashicons-list-view"></i> Chi tiết tăng/giảm tháng hiện tại (<?= date('m/Y', strtotime($salary->salary_month)) ?>)</h2>
@@ -537,7 +539,7 @@ if (isset($_GET['calc_month'])) {
                             <span>Công/ngày</span>
                             <strong><?= number_format($calc_data['salary_per_day'], 0, ',', '.') ?> đ</strong>
                         </div>
-                        <div class="aerp-result-item">  
+                        <div class="aerp-result-item">
                             <span>Ứng lương</span>
                             <strong class="aerp-text-danger">-<?= number_format($calc_data['advance'], 0, ',', '.') ?> đ</strong>
                         </div>
@@ -723,9 +725,6 @@ if (isset($_GET['calc_month'])) {
         </div>
     <?php endif; ?>
 
-    <!-- Quick Links -->
-    <?php include(AERP_HRM_PATH . 'frontend/quick-links.php'); ?>
-    
 </div>
 
 <!-- Popup form thêm thưởng/phạt -->
