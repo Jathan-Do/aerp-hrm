@@ -742,7 +742,7 @@ if (isset($_GET['calc_month'])) {
 
                 <div class="form-group">
                     <label for="adjustment-type"><i class="dashicons dashicons-tag"></i> Loại</label>
-                    <select id="adjustment-type" name="type" required>
+                    <select class="aerp-hrm-custom-select" id="adjustment-type" name="type" required>
                         <option value="">-- Chọn loại --</option>
                         <option value="reward">Thưởng</option>
                         <option value="fine">Phạt</option>

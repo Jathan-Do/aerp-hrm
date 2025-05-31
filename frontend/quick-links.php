@@ -7,7 +7,7 @@
         <span>Danh sách công việc</span>
     </a>
 
-    <a href="#aerp-salary-overview" class="aerp-quick-link">
+    <a href="<?= esc_url(site_url('/ho-so-nhan-vien')) ?>#aerp-salary-overview" class="aerp-quick-link">
         <div class="aerp-link-icon bg-green">
             <i class="dashicons dashicons-portfolio"></i>
         </div>

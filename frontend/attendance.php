@@ -85,7 +85,7 @@ $total_pages = ceil($total / $limit);
 <div class="aerp-hrm-dashboard">
     <div class="aerp-card attendance-card">
         <div class="aerp-card-header">
-            <h2><i class="fas fa-clock"></i> Chấm công hôm nay</h2>
+            <h2><span class="dashicons dashicons-clock"></span> Chấm công hôm nay</h2>
         </div>
 
         <?= $status_msg ?>
@@ -93,21 +93,21 @@ $total_pages = ceil($total / $limit);
         <form method="post" class="aerp-form">
             <?php wp_nonce_field('aerp_frontend_attendance'); ?>
 
-            <div class="form-group">
-                <label for="work_date"><i class="far fa-calendar-alt"></i> Ngày chấm công</label>
+            <div class="form-group" style="padding: 0 15px;">
+                <label for="work_date"><span class="dashicons dashicons-calendar"></span> Ngày chấm công</label>
                 <input type="date" id="work_date" name="work_date" value="<?= esc_attr($today) ?>" required>
             </div>
 
-            <div class="form-group">
-                <label for="shift_type"><i class="fas fa-user-clock"></i> Loại chấm công</label>
-                <select id="shift_type" name="shift_type" onchange="onShiftTypeChange()" required>
+            <div class="form-group" style="padding: 0 15px;">
+                <label for="shift_type"><span class="dashicons dashicons-businessman"></span> Loại chấm công</label>
+                <select class="aerp-hrm-custom-select" id="shift_type" name="shift_type" onchange="onShiftTypeChange()" required>
                     <option value="off">Nghỉ (OFF)</option>
                     <option value="ot">Tăng ca (OT)</option>
                 </select>
             </div>
 
-            <div class="form-group" id="work_ratio_row">
-                <label for="work_ratio"><i class="fas fa-calculator"></i> Hệ số công</label>
+            <div class="form-group" style="padding: 0 15px;" id="work_ratio_row">
+                <label for="work_ratio"><span class="dashicons dashicons-calculator"></span> Hệ số công</label>
                 <div class="aerp-ratio-selector">
                     <select id="work_ratio_select" name="work_ratio_select" onchange="onWorkRatioSelectChange()">
                         <option value="1">1.0</option>
@@ -118,14 +118,14 @@ $total_pages = ceil($total / $limit);
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="note"><i class="far fa-comment-dots"></i> Ghi chú</label>
+            <div class="form-group" style="padding: 0 15px;">
+                <label for="note"><span class="dashicons dashicons-format-status"></span> Ghi chú</label>
                 <input type="text" id="note" name="note" placeholder="Nhập ghi chú (nếu có)">
             </div>
 
-            <div class="aerp-form-actions">
+            <div class="aerp-form-actions" style="padding: 15px;">
                 <button type="submit" name="aerp_frontend_attendance" class="aerp-btn aerp-btn-primary">
-                    <i class="fas fa-check-circle"></i> Chấm công
+                    <span class="dashicons dashicons-yes"></span> Chấm công
                 </button>
             </div>
         </form>
@@ -133,7 +133,7 @@ $total_pages = ceil($total / $limit);
 
     <div class="aerp-card aerp-attendance-history">
         <div class="aerp-card-header">
-            <h2><i class="fas fa-history"></i> Lịch sử chấm công</h2>
+            <h2><span class="dashicons dashicons-backup"></span> Lịch sử chấm công</h2>
         </div>
 
         <?php if ($recent_attendance): ?>
@@ -159,7 +159,7 @@ $total_pages = ceil($total / $limit);
                             </div>
                             <?php if (!empty($row->note)): ?>
                                 <div class="aerp-attendance-note">
-                                    <i class="far fa-comment"></i> <?= esc_html($row->note) ?>
+                                    <span class="dashicons dashicons-format-chat"></span> <?= esc_html($row->note) ?>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -179,15 +179,15 @@ $total_pages = ceil($total / $limit);
                         'format'  => '?paged=%#%',
                         'current' => max(1, $paged),
                         'total'   => $total_pages,
-                        'prev_text' => '<i class="fas fa-chevron-left"></i>',
-                        'next_text' => '<i class="fas fa-chevron-right"></i>',
+                        'prev_text' => '<i class="dashicons dashicons-arrow-left-alt2"></i>',
+                        'next_text' => '<i class="dashicons dashicons-arrow-right-alt2"></i>',
                     ));
                     ?>
                 </div>
             <?php endif; ?>
         <?php else: ?>
             <div class="aerp-no-data">
-                <i class="far fa-folder-open"></i>
+                <span class="dashicons dashicons-archive"></span>
                 <p>Bạn chưa chấm công gần đây</p>
             </div>
         <?php endif; ?>
@@ -195,7 +195,7 @@ $total_pages = ceil($total / $limit);
 
     <!-- Quick Links -->
     <?php include(AERP_HRM_PATH . 'frontend/quick-links.php'); ?>
-    
+
 </div>
 
 <script>

@@ -368,13 +368,16 @@
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
+/* .aerp-card.attendance-card{
+    padding: 20px;
+} */
 .aerp-card.aerp-task-list {
     box-shadow: none !important;
     margin-bottom: 0 !important;
 }
 .aerp-card-header {
     padding: 20px 25px;
-    border-bottom: 1px solid #f1f5f9;
+    /* border-bottom: 1px solid #f1f5f9; */
     display: flex;
     gap: 10px;
     justify-content: space-between;
@@ -1256,7 +1259,14 @@
 .aerp-attendance-list {
     max-height: 500px;
     overflow-y: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
+
+.aerp-attendance-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
 
 .aerp-attendance-item {
     display: flex;
