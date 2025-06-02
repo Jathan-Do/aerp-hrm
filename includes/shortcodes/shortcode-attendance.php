@@ -6,7 +6,7 @@ add_shortcode('aerp_attendance', 'aerp_shortcode_attendance');
 function aerp_shortcode_attendance()
 {
     if (!is_user_logged_in()) {
-        $login_url = wp_login_url();
+        $login_url = site_url('/aerp-dang-nhap');
         return '<p>Bạn cần <a href="' . esc_url($login_url) . '">đăng nhập</a> để chấm công.</p>';
     }
 

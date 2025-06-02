@@ -38,12 +38,15 @@ if (isset($_GET['adjustment_added'])) {
 
 // Lấy bản ghi lương mới nhất
 global $wpdb;
+$current_month = date('Y-m');
+$current_month_start = $current_month . '-01';
 $salary = $wpdb->get_row($wpdb->prepare("
     SELECT * FROM {$wpdb->prefix}aerp_hrm_salaries 
     WHERE employee_id = %d 
-    ORDER BY salary_month DESC, created_at DESC 
+      AND salary_month = %s
+    ORDER BY created_at DESC 
     LIMIT 1
-", $employee_id));
+", $employee_id, $current_month_start));
 
 $month = $salary ? date('Y-m', strtotime($salary->salary_month)) : '';
 $month_start = $month . '-01';
@@ -188,6 +191,16 @@ $all_fines = array_merge(
         return $f;
     }, $discipline_fines)
 );
+
+// Lọc lại chỉ lấy các mục trong tháng hiện tại
+$all_rewards = array_filter($all_rewards, function($item) use ($month_start, $month_end) {
+    $date = isset($item->date) ? strtotime($item->date) : false;
+    return $date && $date >= strtotime($month_start) && $date <= strtotime($month_end);
+});
+$all_fines = array_filter($all_fines, function($item) use ($month_start, $month_end) {
+    $date = isset($item->date) ? strtotime($item->date) : false;
+    return $date && $date >= strtotime($month_start) && $date <= strtotime($month_end);
+});
 
 $calc_month = isset($_GET['calc_month']) ? $_GET['calc_month'] : date('Y-m');
 $calc_data = null;
@@ -335,7 +348,7 @@ if (isset($_GET['calc_month'])) {
     <div class="aerp-salary-overview" id="aerp-salary-overview">
         <div class="aerp-card aerp-salary-summary">
             <div class="aerp-card-header">
-                <h2><i class="dashicons dashicons-money"></i> Tổng quan lương tháng hiện tại (<?= date('m/Y', strtotime($salary->salary_month)) ?>)</h2>
+                <h2><i class="dashicons dashicons-money"></i> Tổng quan lương tháng hiện tại (<?= date('m/Y') ?>)</h2>
             </div>
             <?php if ($salary): ?>
                 <div class="aerp-salary-stats">
@@ -416,7 +429,7 @@ if (isset($_GET['calc_month'])) {
         <?php if ($salary): ?>
             <div class="aerp-card aerp-salary-details">
                 <div class="aerp-card-header">
-                    <h2><i class="dashicons dashicons-portfolio"></i> Chi tiết lương (<?= date('m/Y', strtotime($salary->salary_month)) ?>)</h2>
+                    <h2><i class="dashicons dashicons-portfolio"></i> Chi tiết lương (<?= date('m/Y') ?>)</h2>
                 </div>
 
                 <div class="aerp-detail-sections">
@@ -484,7 +497,7 @@ if (isset($_GET['calc_month'])) {
     <!-- Cost Breakdown -->
     <div class="aerp-card aerp-cost-breakdown">
         <div class="aerp-card-header">
-            <h2><i class="dashicons dashicons-list-view"></i> Chi tiết tăng/giảm tháng hiện tại (<?= date('m/Y', strtotime($salary->salary_month)) ?>)</h2>
+            <h2><i class="dashicons dashicons-list-view"></i> Chi tiết tăng/giảm tháng hiện tại (<?= date('m/Y') ?>)</h2>
         </div>
 
         <div class="aerp-cost-items">
@@ -601,7 +614,7 @@ if (isset($_GET['calc_month'])) {
     <!-- Rewards & Fines -->
     <div class="aerp-card aerp-rewards-fines">
         <div class="aerp-card-header">
-            <h2><i class="dashicons dashicons-awards"></i> Thưởng & Phạt</h2>
+            <h2><i class="dashicons dashicons-awards"></i> Thưởng & Phạt tháng hiện tại (<?= date('m/Y') ?>)</h2>
             <button type="button" class="aerp-btn aerp-btn-primary" data-open-adjustment-popup>
                 <i class="dashicons dashicons-plus"></i> Thêm mới
             </button>

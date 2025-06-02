@@ -4,9 +4,10 @@ if (!defined('ABSPATH')) exit;
 
 add_shortcode('aerp_hr_profile', 'aerp_shortcode_hr_profile');
 
-function aerp_shortcode_hr_profile() {
+function aerp_shortcode_hr_profile()
+{
     if (!is_user_logged_in()) {
-        $login_url = wp_login_url();
+        $login_url = site_url('/aerp-dang-nhap');
         return '<p>Bạn cần <a href="' . esc_url($login_url) . '">đăng nhập</a> để xem hồ sơ.</p>';
     }
 

@@ -108,7 +108,7 @@ function aerp_hrm_init()
             wp_enqueue_style('dashicons');
             wp_enqueue_script('aerp-hrm-frontend', AERP_HRM_URL . 'assets/js/frontend.js', ['jquery'], '1.0', true);
         }
-    });
+    }, 1);
 
     // Lên lịch check công việc trễ
     if (!wp_next_scheduled('aerp_check_late_tasks_daily')) {
@@ -162,6 +162,22 @@ register_activation_hook(__FILE__, function () {
     }
 });
 
+// Xóa các trang khi deactivate plugin
+register_deactivation_hook(__FILE__, function () {
+    $slugs = [
+        'aerp-ho-so-nhan-vien',
+        'aerp-cham-cong',
+        'aerp-danh-sach-cong-viec',
+        'aerp-dang-nhap',
+    ];
+    foreach ($slugs as $slug) {
+        $page = get_page_by_path($slug);
+        if ($page) {
+            wp_delete_post($page->ID, true); // true = force delete
+        }
+    }
+});
+
 // Tải asset admin
 add_action('admin_enqueue_scripts', function () {
     $version = time(); // Thêm version để tránh cache
@@ -169,7 +185,7 @@ add_action('admin_enqueue_scripts', function () {
     wp_enqueue_script('aerp-admin-employee', AERP_HRM_URL . 'assets/js/admin-employee.js', ['jquery', 'chartjs'], $version, true);
     wp_enqueue_media();
     wp_enqueue_style('aerp-admin-employee', AERP_HRM_URL . 'assets/css/reports.css', [], $version);
-});
+}, 1);
 
 // Export Excel dùng chung (dạng POST)
 add_action('admin_post_aerp_export_excel_common', 'aerp_handle_common_export_excel');
@@ -209,3 +225,14 @@ function aerp_handle_common_export_excel()
         wp_die("⛔ Không tìm thấy hàm xử lý export: $callback");
     }
 }
+
+// Redirect khi đăng nhập sai về trang custom login
+function aerp_login_failed_redirect($username) {
+    $referrer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+    if (strpos($referrer, 'aerp-dang-nhap') !== false) {
+        wp_redirect(home_url('/aerp-dang-nhap?login=failed'));
+        exit;
+    }
+}
+add_action('wp_login_failed', 'aerp_login_failed_redirect');
+
