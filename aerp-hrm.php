@@ -42,7 +42,11 @@ function aerp_hrm_init()
     require_once AERP_HRM_PATH . 'includes/table/table-department.php';
     require_once AERP_HRM_PATH . 'includes/table/table-position.php';
     require_once AERP_HRM_PATH . 'includes/table/table-company.php';
-    // Load các class cần thiết
+
+    // Load các class cần thiết khác
+    require_once AERP_HRM_PATH . 'includes/class-excel-export-helper.php';
+
+    // Load các class cần thiết manager
     $includes = [
         'class-department-manager.php',
         'class-position-manager.php',
@@ -57,13 +61,10 @@ function aerp_hrm_init()
         'class-discipline-manager.php',
         'class-adjustment-manager.php',
         'class-report-manager.php',
-        'class-excel-export-helper.php',
-        'class-export-controller.php',
     ];
     foreach ($includes as $file) {
-        require_once AERP_HRM_PATH . 'includes/' . $file;
+        require_once AERP_HRM_PATH . 'includes/managers/' . $file;
     }
-
 
     // Shortcodes frontend
     require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-hr-profile.php';
@@ -235,4 +236,18 @@ function aerp_login_failed_redirect($username) {
     }
 }
 add_action('wp_login_failed', 'aerp_login_failed_redirect');
+
+// AJAX: trả về HTML bình luận cho 1 task (thực tế, tách view)
+function aerp_ajax_get_task_comments() {
+    $task_id = absint($_POST['task_id'] ?? 0);
+    if (!$task_id) {
+        wp_send_json_error('Thiếu task_id');
+    }
+    $comments = AERP_Task_Manager::get_comments($task_id);
+    ob_start();
+    include AERP_HRM_PATH . 'includes/ajax/ajax-task-comments.php';
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
+add_action('wp_ajax_aerp_get_task_comments', 'aerp_ajax_get_task_comments');
 

@@ -23,6 +23,7 @@ class AERP_Salary_Config_Table extends AERP_Base_Table
             'end_date'    => 'Đến ngày',
             'base_salary' => 'Lương cơ bản',
             'allowance'   => 'Phụ cấp',
+            'actions'     => 'Thao tác',
         ];
     }
 
@@ -55,6 +56,21 @@ class AERP_Salary_Config_Table extends AERP_Base_Table
         }
 
         return esc_html($item[$column_name] ?? '');
+    }
+
+    public function column_actions($item)
+    {
+        $edit_url = add_query_arg([
+            'page' => 'aerp_salary_add',
+            'employee_id' => $this->employee_id,
+            'edit' => $item['id']
+        ], admin_url('admin.php'));
+        $delete_url = wp_nonce_url(add_query_arg([
+            'page' => 'aerp_salary_add',
+            'employee_id' => $this->employee_id,
+            'delete' => $item['id']
+        ], admin_url('admin.php')), 'aerp_salary_delete_' . $item['id']);
+        return '<a href="' . esc_url($edit_url) . '">Sửa</a> | <a href="' . esc_url($delete_url) . '" onclick="return confirm(\'Bạn có chắc chắn muốn xóa cấu hình lương này?\')">Xóa</a>';
     }
 
     public function prepare_items()

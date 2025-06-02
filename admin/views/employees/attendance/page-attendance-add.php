@@ -1,8 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-require_once AERP_HRM_PATH . 'includes/class-attendance-manager.php';
-
 $employee_id = absint($_GET['employee_id'] ?? 0);
 if (!$employee_id) {
     echo '<div class="notice notice-error"><p>Thiếu employee_id</p></div>';

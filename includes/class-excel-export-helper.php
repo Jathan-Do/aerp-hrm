@@ -1,6 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
-require_once dirname(dirname(__FILE__)) . '/vendor/autoload.php';
+require_once AERP_HRM_PATH . 'vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;

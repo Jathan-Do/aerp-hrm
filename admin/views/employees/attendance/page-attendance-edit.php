@@ -1,8 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-require_once AERP_HRM_PATH . 'includes/class-attendance-manager.php';
-
 $employee_id = absint($_GET['employee_id'] ?? 0);
 $id = absint($_GET['id'] ?? 0);
 $attendance = AERP_Attendance_Manager::get_by_id($id);

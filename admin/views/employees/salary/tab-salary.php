@@ -2,7 +2,6 @@
 if (!defined('ABSPATH')) exit;
 
 require_once AERP_HRM_PATH . 'includes/table/table-salary.php';
-require_once AERP_HRM_PATH . 'includes/class-salary-manager.php';
 
 $month = $_POST['salary_month'] ?? null;
 

@@ -121,11 +121,11 @@
             </tr>
             <tr>
                 <th>Ngày vào làm</th>
-                <td><input type="date" name="join_date" class="regular-text"></td>
+                <td><input type="date" name="join_date" id="start_date" class="regular-text"></td>
             </tr>
             <tr>
                 <th>Ngày nghỉ việc</th>
-                <td><input type="date" name="off_date" class="regular-text"></td>
+                <td> <input type="date" name="off_date" id="end_date" class="regular-text"></td>
             </tr>
             <tr>
                 <th>Trạng thái</th>
@@ -149,7 +149,7 @@
                         <?php
                         $users = get_users();
                         foreach ($users as $user) {
-                            $user_roles = array_map(function($role) {
+                            $user_roles = array_map(function ($role) {
                                 return translate_user_role(wp_roles()->roles[$role]['name']);
                             }, $user->roles);
                             $role_display = !empty($user_roles) ? ' (' . implode(', ', $user_roles) . ')' : '';

@@ -77,6 +77,20 @@ if (
     exit;
 }
 
+// Xử lý xóa task của chính mình
+if (
+    isset($_POST['aerp_delete_own_task']) &&
+    check_admin_referer('aerp_delete_own_task_action', 'aerp_delete_own_task_nonce')
+) {
+    $task_id = absint($_POST['delete_task_id']);
+    $task = AERP_Task_Manager::get_by_id($task_id);
+    if ($task && $task->created_by == $user_id && $task->employee_id == $employee_id) {
+        global $wpdb;
+        $wpdb->delete($wpdb->prefix . 'aerp_hrm_tasks', ['id' => $task_id]);
+        aerp_js_redirect($clean_url);
+        exit;
+    }
+}
 
 // Thông báo sau redirect
 $notification = '';
@@ -167,6 +181,11 @@ $total_pages = ceil($total / $limit);
                         </div>
 
                         <div class="aerp-task-actions">
+
+                            <!-- Bình luận -->
+                            <button class="aerp-btn aerp-btn-secondary aerp-task-comment-btn" data-task-id="<?= $task->id ?>" data-task-title="<?= esc_attr($task->task_title) ?>">
+                                <i class="dashicons dashicons-format-status"></i> Bình luận
+                            </button>
                             <?php if ($task->created_by == $user_id && $task->status != 'done'): ?>
                                 <button class="aerp-btn aerp-btn-primary" onclick='openEditTaskPopup(<?= json_encode([
                                                                                                             "id" => $task->id,
@@ -179,11 +198,22 @@ $total_pages = ceil($total / $limit);
                                     Sửa công việc
                                 </button>
                             <?php endif; ?>
+                            <?php if ($task->created_by == $user_id): ?>
+                                <form method="post" style="display:inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa công việc này?');">
+                                    <?php wp_nonce_field('aerp_delete_own_task_action', 'aerp_delete_own_task_nonce'); ?>
+                                    <input type="hidden" name="delete_task_id" value="<?= esc_attr($task->id) ?>">
+                                    <button type="submit" name="aerp_delete_own_task" class="aerp-btn aerp-btn-danger">
+                                        <i class="dashicons dashicons-trash"></i>
+                                    </button>
+                                </form>
+                            <?php endif; ?>
                         </div>
                     </div>
 
                     <div class="aerp-task-content aerp-comment-form">
-                        <textarea rows="4" readonly><?= esc_html($task->task_desc) ?></textarea>
+                        <?php if ($task->task_desc): ?>
+                            <textarea rows="4" readonly><?= esc_html($task->task_desc) ?></textarea>
+                        <?php endif; ?>
 
                         <div class="aerp-task-status-form">
                             <form method="post" class="aerp-status-form">
@@ -200,50 +230,8 @@ $total_pages = ceil($total / $limit);
                                         <i class="dashicons dashicons-no"></i> Thất bại
                                     </option>
                                 </select>
-                                <button type="submit" name="aerp_update_task_status" class="aerp-btn aerp-btn-secondary">
+                                <button type="submit" name="aerp_update_task_status" class="aerp-btn aerp-task-update-status-btn">
                                     <i class="dashicons dashicons-yes"></i> Cập nhật
-                                </button>
-                            </form>
-                        </div>
-
-                        <!-- Bình luận -->
-                        <div class="aerp-task-comments">
-                            <h4><i class="dashicons dashicons-format-status"></i> Bình luận</h4>
-
-                            <?php $comments = AERP_Task_Manager::get_comments($task->id); ?>
-                            <?php if (!empty($comments)): ?>
-                                <div class="aerp-comment-list">
-                                    <?php foreach ($comments as $c): ?>
-                                        <?php
-                                        $is_admin = user_can($c->user_id, 'manage_options');
-                                        $badge_class = $is_admin ? 'aerp-badge-admin' : 'aerp-badge-user';
-                                        ?>
-                                        <div class="aerp-comment-item">
-                                            <div class="aerp-comment-header">
-                                                <div class="aerp-comment-author <?= $badge_class ?>">
-                                                    <?= esc_html($c->display_name) ?>
-                                                </div>
-                                                <div class="aerp-comment-date">
-                                                    <?= date('d/m/Y H:i', strtotime($c->created_at)) ?>
-                                                </div>
-                                            </div>
-                                            <div class="aerp-comment-content">
-                                                <?= esc_html($c->comment) ?>
-                                            </div>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php else: ?>
-                                <div class="aerp-no-comments">Chưa có bình luận nào
-                                </div>
-                            <?php endif; ?>
-
-                            <form method="post" class="aerp-comment-form">
-                                <?php wp_nonce_field('aerp_comment_task_action', 'aerp_comment_task_nonce'); ?>
-                                <input type="hidden" name="task_id" value="<?= esc_attr($task->id) ?>">
-                                <textarea rows="2" name="comment" placeholder="Viết bình luận..."></textarea>
-                                <button type="submit" name="aerp_add_task_comment" class="aerp-btn aerp-btn-secondary">
-                                    <i class="dashicons dashicons-email"></i> Gửi
                                 </button>
                             </form>
                         </div>
@@ -356,3 +344,18 @@ $total_pages = ceil($total / $limit);
         </form>
     </div>
 </div>
+
+<!-- Popup bình luận task -->
+<div class="aerp-hrm-task-popup" id="taskCommentPopup">
+    <div class="aerp-hrm-task-popup-inner">
+        <div class="aerp-hrm-task-popup-close">×</div>
+        <h3 id="taskCommentPopupTitle">Bình luận công việc</h3>
+        <div id="taskCommentPopupContent"></div>
+    </div>
+</div>
+
+<script>
+    window.aerpFrontend = {
+        ajaxurl: "<?= admin_url('admin-ajax.php') ?>"
+    };
+</script>

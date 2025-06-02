@@ -1226,16 +1226,21 @@
 .aerp-btn-primary:hover {
     background: #2563eb;
 }
-
+.aerp-task-update-status-btn,
 .aerp-btn-secondary {
     background: #e1e5e9;
     color: #64748b;
 }
 
-.aerp-btn-secondary:hover {
-    background: #e2e8f0;
+.aerp-btn-secondary:hover,
+.aerp-task-update-status-btn:hover {
+    background: #3b82f6;
+    color: #fff;
 }
-
+.aerp-btn-danger:hover {
+    background: #ef4444;
+    color: #fff;
+}
 /* No Data */
 .aerp-no-data {
     text-align: center;
@@ -1757,7 +1762,6 @@
 }
 
 .aerp-card.login-card .card-header h2 {
-    font-size: 2rem;
     font-weight: 700;
     color: #2179c4;
     margin: 0;

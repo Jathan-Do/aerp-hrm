@@ -21,7 +21,7 @@ function aerp_menu_active($slug)
         <span class="aerp-menu-icon bg-orange"><i class="dashicons dashicons-calendar-alt"></i></span>
         <span class="aerp-menu-text">Chấm công</span>
     </a>
-    <a href="<?= esc_url(wp_logout_url(site_url('/aerp-dang-nhap'))) ?>" class="aerp-menu-item aerp-logout">
+    <a href="<?= esc_url(wp_logout_url(site_url('/aerp-dang-nhap'))) ?>" class="aerp-menu-item aerp-logout" id="aerp-logout-link">
         <span class="aerp-menu-icon bg-red"><i class="dashicons dashicons-migrate"></i></span>
         <span class="aerp-menu-text">Đăng xuất</span>
     </a>
@@ -39,6 +39,16 @@ function aerp_menu_active($slug)
         if (toggleBtn && menu) {
             toggleBtn.addEventListener('click', function() {
                 menu.classList.toggle('active');
+            });
+        }
+
+        // Xác nhận khi đăng xuất
+        const logoutLink = document.getElementById('aerp-logout-link');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function(e) {
+                if (!confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
+                    e.preventDefault();
+                }
             });
         }
     });

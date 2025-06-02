@@ -2,7 +2,6 @@
 if (!defined('ABSPATH')) exit;
 
 require_once AERP_HRM_PATH . 'includes/table/table-attendance.php';
-require_once AERP_HRM_PATH . 'includes/class-attendance-manager.php';
 
 $month = sanitize_text_field($_GET['att_month'] ?? date('Y-m'));
 $table = new AERP_Attendance_Table($employee_id);

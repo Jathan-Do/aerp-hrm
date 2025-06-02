@@ -1,6 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
-require_once dirname(dirname(__FILE__)) . '/vendor/autoload.php';
+require_once AERP_HRM_PATH . 'vendor/autoload.php';
 
 if (isset($_GET['code'])) {
     $client = AERP_Google_Drive_Manager::get_instance()->get_client();
