@@ -1014,10 +1014,10 @@
 /* Responsive styles */
 @media (max-width: 768px) {
     .aerp-main-menu {
+        padding: 0 10px;
         flex-wrap: nowrap;
         overflow-x: auto;
         justify-content: flex-start;
-        padding-bottom: 10px;
         gap: 8px;
         -webkit-overflow-scrolling: touch;
     }
