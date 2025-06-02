@@ -183,8 +183,9 @@ $total_pages = ceil($total / $limit);
                         <div class="aerp-task-actions">
 
                             <!-- Bình luận -->
+                            <?php $comment_count = AERP_Task_Manager::count_comments($task->id); ?>
                             <button class="aerp-btn aerp-btn-secondary aerp-task-comment-btn" data-task-id="<?= $task->id ?>" data-task-title="<?= esc_attr($task->task_title) ?>">
-                                <i class="dashicons dashicons-format-status"></i> Bình luận
+                                <i class="dashicons dashicons-format-status"></i> Bình luận (<?= $comment_count ?>)
                             </button>
                             <?php if ($task->created_by == $user_id && $task->status != 'done'): ?>
                                 <button class="aerp-btn aerp-btn-primary" onclick='openEditTaskPopup(<?= json_encode([

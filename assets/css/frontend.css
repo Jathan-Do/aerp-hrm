@@ -953,7 +953,7 @@
     transition: all 0.18s;
     min-width: 80px;
     flex: 1 1 auto;
-    max-width: 120px;
+    max-width: 250px;
 }
 
 .aerp-menu-item .aerp-menu-icon {

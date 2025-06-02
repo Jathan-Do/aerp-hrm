@@ -1,12 +1,12 @@
 <?php
 if (!defined('ABSPATH')) exit;
 /** @var int $task_id */
-/** @var array $comments */
+/** @var array $comments_aerp */
 ?>
-<h4><i class="dashicons dashicons-format-status"></i> Bình luận</h4>
-<?php if (!empty($comments)): ?>
+<h4><i class="dashicons dashicons-format-status"></i> Bình luận (<?= count($comments_aerp) ?>)</h4>
+<?php if (!empty($comments_aerp)): ?>
     <div class="aerp-comment-list">
-        <?php foreach ($comments as $c): ?>
+        <?php foreach ($comments_aerp as $c): ?>
             <?php
             $is_admin = user_can($c->user_id, 'manage_options');
             $badge_class = $is_admin ? 'aerp-badge-admin' : 'aerp-badge-user';

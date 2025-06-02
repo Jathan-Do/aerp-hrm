@@ -243,7 +243,7 @@ function aerp_ajax_get_task_comments() {
     if (!$task_id) {
         wp_send_json_error('Thiếu task_id');
     }
-    $comments = AERP_Task_Manager::get_comments($task_id);
+    $comments_aerp = AERP_Task_Manager::get_comments($task_id);
     ob_start();
     include AERP_HRM_PATH . 'includes/ajax/ajax-task-comments.php';
     $html = ob_get_clean();
