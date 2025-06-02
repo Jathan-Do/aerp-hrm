@@ -30,11 +30,10 @@ class AERP_Salary_Table extends AERP_Base_Table
             'advance_paid'     => 'Ứng lương',
             'salary_per_day'   => 'Công/ngày',
             'work_days'        => 'Ngày công',
+            'actual_work_days' => 'Ngày thực tế',
             'off_days'         => 'Ngày nghỉ',
             'ot_days'          => 'Tăng ca',
             'final_salary'     => 'Thực lãnh',
-            'ranking'          => 'Xếp loại',
-            'points_total'     => 'Điểm',
             'note'             => 'Ghi chú',
         ];
     }
@@ -61,27 +60,11 @@ class AERP_Salary_Table extends AERP_Base_Table
         if ($column_name === 'salary_month') {
             return date('m/Y', strtotime($item[$column_name]));
         }
-        if ($column_name === 'work_days') {
-            // Tính lại số ngày làm việc chuẩn trong tháng
-            $month = $item['salary_month'];
-            $start = new DateTime($month);
-            $end = new DateTime($month);
-            $end->modify('last day of this month');
-            $work_days_standard = 0;
-            for ($d = clone $start; $d <= $end; $d->modify('+1 day')) {
-                $w = (int)$d->format('N');
-                if ($w < 6) $work_days_standard++;
-            }
-            return $work_days_standard;
-        }
-        if (in_array($column_name, ['work_days', 'ot_days'])) {
-            return number_format((float)$item[$column_name], 1, ',', '');
-        }
-        if ($column_name === 'off_days') {
-            return (int)$item[$column_name];
-        }
         if ($column_name === 'salary_per_day') {
             return number_format((float)$item[$column_name], 0, ',', '.') . ' đ';
+        }
+        if ($column_name === 'ot_days') {
+            return number_format((float)$item[$column_name], 1, ',', '.');
         }
 
         return esc_html($item[$column_name] ?? '');
@@ -153,10 +136,10 @@ class AERP_Salary_Table extends AERP_Base_Table
             if (!isset($row['final_salary'])) {
                 $row['final_salary'] = round(
                     floatval($row['base_salary']) +
-                    floatval($row['bonus']) +
-                    floatval($row['auto_bonus'] ?? 0) -
-                    floatval($row['deduction']) -
-                    floatval($row['advance_paid'] ?? 0)
+                        floatval($row['bonus']) +
+                        floatval($row['auto_bonus'] ?? 0) -
+                        floatval($row['deduction']) -
+                        floatval($row['advance_paid'] ?? 0)
                 );
             }
         }
@@ -188,7 +171,6 @@ class AERP_Salary_Table extends AERP_Base_Table
     {
         return [
             'note',
-            'ranking',
             'salary_month'
         ];
     }

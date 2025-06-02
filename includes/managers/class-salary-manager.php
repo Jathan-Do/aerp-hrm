@@ -31,12 +31,32 @@ class AERP_Salary_Manager
         // 2. Chấm công: tính tổng lương ngày công
         // --- BẮT ĐẦU SỬA LOGIC ---
         // 2.1. Số ngày làm việc chuẩn trong tháng (trừ T7, CN)
+        $today = new DateTime();
         $start = new DateTime($month_start);
         $end = new DateTime($month_end);
-        $work_days_standard = 0;
+        $now_month = $today->format('Y-m');
+        $target_month = (new DateTime($month_start))->format('Y-m');
+        // Số ngày công chuẩn của cả tháng (dùng để chia lương/ngày)
+        $work_days_standard_full_month = 0;
         for ($d = clone $start; $d <= $end; $d->modify('+1 day')) {
-            $w = (int)$d->format('N'); // 6: T7, 7: CN
-            if ($w < 6) $work_days_standard++;
+            $w = (int)$d->format('N');
+            if ($w < 6) $work_days_standard_full_month++;
+        }
+        // Số ngày công chuẩn tính đến hiện tại (dùng để tính số ngày công thực tế)
+        if ($target_month > $now_month) {
+            // Tháng tương lai
+            $work_days_standard = 0;
+        } elseif ($target_month == $now_month) {
+            // Tháng hiện tại: chỉ tính đến hôm nay
+            $end_cur = $today;
+            $work_days_standard = 0;
+            for ($d = clone $start; $d <= $end_cur; $d->modify('+1 day')) {
+                $w = (int)$d->format('N');
+                if ($w < 6) $work_days_standard++;
+            }
+        } else {
+            // Tháng quá khứ: đủ tháng
+            $work_days_standard = $work_days_standard_full_month;
         }
 
         // 2.2. Lấy các dòng chấm công trong tháng
@@ -59,7 +79,7 @@ class AERP_Salary_Manager
         $actual_work_days = $work_days_standard - $off_days;
         // 2.4. Tổng hệ số tăng ca (có thể cộng vào lương riêng hoặc vào actual_work_days tuỳ chính sách)
         // Ở đây cộng vào lương riêng:
-        $salary_per_day = ($base + $allowance) / $work_days_standard;
+        $salary_per_day = ($base + $allowance) / ($work_days_standard_full_month ?: 1);
         $total_salary = $actual_work_days * $salary_per_day + $ot_total * $salary_per_day;
         $work_days = $work_days_standard;
         // --- KẾT THÚC SỬA LOGIC ---
@@ -154,7 +174,8 @@ class AERP_Salary_Manager
             'deduction'        => $deduction,
             'adjustment'       => 0,
             'advance_paid'     => $advance,
-            'work_days'        => $work_days,
+            'work_days'        => $work_days_standard_full_month,
+            'actual_work_days' => $actual_work_days,
             'off_days'         => $off_days,
             'ot_days'          => $ot_total,
             'auto_bonus'       => $auto_bonus,

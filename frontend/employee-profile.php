@@ -193,11 +193,11 @@ $all_fines = array_merge(
 );
 
 // Lọc lại chỉ lấy các mục trong tháng hiện tại
-$all_rewards = array_filter($all_rewards, function($item) use ($month_start, $month_end) {
+$all_rewards = array_filter($all_rewards, function ($item) use ($month_start, $month_end) {
     $date = isset($item->date) ? strtotime($item->date) : false;
     return $date && $date >= strtotime($month_start) && $date <= strtotime($month_end);
 });
-$all_fines = array_filter($all_fines, function($item) use ($month_start, $month_end) {
+$all_fines = array_filter($all_fines, function ($item) use ($month_start, $month_end) {
     $date = isset($item->date) ? strtotime($item->date) : false;
     return $date && $date >= strtotime($month_start) && $date <= strtotime($month_end);
 });
@@ -216,12 +216,32 @@ if (isset($_GET['calc_month'])) {
     $base      = $config ? floatval($config->base_salary) : 0;
     $allowance = $config ? floatval($config->allowance) : 0;
     // Số ngày làm việc chuẩn
+    $today = new DateTime();
     $start = new DateTime($month_start);
     $end = new DateTime($month_end);
-    $work_days_standard = 0;
+    $now_month = $today->format('Y-m');
+    $target_month = (new DateTime($month_start))->format('Y-m');
+    // Số ngày công chuẩn của cả tháng (dùng để chia lương/ngày)
+    $work_days_standard_full_month = 0;
     for ($d = clone $start; $d <= $end; $d->modify('+1 day')) {
         $w = (int)$d->format('N');
-        if ($w < 6) $work_days_standard++;
+        if ($w < 6) $work_days_standard_full_month++;
+    }
+    // Số ngày công chuẩn tính đến hiện tại (dùng để tính số ngày công thực tế)
+    if ($target_month > $now_month) {
+        // Tháng tương lai
+        $work_days_standard = 0;
+    } elseif ($target_month == $now_month) {
+        // Tháng hiện tại: chỉ tính đến hôm nay
+        $end_cur = $today;
+        $work_days_standard = 0;
+        for ($d = clone $start; $d <= $end_cur; $d->modify('+1 day')) {
+            $w = (int)$d->format('N');
+            if ($w < 6) $work_days_standard++;
+        }
+    } else {
+        // Tháng quá khứ: đủ tháng
+        $work_days_standard = $work_days_standard_full_month;
     }
     // Chấm công
     $attendance = $wpdb->get_results($wpdb->prepare("
@@ -238,7 +258,7 @@ if (isset($_GET['calc_month'])) {
         }
     }
     $actual_work_days = $work_days_standard - $off_days;
-    $salary_per_day = ($base + $allowance) / ($work_days_standard ?: 1);
+    $salary_per_day = ($base + $allowance) / ($work_days_standard_full_month ?: 1);
     $total_salary = $actual_work_days * $salary_per_day + $ot_total * $salary_per_day;
     // Thưởng & phạt thủ công
     $adjustments = $wpdb->get_results($wpdb->prepare("
@@ -313,7 +333,7 @@ if (isset($_GET['calc_month'])) {
     $tong_nhan = $base + $allowance + ($ot_total * $salary_per_day) + $auto_bonus + $kpi_bonus + $bonus_thu_cong;
     // Tổng lương
     $final_salary = $total_salary + $bonus - $deduction - $advance;
-    $calc_data = compact('base', 'allowance', 'work_days_standard', 'off_days', 'ot_total', 'actual_work_days', 'salary_per_day', 'total_salary', 'bonus', 'deduction', 'advance', 'final_salary', 'cost_items', 'total_kpi', 'kpi_bonus', 'auto_bonus', 'total_points', 'ranking', 'tong_nhan');
+    $calc_data = compact('base', 'allowance', 'work_days_standard_full_month', 'work_days_standard', 'off_days', 'ot_total', 'actual_work_days', 'salary_per_day', 'total_salary', 'bonus', 'deduction', 'advance', 'final_salary', 'cost_items', 'total_kpi', 'kpi_bonus', 'auto_bonus', 'total_points', 'ranking', 'tong_nhan');
 }
 
 ?>
@@ -377,8 +397,17 @@ if (isset($_GET['calc_month'])) {
                             <i class="dashicons dashicons-calendar-alt"></i>
                         </div>
                         <div class="aerp-stat-info">
-                            <span class="aerp-stat-label">Ngày công</span>
+                            <span class="aerp-stat-label">Ngày công chuẩn</span>
                             <span class="aerp-stat-value"><?= $salary->work_days ?></span>
+                        </div>
+                    </div>
+                    <div class="aerp-stat-card">
+                        <div class="aerp-stat-icon bg-teal">
+                            <i class="dashicons dashicons-calendar-alt"></i>
+                        </div>
+                        <div class="aerp-stat-info">
+                            <span class="aerp-stat-label">Ngày thực tế</span>
+                            <span class="aerp-stat-value"><?= $salary->actual_work_days ?></span>
                         </div>
                     </div>
 
@@ -546,7 +575,7 @@ if (isset($_GET['calc_month'])) {
                         </div>
                         <div class="aerp-result-item">
                             <span>Tổng ngày công</span>
-                            <strong><?= $calc_data['work_days_standard'] ?></strong>
+                            <strong><?= $calc_data['work_days_standard_full_month'] ?></strong>
                         </div>
                         <div class="aerp-result-item">
                             <span>Công/ngày</span>

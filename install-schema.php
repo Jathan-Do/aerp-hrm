@@ -78,6 +78,7 @@ function aerp_hrm_install_schema()
         bonus DOUBLE DEFAULT 0,
         deduction DOUBLE DEFAULT 0,
         adjustment DOUBLE DEFAULT 0,
+        actual_work_days INT DEFAULT 0,
         work_days INT DEFAULT 0,
         off_days INT DEFAULT 0,
         ot_days FLOAT DEFAULT 0,
