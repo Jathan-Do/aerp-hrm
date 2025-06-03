@@ -116,8 +116,12 @@
                 </td>
             </tr>
             <tr>
-                <th>Chi nhánh (work_location_id)</th>
-                <td><input type="number" name="work_location_id" class="regular-text"></td>
+                <th>Chi nhánh</th>
+                <td>
+                    <select name="work_location_id">
+                        <?php aerp_safe_select_options(apply_filters('aerp_get_work_locations', []), $selected_work_location); ?>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <th>Ngày vào làm</th>

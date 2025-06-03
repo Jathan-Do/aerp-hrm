@@ -15,6 +15,13 @@ if (!defined('ABSPATH')) exit;
     </div>
 
     <div>
+        <label for="filter_work_location"><strong>Chi nhánh</strong></label><br>
+        <select name="work_location" id="filter_work_location">
+            <?php aerp_safe_select_options($work_locations, $work_location, 'id', 'name', true); ?>
+        </select>
+    </div>
+
+    <div>
         <label for="filter_department"><strong>Phòng ban</strong></label><br>
         <select name="department" id="filter_department">
             <?php aerp_safe_select_options($departments, $department, 'id', 'name', true); ?>
@@ -50,13 +57,22 @@ if (!defined('ABSPATH')) exit;
         <input type="date" name="off_date_to" value="<?= esc_attr($off_to) ?>">
     </div>
 
-<div style="display: flex; align-items: end; gap: 8px;">
-    <?php submit_button('Lọc', '', 'filter_action', false); ?>
-    <a href="<?= esc_url(remove_query_arg([
-        'status', 'department', 'position', 'birthday_month',
-        'join_date_from', 'join_date_to', 'off_date_from', 'off_date_to',
-        'filter_action', 'paged'
-    ])) ?>" class="button delete" id="aerp-reset-filter">Xoá bộ lọc</a>
-</div>
+
+    <div style="display: flex; align-items: end; gap: 8px;">
+        <?php submit_button('Lọc', '', 'filter_action', false); ?>
+        <a href="<?= esc_url(remove_query_arg([
+                        'status',
+                        'work_location',
+                        'department',
+                        'position',
+                        'birthday_month',
+                        'join_date_from',
+                        'join_date_to',
+                        'off_date_from',
+                        'off_date_to',
+                        'filter_action',
+                        'paged'
+                    ])) ?>" class="button delete" id="aerp-reset-filter">Xoá bộ lọc</a>
+    </div>
 
 </div>

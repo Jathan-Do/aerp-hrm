@@ -80,7 +80,16 @@ $data = get_object_vars($employee);
                     </select>
                 </td>
             </tr>
-            <tr><th>Chi nhánh</th><td><input type="number" name="work_location_id" value="<?= esc_attr($data['work_location_id']) ?>" class="regular-text"></td></tr>
+            <tr><th>Chi nhánh</th>
+                <td>
+                    <select name="work_location_id">
+                        <?php foreach (apply_filters('aerp_get_work_locations', []) as $loc): ?>
+                            <option value="<?= esc_attr($loc->id) ?>" <?= selected($data['work_location_id'], $loc->id) ?>>
+                                <?= esc_html($loc->name) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </td></tr>
             <tr><th>Ngày vào làm</th><td><input type="date" name="join_date" value="<?= esc_attr($data['join_date']) ?>" class="regular-text"></td></tr>
             <tr><th>Ngày nghỉ việc</th><td><input type="date" name="off_date" value="<?= esc_attr($data['off_date']) ?>" class="regular-text"></td></tr>
             <tr><th>Trạng thái</th>

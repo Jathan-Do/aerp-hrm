@@ -83,6 +83,12 @@ wp_add_inline_style('aerp-admin-employee', '
         </div>
 
         <div class="aerp-category-card">
+            <h3><span class="dashicons dashicons-building"></span> Chi nhánh</h3>
+            <p>Quản lý các chi nhánh và vị trí làm việc trong công ty</p>
+            <a href="<?php echo admin_url('admin.php?page=aerp_work_locations'); ?>" class="button button-primary">Quản lý</a>
+        </div>
+
+        <div class="aerp-category-card">
             <h3><span class="dashicons dashicons-groups"></span> Phòng ban</h3>
             <p>Thiết lập cơ cấu tổ chức và quản lý các phòng ban trong công ty</p>
             <a href="<?php echo admin_url('admin.php?page=aerp_departments'); ?>" class="button button-primary">Quản lý</a>

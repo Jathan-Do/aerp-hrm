@@ -11,6 +11,7 @@ class AERP_Employee_Table extends AERP_Base_Table
             'full_name'     => 'Họ tên',
             'phone_number'  => 'Số ĐT',
             'email'         => 'Email',
+            'work_location' => 'Chi nhánh',
             'department'    => 'Phòng ban',
             'position'      => 'Chức vụ',
             'status'        => 'Trạng thái',
@@ -76,6 +77,9 @@ class AERP_Employee_Table extends AERP_Base_Table
         if ($column_name === 'position') {
             return esc_html(aerp_get_position_name($item['position_id']));
         }
+        if ($column_name === 'work_location') {
+            return esc_html(aerp_get_work_location_name($item['work_location_id']));
+        }
         if ($column_name === 'current_points') {
             return $item['current_points'] . ' điểm';
         }
@@ -103,6 +107,7 @@ class AERP_Employee_Table extends AERP_Base_Table
     public function render_filter_form()
     {
         $status     = sanitize_text_field($_GET['status'] ?? '');
+        $work_location = sanitize_text_field($_GET['work_location'] ?? '');
         $department = sanitize_text_field($_GET['department'] ?? '');
         $position   = sanitize_text_field($_GET['position'] ?? '');
         $birthday   = sanitize_text_field($_GET['birthday_month'] ?? '');
@@ -113,6 +118,7 @@ class AERP_Employee_Table extends AERP_Base_Table
 
         $departments = apply_filters('aerp_get_departments', []);
         $positions   = apply_filters('aerp_get_positions', []);
+        $work_locations = apply_filters('aerp_get_work_locations', []);
 
         include AERP_HRM_PATH . 'admin/views/employees/employee/employee-filter-form.php';
     }
@@ -121,6 +127,7 @@ class AERP_Employee_Table extends AERP_Base_Table
     {
         return array_filter($data, function ($row) use ($request) {
             if (!empty($request['status']) && $row['status'] !== $request['status']) return false;
+            if (!empty($request['work_location']) && $row['work_location_id'] != $request['work_location']) return false;
             if (!empty($request['department']) && $row['department_id'] != $request['department']) return false;
             if (!empty($request['position']) && $row['position_id'] != $request['position']) return false;
 

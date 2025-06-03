@@ -42,12 +42,14 @@ function aerp_hrm_init()
     require_once AERP_HRM_PATH . 'includes/table/table-department.php';
     require_once AERP_HRM_PATH . 'includes/table/table-position.php';
     require_once AERP_HRM_PATH . 'includes/table/table-company.php';
+    require_once AERP_HRM_PATH . 'includes/table/table-work-location.php';
 
     // Load các class cần thiết khác
     require_once AERP_HRM_PATH . 'includes/class-excel-export-helper.php';
 
     // Load các class cần thiết manager
     $includes = [
+        'class-work-location-manager.php',
         'class-department-manager.php',
         'class-position-manager.php',
         'class-company-manager.php',
@@ -74,6 +76,7 @@ function aerp_hrm_init()
 
     // Xử lý form và logic
     $managers = [
+        'AERP_Work_Location_Manager',
         'AERP_Position_Manager',
         'AERP_Department_Manager',
         'AERP_Company_Manager',

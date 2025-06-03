@@ -27,6 +27,7 @@ function aerp_hrm_get_table_names()
         $wpdb->prefix . 'aerp_hrm_kpi_settings',
         $wpdb->prefix . 'aerp_hrm_employee_journey',
         $wpdb->prefix . 'aerp_hrm_company_info',
+        $wpdb->prefix . 'aerp_hrm_work_locations',
         // ... thêm bảng khác nếu có
     ];
 }
@@ -268,6 +269,14 @@ function aerp_hrm_install_schema()
         address TEXT,
         website VARCHAR(100),
         logo_url TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    ) $charset_collate;";
+
+    // 20. Chi nhánh (Work Locations)
+    $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_hrm_work_locations (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     ) $charset_collate;";
 

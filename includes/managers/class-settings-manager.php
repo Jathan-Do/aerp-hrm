@@ -145,6 +145,16 @@ class AERP_HRM_Settings_Manager
             [__CLASS__, 'kpi_settings_page']
         );
 
+        // Submenu: Quản lý chi nhánh
+        add_submenu_page(
+            'aerp_categories',
+            'Chi nhánh',
+            'Chi nhánh',
+            'manage_options',
+            'aerp_work_locations',
+            [__CLASS__, 'work_locations_page']
+        );
+
         // === Các menu ẩn ===
         // Submenu ẩn: Thêm lương
         add_submenu_page(
@@ -537,6 +547,19 @@ class AERP_HRM_Settings_Manager
     // Thêm hàm hiển thị trang Danh mục
     public static function categories_page() {
         include_once AERP_HRM_PATH . 'admin/views/categories/list.php';
+    }
+
+    public static function work_locations_page()
+    {
+        if (isset($_GET['edit'])) {
+            include_once AERP_HRM_PATH . 'admin/views/work-locations/form-edit.php';
+            return;
+        }
+        if (isset($_GET['add'])) {
+            include_once AERP_HRM_PATH . 'admin/views/work-locations/form-add.php';
+            return;
+        }
+        include_once AERP_HRM_PATH . 'admin/views/work-locations/list.php';
     }
 
     public static function google_drive_settings_page() {
