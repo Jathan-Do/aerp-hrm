@@ -576,7 +576,7 @@
 
 .aerp-detail-list {
     list-style: none;
-    padding: 0;
+    padding: 0 10px !important;
     margin: 0;
 }
 
@@ -1229,6 +1229,7 @@
 
 .aerp-btn-primary:hover {
     background: #2563eb;
+    color: #fff;
 }
 .aerp-task-update-status-btn,
 .aerp-btn-secondary {
@@ -1575,6 +1576,7 @@
 .aerp-task-actions {
     display: flex;
     gap: 5px;
+    flex-wrap: wrap;
 }
 
 .aerp-task-content {

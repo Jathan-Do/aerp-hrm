@@ -128,7 +128,7 @@ $total_pages = ceil($total / $limit);
     <!-- Header và Filter -->
     <div class="aerp-card aerp-task-header">
         <div class="aerp-card-header">
-            <h2><i class="dashicons dashicons-list-view"></i> Quản lý công việc</h2>
+            <h2 style="margin-bottom: 0;"><i class="dashicons dashicons-list-view"></i> Quản lý công việc</h2>
             <button type="button" class="aerp-btn aerp-btn-primary" data-open-aerp-hrm-task-popup>
                 <i class="dashicons dashicons-plus"></i> Thêm công việc
             </button>
@@ -203,7 +203,7 @@ $total_pages = ceil($total / $limit);
                                 <form method="post" style="display:inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa công việc này?');">
                                     <?php wp_nonce_field('aerp_delete_own_task_action', 'aerp_delete_own_task_nonce'); ?>
                                     <input type="hidden" name="delete_task_id" value="<?= esc_attr($task->id) ?>">
-                                    <button type="submit" name="aerp_delete_own_task" class="aerp-btn aerp-btn-danger">
+                                    <button type="submit" name="aerp_delete_own_task" class="aerp-btn aerp-btn-primary aerp-btn-danger">
                                         <i class="dashicons dashicons-trash"></i>
                                     </button>
                                 </form>
