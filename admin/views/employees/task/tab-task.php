@@ -13,7 +13,9 @@ $current_year = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
 $total_kpi = 0;
 $tasks = $table->get_tasks_by_month($current_month, $current_year);
 foreach ($tasks as $task) {
-    $total_kpi += floatval($task->score);
+    if ($task->status === 'done') {
+        $total_kpi += floatval($task->score);
+    }
 }
 
 // Vietnamese month names
