@@ -99,6 +99,30 @@ class AERP_Employee_Manager
             self::log_journey($id, 'join', '', '', 'Vào làm');
         }
 
+        // Lưu role cho user
+        $user_id = absint($_POST['user_id']);
+        if (isset($_POST['user_roles']) && $user_id) {
+            $roles = array_map('intval', (array)$_POST['user_roles']);
+            $wpdb->delete($wpdb->prefix . 'aerp_user_role', ['user_id' => $user_id]);
+            foreach ($roles as $rid) {
+                $wpdb->insert($wpdb->prefix . 'aerp_user_role', [
+                    'user_id' => $user_id,
+                    'role_id' => $rid
+                ]);
+            }
+        }
+
+        // Lưu quyền đặc biệt cho user
+        if ($user_id) {
+            $permissions = isset($_POST['user_permissions']) ? array_map('intval', (array)$_POST['user_permissions']) : [];
+            $wpdb->delete($wpdb->prefix . 'aerp_user_permission', ['user_id' => $user_id]);
+            foreach ($permissions as $pid) {
+                $wpdb->insert($wpdb->prefix . 'aerp_user_permission', [
+                    'user_id' => $user_id,
+                    'permission_id' => $pid
+                ]);
+            }
+        }
 
         add_action('admin_notices', function () use ($msg) {
             echo '<div class="updated"><p>' . esc_html($msg) . '</p></div>';

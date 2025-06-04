@@ -153,14 +153,72 @@
                         <?php
                         $users = get_users();
                         foreach ($users as $user) {
-                            $user_roles = array_map(function ($role) {
+                            $wp_user_roles = array_map(function ($role) {
                                 return translate_user_role(wp_roles()->roles[$role]['name']);
                             }, $user->roles);
-                            $role_display = !empty($user_roles) ? ' (' . implode(', ', $user_roles) . ')' : '';
+                            $role_display = !empty($wp_user_roles) ? ' (' . implode(', ', $wp_user_roles) . ')' : '';
                             echo '<option value="' . esc_attr($user->ID) . '">' . esc_html($user->display_name . ' - ' . $user->user_email . $role_display) . '</option>';
                         }
                         ?>
                     </select>
+                </td>
+            </tr>
+            <?php
+            $all_roles = class_exists('AERP_Role_Manager') ? AERP_Role_Manager::get_roles() : [];
+            $all_permissions = class_exists('AERP_Permission_Manager') ? AERP_Permission_Manager::get_permissions() : [];
+            $role_permissions_map = [];
+            if (!empty($all_roles)) {
+                foreach ($all_roles as $role) {
+                    $role_permissions_map[$role->id] = AERP_Role_Manager::get_permissions_of_role($role->id);
+                }
+            }
+            ?>
+            <script>
+                var rolePermissionsMap = <?= json_encode($role_permissions_map) ?>;
+            </script>
+            <tr>
+                <th>Nhóm quyền</th>
+                <td>
+                    <div class="aerp-perm-group">
+                        <?php foreach ($all_roles as $role): ?>
+                            <label style="display:block;margin-bottom:4px;">
+                                <input type="checkbox" class="role-checkbox" data-role-id="<?= esc_attr($role->id) ?>" name="user_roles[]" value="<?= esc_attr($role->id) ?>">
+                            <?= esc_html($role->name) ?><?php if ($role->description) echo ' - ' . esc_html($role->description); ?>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>Quyền đặc biệt</th>
+                <td>
+                    <div class="aerp-perm-grid ">
+                        <?php
+                        // Group quyền theo feature
+                        $grouped_permissions = [];
+                        foreach ($all_permissions as $perm) {
+                            if (preg_match('/^([a-zA-Z0-9_]+)_/', $perm->name, $matches)) {
+                                $feature = $matches[1];
+                                $grouped_permissions[$feature][] = $perm;
+                            } else {
+                                $grouped_permissions['Khác'][] = $perm;
+                            }
+                        }
+                        ?>
+                        <?php foreach ($grouped_permissions as $feature => $perms): ?>
+                            <div class="aerp-perm-group">
+                                <div class="aerp-perm-group-title"><?= esc_html($feature) ?></div>
+                                <div class="aerp-perm-checkbox">
+                                    <?php foreach ($perms as $perm): ?>
+                                        <label title="<?= esc_attr($perm->description ?: $perm->name) ?>">
+                                            <input type="checkbox" class="perm-checkbox" data-perm-id="<?= esc_attr($perm->id) ?>" name="user_permissions[]" value="<?= esc_attr($perm->id) ?>">
+                                            <?= esc_html($perm->name) ?><?php if ($perm->description) echo ' - ' . esc_html($perm->description); ?>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </td>
             </tr>
         </table>

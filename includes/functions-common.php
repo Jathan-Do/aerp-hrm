@@ -146,3 +146,54 @@ function aerp_js_redirect($url)
     echo '<script>window.location.href="' . esc_url_raw($url) . '";</script>';
     exit;
 }
+
+/**
+ * Kiểm tra user có quyền (permission) không (từ role hoặc quyền đặc biệt)
+ * @param int $user_id
+ * @param string $permission_name (tên quyền, cột name trong bảng aerp_permissions)
+ * @return bool
+ */
+function aerp_user_has_permission($user_id, $permission_name) {
+    global $wpdb;
+    // Lấy permission_id từ tên quyền
+    $permission_id = $wpdb->get_var($wpdb->prepare(
+        "SELECT id FROM {$wpdb->prefix}aerp_permissions WHERE name = %s", $permission_name
+    ));
+    if (!$permission_id) return false;
+
+    // Kiểm tra quyền đặc biệt
+    $has_special = $wpdb->get_var($wpdb->prepare(
+        "SELECT 1 FROM {$wpdb->prefix}aerp_user_permission WHERE user_id = %d AND permission_id = %d", $user_id, $permission_id
+    ));
+    if ($has_special) return true;
+
+    // Kiểm tra quyền từ nhóm quyền
+    $has_role = $wpdb->get_var($wpdb->prepare(
+        "SELECT 1 FROM {$wpdb->prefix}aerp_user_role ur
+         JOIN {$wpdb->prefix}aerp_role_permission rp ON ur.role_id = rp.role_id
+         WHERE ur.user_id = %d AND rp.permission_id = %d", $user_id, $permission_id
+    ));
+    return (bool)$has_role;
+}
+
+/**
+ * Kiểm tra user có quyền thực hiện chức năng (theo mapping động)
+ * @param int $user_id
+ * @param string $feature_key (key chức năng, ví dụ: 'edit_salary')
+ * @return bool
+ */
+function aerp_user_can($user_id, $feature_key) {
+    $map = get_option('aerp_feature_permission_map', []);
+    $permission = $map[$feature_key] ?? '';
+    if (!$permission) return false;
+
+    // Nếu là mảng, kiểm tra user có ít nhất 1 quyền trong mảng
+    if (is_array($permission)) {
+        foreach ($permission as $perm) {
+            if (aerp_user_has_permission($user_id, $perm)) return true;
+        }
+        return false;
+    }
+    // Nếu là chuỗi
+    return aerp_user_has_permission($user_id, $permission);
+}

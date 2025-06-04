@@ -77,3 +77,45 @@ jQuery(function ($) {
         });
     }
 });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    function updatePermissionCheckboxes() {
+        // Lấy tất cả role đang được check
+        let checkedRoles = Array.from(document.querySelectorAll('.role-checkbox:checked')).map(cb => cb.getAttribute('data-role-id'));
+        // Tập hợp tất cả permission_id đã có qua role
+        let permsViaRole = new Set();
+        checkedRoles.forEach(roleId => {
+            if (rolePermissionsMap[roleId]) {
+                rolePermissionsMap[roleId].forEach(pid => permsViaRole.add(String(pid)));
+            }
+        });
+        // Cập nhật trạng thái các checkbox quyền đặc biệt
+        document.querySelectorAll('.perm-checkbox').forEach(cb => {
+            let pid = cb.getAttribute('data-perm-id');
+            if (permsViaRole.has(pid)) {
+                cb.checked = false;
+                cb.disabled = true;
+                cb.parentElement.style.color = '#888';
+                if (!cb.parentElement.querySelector('.perm-via-role')) {
+                    let span = document.createElement('span');
+                    span.className = 'perm-via-role';
+                    span.style = 'color:#888; font-size:11px; margin-left:4px;';
+                    span.innerText = '(Đã có qua nhóm quyền)';
+                    cb.parentElement.appendChild(span);
+                }
+            } else {
+                cb.disabled = false;
+                cb.parentElement.style.color = '';
+                let span = cb.parentElement.querySelector('.perm-via-role');
+                if (span) span.remove();
+            }
+        });
+    }
+    // Gắn sự kiện
+    document.querySelectorAll('.role-checkbox').forEach(cb => {
+        cb.addEventListener('change', updatePermissionCheckboxes);
+    });
+    // Khởi tạo lần đầu
+    updatePermissionCheckboxes();
+});

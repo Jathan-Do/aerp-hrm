@@ -1,0 +1,62 @@
+/* Perm grid */
+.aerp-perm-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px 32px;
+    margin-top: 8px;
+}
+.aerp-perm-group {
+    background: #f8fafd;
+    border: 1px solid #e2e4e7;
+    border-radius: 6px;
+    padding: 10px 14px 8px 14px;
+    min-width: 200px;
+}
+.aerp-perm-group-title {
+    font-weight: 600;
+    color: #2271b1;
+    margin-bottom: 6px;
+    text-transform: capitalize;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+}
+.aerp-perm-checkbox label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.aerp-perm-checkbox input[type=checkbox] {
+    margin-right: 6px;
+}
+
+/* Matrix permission */
+.aerp-matrix-permission th,
+.aerp-matrix-permission td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.aerp-matrix-permission th {
+    background: #ffffff;
+}
+
+.aerp-matrix-permission td {
+    min-width: 60px;
+}
+
+.aerp-matrix-permission tr:nth-child(even) {
+    background: #f0f0f0;
+}
+
+.aerp-matrix-permission tr:hover {
+    background: #eaf6ff;
+}
+
+.aerp-no-permission {
+    color: #888;
+    font-size: 16px;
+    display: block;
+}
+

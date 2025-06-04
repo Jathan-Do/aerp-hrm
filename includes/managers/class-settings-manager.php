@@ -155,6 +155,27 @@ class AERP_HRM_Settings_Manager
             [__CLASS__, 'work_locations_page']
         );
 
+        // Submenu: Quản lý nhóm quyền
+        add_submenu_page(
+            'aerp_categories',
+            'Nhóm quyền',
+            'Nhóm quyền',
+            'manage_options',
+            'aerp_roles',
+            [__CLASS__, 'roles_page']
+        );
+
+        // Submenu: Quản lý quyền
+        add_submenu_page(
+            'aerp_categories',
+            'Quyền',
+            'Quyền',
+            'manage_options',
+            'aerp_permissions',
+            [__CLASS__, 'permissions_page']
+        );
+
+
         // === Các menu ẩn ===
         // Submenu ẩn: Thêm lương
         add_submenu_page(
@@ -314,6 +335,18 @@ class AERP_HRM_Settings_Manager
             remove_submenu_page('aerp_employees', 'aerp_employee_reward_edit');
             remove_submenu_page('aerp_employees', 'aerp_adjustment_edit');
         });
+
+        // Menu cấu hình mapping động phân quyền chức năng
+        add_submenu_page(
+            'aerp_categories',
+            'Cấu hình phân quyền chức năng',
+            'Phân quyền chức năng',
+            'manage_options',
+            'aerp_feature_permission_map',
+            function () {
+                include AERP_HRM_PATH . 'admin/views/settings/feature-permission-map.php';
+            }
+        );
     }
 
     public static function aerp_hrm_reports_page()
@@ -452,6 +485,9 @@ class AERP_HRM_Settings_Manager
 
     public static function license_page()
     {
+        if (!aerp_user_can(get_current_user_id(), 'license')) {
+            wp_die('Bạn không có quyền truy cập trang này!');
+        }
         if (isset($_POST['aerp_license_update']) && check_admin_referer('aerp_license_action', 'aerp_license_nonce')) {
             $data = [];
 
@@ -545,7 +581,8 @@ class AERP_HRM_Settings_Manager
     }
 
     // Thêm hàm hiển thị trang Danh mục
-    public static function categories_page() {
+    public static function categories_page()
+    {
         include_once AERP_HRM_PATH . 'admin/views/categories/list.php';
     }
 
@@ -562,7 +599,8 @@ class AERP_HRM_Settings_Manager
         include_once AERP_HRM_PATH . 'admin/views/work-locations/list.php';
     }
 
-    public static function google_drive_settings_page() {
+    public static function google_drive_settings_page()
+    {
         // TẠM THỜI VÔ HIỆU HÓA CHỨC NĂNG GOOGLE DRIVE
         // // Đường dẫn credentials.json mới trong thư mục plugin
         // $credentials_path = AERP_HRM_PATH . 'credentials.json';
@@ -631,5 +669,31 @@ class AERP_HRM_Settings_Manager
         //     $auth_url = $client->createAuthUrl();
         //     echo '<a href="' . esc_url($auth_url) . '" class="button button-primary">Kết nối Google Drive</a>';
         // }
+    }
+
+    public static function roles_page()
+    {
+        if (isset($_GET['edit'])) {
+            include_once AERP_HRM_PATH . 'admin/views/roles/form-edit.php';
+            return;
+        }
+        if (isset($_GET['add'])) {
+            include_once AERP_HRM_PATH . 'admin/views/roles/form-add.php';
+            return;
+        }
+        include_once AERP_HRM_PATH . 'admin/views/roles/list.php';
+    }
+
+    public static function permissions_page()
+    {
+        if (isset($_GET['edit'])) {
+            include_once AERP_HRM_PATH . 'admin/views/permissions/form-edit.php';
+            return;
+        }
+        if (isset($_GET['add'])) {
+            include_once AERP_HRM_PATH . 'admin/views/permissions/form-add.php';
+            return;
+        }
+        include_once AERP_HRM_PATH . 'admin/views/permissions/list.php';
     }
 }

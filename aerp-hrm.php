@@ -63,6 +63,8 @@ function aerp_hrm_init()
         'class-discipline-manager.php',
         'class-adjustment-manager.php',
         'class-report-manager.php',
+        'class-role-manager.php',
+        'class-permission-manager.php',
     ];
     foreach ($includes as $file) {
         require_once AERP_HRM_PATH . 'includes/managers/' . $file;
@@ -87,6 +89,8 @@ function aerp_hrm_init()
         'AERP_Advance_Manager',
         'AERP_Discipline_Manager',
         'AERP_Adjustment_Manager',
+        'AERP_Role_Manager',
+        'AERP_Permission_Manager',
     ];
     foreach ($managers as $manager) {
         if (method_exists($manager, 'handle_submit')) {
@@ -189,6 +193,7 @@ add_action('admin_enqueue_scripts', function () {
     wp_enqueue_script('aerp-admin-employee', AERP_HRM_URL . 'assets/js/admin-employee.js', ['jquery', 'chartjs'], $version, true);
     wp_enqueue_media();
     wp_enqueue_style('aerp-admin-employee', AERP_HRM_URL . 'assets/css/reports.css', [], $version);
+    wp_enqueue_style('aerp-backend', AERP_HRM_URL . 'assets/css/backend.css', [], $version);
 }, 1);
 
 // Export Excel dùng chung (dạng POST)

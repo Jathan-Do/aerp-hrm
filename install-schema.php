@@ -280,6 +280,41 @@ function aerp_hrm_install_schema()
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     ) $charset_collate;";
 
+    // 21. Roles (Nhóm quyền)
+    $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_roles (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        description TEXT
+    ) $charset_collate;";
+
+    // 22. Permissions (Quyền chi tiết)
+    $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_permissions (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        description TEXT
+    ) $charset_collate;";
+
+    // 23. Role-Permission mapping
+    $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_role_permission (
+        role_id BIGINT NOT NULL,
+        permission_id BIGINT NOT NULL,
+        PRIMARY KEY (role_id, permission_id)
+    ) $charset_collate;";
+
+    // 24. User-Role mapping
+    $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_user_role (
+        user_id BIGINT NOT NULL,
+        role_id BIGINT NOT NULL,
+        PRIMARY KEY (user_id, role_id)
+    ) $charset_collate;";
+
+    // 25. User-Permission mapping (quyền đặc biệt)
+    $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_user_permission (
+        user_id BIGINT NOT NULL,
+        permission_id BIGINT NOT NULL,
+        PRIMARY KEY (user_id, permission_id)
+    ) $charset_collate;";
+
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     foreach ($sqls as $sql) {
         dbDelta($sql);

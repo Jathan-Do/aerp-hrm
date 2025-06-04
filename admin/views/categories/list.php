@@ -74,14 +74,13 @@ wp_add_inline_style('aerp-admin-employee', '
 <div class="wrap">
     <h1 class="wp-heading-inline">Danh mục quản lý</h1>
     <hr class="wp-header-end">
-    
+
     <div class="aerp-category-grid">
         <div class="aerp-category-card">
             <h3><span class="dashicons dashicons-building"></span> Thông tin công ty</h3>
             <p>Quản lý thông tin doanh nghiệp, chi nhánh và các thông tin cơ bản</p>
             <a href="<?php echo admin_url('admin.php?page=aerp_companies'); ?>" class="button button-primary">Quản lý</a>
         </div>
-
         <div class="aerp-category-card">
             <h3><span class="dashicons dashicons-building"></span> Chi nhánh</h3>
             <p>Quản lý các chi nhánh và vị trí làm việc trong công ty</p>
@@ -129,5 +128,20 @@ wp_add_inline_style('aerp-admin-employee', '
             <p>Tổng hợp lương của tất cả nhân viên</p>
             <a href="<?php echo admin_url('admin.php?page=aerp_salary_summary'); ?>" class="button button-primary">Quản lý</a>
         </div>
+        <div class="aerp-category-card">
+            <h3><span class="dashicons dashicons-groups"></span> Nhóm quyền</h3>
+            <p>Quản lý các nhóm quyền và quyền hạn của nhân viên</p>
+            <a href="<?php echo admin_url('admin.php?page=aerp_roles'); ?>" class="button button-primary">Quản lý</a>
+        </div>
+        <div class="aerp-category-card">
+            <h3><span class="dashicons dashicons-groups"></span> Quyền</h3>
+            <p>Quản lý các quyền và quyền hạn của nhân viên</p>
+            <a href="<?php echo admin_url('admin.php?page=aerp_permissions'); ?>" class="button button-primary">Quản lý</a>
+        </div>
+        <div class="aerp-category-card">
+            <h3><span class="dashicons dashicons-groups"></span> Phân quyền chức năng</h3>
+            <p>Cấu hình phân quyền chức năng</p>
+            <a href="<?php echo admin_url('admin.php?page=aerp_feature_permission_map'); ?>" class="button button-primary">Quản lý</a>
+        </div>
     </div>
-</div> 
+</div>
