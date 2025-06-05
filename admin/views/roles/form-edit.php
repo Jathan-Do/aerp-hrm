@@ -8,6 +8,8 @@ if (!$role) {
 $data = get_object_vars($role);
 $all_permissions = function_exists('AERP_Permission_Manager::get_permissions') ? AERP_Permission_Manager::get_permissions() : (class_exists('AERP_Permission_Manager') ? AERP_Permission_Manager::get_permissions() : []);
 $role_permissions = AERP_Role_Manager::get_permissions_of_role($role_id);
+$system_slugs = ['admin', 'department_lead', 'accountant', 'employee'];
+$is_system_role = in_array($data['slug'] ?? '', $system_slugs);
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline">Chỉnh sửa nhóm quyền</h1>
@@ -17,11 +19,11 @@ $role_permissions = AERP_Role_Manager::get_permissions_of_role($role_id);
         <table class="form-table">
             <tr>
                 <th>Tên nhóm quyền</th>
-                <td><input type="text" name="role_name" value="<?= esc_attr($data['name']) ?>" class="regular-text" required></td>
+                <td><input type="text" name="role_name" value="<?= esc_attr($data['name']) ?>" class="regular-text" required <?= $is_system_role ? 'readonly' : '' ?>></td>
             </tr>
             <tr>
                 <th>Mô tả</th>
-                <td><textarea name="role_desc" class="large-text"><?= esc_textarea($data['description']) ?></textarea></td>
+                <td><textarea name="role_desc" class="large-text" <?= $is_system_role ? 'readonly' : '' ?>><?= esc_textarea($data['description']) ?></textarea></td>
             </tr>
             <tr>
                 <th>Quyền</th>

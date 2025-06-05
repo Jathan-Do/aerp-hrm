@@ -1,6 +1,8 @@
 <?php
 require_once AERP_HRM_PATH . 'includes/table/table-role.php';
 AERP_Role_Manager::handle_delete();
+$system_slugs = ['admin', 'department_lead', 'accountant', 'employee'];
+
 $table = new AERP_Role_Table([
     'plural'   => 'roles',
     'singular' => 'role',

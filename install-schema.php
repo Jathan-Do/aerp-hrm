@@ -28,6 +28,12 @@ function aerp_hrm_get_table_names()
         $wpdb->prefix . 'aerp_hrm_employee_journey',
         $wpdb->prefix . 'aerp_hrm_company_info',
         $wpdb->prefix . 'aerp_hrm_work_locations',
+        $wpdb->prefix . 'aerp_roles',
+        $wpdb->prefix . 'aerp_permissions',
+        $wpdb->prefix . 'aerp_role_permission',
+        $wpdb->prefix . 'aerp_user_role',
+        $wpdb->prefix . 'aerp_user_permission',
+
         // ... thêm bảng khác nếu có
     ];
 }
@@ -248,6 +254,7 @@ function aerp_hrm_install_schema()
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         description TEXT,
+        manager_id INT DEFAULT NULL;
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     ) $charset_collate;";
 
@@ -284,7 +291,8 @@ function aerp_hrm_install_schema()
     $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_roles (
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
-        description TEXT
+        description TEXT,
+        slug VARCHAR(100) NOT NULL
     ) $charset_collate;";
 
     // 22. Permissions (Quyền chi tiết)

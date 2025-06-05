@@ -182,13 +182,35 @@
                     <div class="aerp-perm-group">
                         <?php foreach ($all_roles as $role): ?>
                             <label style="display:block;margin-bottom:4px;">
-                                <input type="checkbox" class="role-checkbox" data-role-id="<?= esc_attr($role->id) ?>" name="user_roles[]" value="<?= esc_attr($role->id) ?>">
-                            <?= esc_html($role->name) ?><?php if ($role->description) echo ' - ' . esc_html($role->description); ?>
+                                <input type="checkbox" class="role-checkbox" data-role-id="<?= esc_attr($role->id) ?>" name="user_roles[]" value="<?= esc_attr($role->id) ?>" id="role-<?= esc_attr($role->name) ?>">
+                                <?= esc_html($role->name) ?><?php if ($role->description) echo ' - ' . esc_html($role->description); ?>
                             </label>
+                            <?php if ($role->name === 'department_lead'): ?>
+                                <div id="select-department-lead" style="display:none; margin: 8px 0 0 24px;">
+                                    <label>Chọn phòng ban quản lý:</label>
+                                    <select name="department_lead_department_id">
+                                        <option value="">-- Chọn phòng ban --</option>
+                                        <?php foreach (apply_filters('aerp_get_departments', []) as $dept): ?>
+                                            <option value="<?= esc_attr($dept->id) ?>"><?= esc_html($dept->name) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     </div>
                 </td>
             </tr>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var leadCheckbox = document.getElementById('role-department_lead');
+                var selectDiv = document.getElementById('select-department-lead');
+                if (leadCheckbox && selectDiv) {
+                    leadCheckbox.addEventListener('change', function() {
+                        selectDiv.style.display = this.checked ? 'block' : 'none';
+                    });
+                }
+            });
+            </script>
             <tr>
                 <th>Quyền đặc biệt</th>
                 <td>

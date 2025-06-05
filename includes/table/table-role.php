@@ -34,9 +34,11 @@ class AERP_Role_Table extends AERP_Base_Table {
             admin_url('admin.php?page=aerp_roles&delete=' . $item['id']),
             'aerp_delete_role_' . $item['id']
         );
+        $system_slugs = ['admin', 'department_lead', 'accountant', 'employee'];
+        $is_system_role = in_array($item['slug'], $system_slugs);
         $actions = [
-            'edit'   => '<a href="' . esc_url($edit_url) . '">Sửa</a>',
-            'delete' => '<a href="' . esc_url($delete_url) . '" onclick="return confirm(\'Bạn có chắc muốn xoá nhóm quyền này?\')">Xoá</a>',
+            'edit'   => $is_system_role ? '<span style="color:#aaa;">Sửa</span>' : '<a href="' . esc_url($edit_url) . '">Sửa</a>',
+            'delete' => $is_system_role ? '<span style="color:#aaa;">Xoá</span>' : '<a href="' . esc_url($delete_url) . '" onclick="return confirm(\'Bạn có chắc muốn xoá nhóm quyền này?\')">Xoá</a>',
         ];
         return sprintf(
             '<strong>%s</strong> %s',

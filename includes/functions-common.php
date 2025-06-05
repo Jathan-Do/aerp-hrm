@@ -197,3 +197,20 @@ function aerp_user_can($user_id, $feature_key) {
     // Nếu là chuỗi
     return aerp_user_has_permission($user_id, $permission);
 }
+
+/**
+ * Kiểm tra user có thuộc nhóm quyền (role) nào đó không
+ * @param int $user_id
+ * @param string $role_name (tên nhóm quyền, ví dụ: 'admin', 'department_lead')
+ * @return bool
+ */
+function aerp_user_has_role($user_id, $role_name) {
+    global $wpdb;
+    $role_id = $wpdb->get_var($wpdb->prepare(
+        "SELECT id FROM {$wpdb->prefix}aerp_roles WHERE name = %s", $role_name
+    ));
+    if (!$role_id) return false;
+    return (bool) $wpdb->get_var($wpdb->prepare(
+        "SELECT 1 FROM {$wpdb->prefix}aerp_user_role WHERE user_id = %d AND role_id = %d", $user_id, $role_id
+    ));
+}

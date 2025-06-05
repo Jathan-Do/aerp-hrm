@@ -28,6 +28,14 @@ if (!empty($all_roles)) {
         $role_permissions_map[$role->id] = AERP_Role_Manager::get_permissions_of_role($role->id);
     }
 }
+
+$department_lead_role_id = null;
+foreach ($all_roles as $role) {
+    if ($role->name === 'department_lead') {
+        $department_lead_role_id = $role->id;
+        break;
+    }
+}
 ?>
 
 <div class="wrap">
@@ -204,10 +212,23 @@ if (!empty($all_roles)) {
                     <?php foreach ($all_roles as $role): ?>
                         <?php $is_checked = in_array((string)$role->id, array_map('strval', $user_roles)); ?>
                         <label style="display:block;margin-bottom:4px;">
-                            <input type="checkbox" class="role-checkbox" data-role-id="<?= esc_attr($role->id) ?>" name="user_roles[]" value="<?= esc_attr($role->id) ?>" <?= $is_checked ? 'checked' : '' ?>>
+                            <input type="checkbox" class="role-checkbox" data-role-id="<?= esc_attr($role->id) ?>" name="user_roles[]" value="<?= esc_attr($role->id) ?>" id="role-<?= esc_attr($role->name) ?>" <?= $is_checked ? 'checked' : '' ?>>
                             <?= esc_html($role->name) ?><?php if ($role->description) echo ' - ' . esc_html($role->description); ?>
                         </label>
-                        <?php endforeach; ?>
+                        <?php if ($role->name === 'department_lead'): ?>
+                            <div id="select-department-lead" style="display: <?= $is_checked ? 'block' : 'none' ?>; margin: 8px 0 0 24px;">
+                                <label>Chọn phòng ban quản lý:</label>
+                                <select name="department_lead_department_id">
+                                    <option value="">-- Chọn phòng ban --</option>
+                                    <?php foreach (apply_filters('aerp_get_departments', []) as $dep): ?>
+                                        <option value="<?= esc_attr($dep->id) ?>" <?= ($dep->manager_id == $data['user_id']) ? 'selected' : '' ?>>
+                                            <?= esc_html($dep->name) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                     </div>
                 </td>
             </tr>
@@ -267,4 +288,13 @@ if (!empty($all_roles)) {
 
 <script>
     var rolePermissionsMap = <?= json_encode($role_permissions_map) ?>;
+    document.addEventListener('DOMContentLoaded', function() {
+        var leadCheckbox = document.getElementById('role-department_lead');
+        var selectDiv = document.getElementById('select-department-lead');
+        if (leadCheckbox && selectDiv) {
+            leadCheckbox.addEventListener('change', function() {
+                selectDiv.style.display = this.checked ? 'block' : 'none';
+            });
+        }
+    });
 </script>

@@ -54,7 +54,11 @@ function aerp_custom_login_form() {
                     </button>
                 </div>
                 
-                <input type="hidden" name="redirect_to" value="<?php echo esc_url(home_url('/aerp-ho-so-nhan-vien')); ?>">
+                <?php
+                // Lấy URL redirect dựa vào role
+                $redirect_url = aerp_get_login_redirect_url();
+                ?>
+                <input type="hidden" name="redirect_to" value="<?php echo esc_url($redirect_url); ?>">
             </form>
         </div>
     </div>
@@ -62,3 +66,31 @@ function aerp_custom_login_form() {
     return ob_get_clean();
 }
 add_shortcode('aerp_login', 'aerp_custom_login_form');
+
+// Hàm helper để lấy URL redirect
+function aerp_get_login_redirect_url() {
+    // Nếu đã đăng nhập, lấy role hiện tại
+    if (is_user_logged_in()) {
+        $user_id = get_current_user_id();
+        // Ưu tiên: admin -> hr_manager -> department_lead -> accountant -> employee
+        if (aerp_user_has_role($user_id, 'admin')) {
+            return home_url('/aerp-quan-ly');
+        }
+        if (aerp_user_has_role($user_id, 'hr_manager')) {
+            return home_url('/aerp-quan-ly');
+        }
+        if (aerp_user_has_role($user_id, 'department_lead')) {
+            return home_url('/aerp-quan-ly');
+        }
+        if (aerp_user_has_role($user_id, 'accountant')) {
+            return home_url('/aerp-ke-toan');
+        }
+        if (aerp_user_has_role($user_id, 'employee')) {
+            return home_url('/aerp-ho-so-nhan-vien');
+        }
+        // Nếu không có role nào thì về trang nhân viên
+        return home_url('/aerp-ho-so-nhan-vien');
+    }
+    // Nếu chưa đăng nhập, mặc định về trang nhân viên
+    return home_url('/aerp-ho-so-nhan-vien');
+}

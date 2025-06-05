@@ -101,9 +101,10 @@ class AERP_Employee_Manager
 
         // Lưu role cho user
         $user_id = absint($_POST['user_id']);
+        // Luôn xóa hết roles cũ trước khi insert lại
+        $wpdb->delete($wpdb->prefix . 'aerp_user_role', ['user_id' => $user_id]);
         if (isset($_POST['user_roles']) && $user_id) {
             $roles = array_map('intval', (array)$_POST['user_roles']);
-            $wpdb->delete($wpdb->prefix . 'aerp_user_role', ['user_id' => $user_id]);
             foreach ($roles as $rid) {
                 $wpdb->insert($wpdb->prefix . 'aerp_user_role', [
                     'user_id' => $user_id,
@@ -121,6 +122,68 @@ class AERP_Employee_Manager
                     'user_id' => $user_id,
                     'permission_id' => $pid
                 ]);
+            }
+        }
+
+        $user_roles = isset($_POST['user_roles']) ? array_map('intval', (array)$_POST['user_roles']) : [];
+        $all_roles = AERP_Role_Manager::get_roles();
+        $department_lead_role_id = null;
+        if (!empty($all_roles)) {
+            foreach ($all_roles as $role) {
+                $role_name = is_array($role) ? $role['name'] : $role->name;
+                $role_id = is_array($role) ? $role['id'] : $role->id;
+                if ($role_name === 'department_lead') {
+                    $department_lead_role_id = $role_id;
+                    break;
+                }
+            }
+        }
+        $department_id = isset($_POST['department_lead_department_id']) ? intval($_POST['department_lead_department_id']) : 0;
+
+        // Xử lý quyền trưởng phòng
+        if ($user_id && $department_lead_role_id) {
+            // Nếu user có role trưởng phòng nhưng không chọn phòng ban
+            if (in_array($department_lead_role_id, $user_roles) && !$department_id) {
+                // Xóa role trưởng phòng khỏi user
+                $user_roles = array_diff($user_roles, [$department_lead_role_id]);
+                // Xóa manager_id ở tất cả các phòng ban
+                $wpdb->update(
+                    $wpdb->prefix . 'aerp_hrm_departments',
+                    ['manager_id' => null],
+                    ['manager_id' => $user_id]
+                );
+                // Cập nhật lại roles cho user
+                $wpdb->delete($wpdb->prefix . 'aerp_user_role', ['user_id' => $user_id]);
+                foreach ($user_roles as $rid) {
+                    $wpdb->insert($wpdb->prefix . 'aerp_user_role', [
+                        'user_id' => $user_id,
+                        'role_id' => $rid
+                    ]);
+                }
+            }
+            // Nếu user có role trưởng phòng và có chọn phòng ban
+            else if (in_array($department_lead_role_id, $user_roles) && $department_id) {
+                // 1. Xóa manager_id của user này ở tất cả các phòng ban khác
+                $wpdb->update(
+                    $wpdb->prefix . 'aerp_hrm_departments',
+                    ['manager_id' => null],
+                    ['manager_id' => $user_id]
+                );
+                // 2. Update manager_id cho phòng ban vừa chọn
+                $wpdb->update(
+                    $wpdb->prefix . 'aerp_hrm_departments',
+                    ['manager_id' => $user_id],
+                    ['id' => $department_id]
+                );
+            } 
+            // Nếu user không còn role trưởng phòng
+            else if (!in_array($department_lead_role_id, $user_roles)) {
+                // Xóa manager_id của user này ở tất cả các phòng ban
+                $wpdb->update(
+                    $wpdb->prefix . 'aerp_hrm_departments',
+                    ['manager_id' => null],
+                    ['manager_id' => $user_id]
+                );
             }
         }
 
