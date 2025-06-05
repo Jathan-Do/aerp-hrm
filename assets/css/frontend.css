@@ -289,7 +289,22 @@
     padding: 20px;
     color: #333;
 }
-
+.aerp-hrm-dashboard h1,
+.aerp-hrm-dashboard h2,
+.aerp-hrm-dashboard h3 {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+    margin-bottom: 0 !important;
+}
+.aerp-hrm-dashboard h1 {
+    font-size: 28px !important;
+}
+.aerp-hrm-dashboard h2 {
+    font-size: 18px !important;
+}
+.aerp-hrm-dashboard h3 {
+    font-size: 15px !important;
+}
 /* Header Profile */
 .aerp-profile-header {
     display: flex;
@@ -1046,7 +1061,7 @@
         gap: 8px;
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.5s cubic-bezier(.4,0,.2,1);
+        transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
     }
     .aerp-main-menu.active {
@@ -1091,6 +1106,28 @@
     display: none;
     align-items: center;
     justify-content: center;
+}
+.aerp-hrm-task-popup h1,
+.aerp-hrm-task-popup h2,
+.aerp-hrm-task-popup h3,
+.aerp-popup h1,
+.aerp-popup h2,
+.aerp-popup h3 {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+    margin-bottom: 0 !important;
+}
+.aerp-hrm-task-popup h1,
+.aerp-popup h1 {
+    font-size: 28px !important;
+}
+.aerp-hrm-task-popup h2,
+.aerp-popup h2 {
+    font-size: 18px !important;
+}
+.aerp-hrm-task-popup h3,
+.aerp-popup h3 {
+    font-size: 15px !important;
 }
 
 .aerp-popup.active {
@@ -1183,6 +1220,7 @@
     font-size: 14px;
     transition: all 0.2s;
     box-sizing: border-box;
+    background-color: #fff;
 }
 
 .aerp-form select:focus,
@@ -1528,6 +1566,7 @@
     margin-bottom: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
 }
 
 .aerp-task-item:hover {
@@ -1751,15 +1790,15 @@
     margin: 60px auto 0 auto;
     background: #fff;
     border-radius: 18px;
-    box-shadow: 0 4px 32px rgba(52, 152, 219, 0.10), 0 1.5px 6px rgba(44, 62, 80, 0.06);
+    box-shadow: 0 4px 32px rgba(52, 152, 219, 0.1), 0 1.5px 6px rgba(44, 62, 80, 0.06);
     padding: 36px 36px 28px 36px;
-    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    font-family: "Segoe UI", "Roboto", Arial, sans-serif;
     border: 1px solid #eaf1fb;
     transition: box-shadow 0.2s;
 }
 
 .aerp-card.login-card:hover {
-    box-shadow: 0 8px 40px rgba(52, 152, 219, 0.18), 0 2px 8px rgba(44, 62, 80, 0.10);
+    box-shadow: 0 8px 40px rgba(52, 152, 219, 0.18), 0 2px 8px rgba(44, 62, 80, 0.1);
 }
 
 .aerp-card.login-card .card-header {

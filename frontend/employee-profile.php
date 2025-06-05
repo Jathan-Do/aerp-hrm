@@ -348,7 +348,7 @@ if (isset($_GET['calc_month'])) {
             <div class="aerp-avatar-circle"><?= esc_html($initial) ?></div>
         </div>
         <div class="aerp-profile-info">
-            <h1><?= esc_html($employee->full_name) ?></h1>
+            <h2><?= esc_html($employee->full_name) ?></h2>
             <div class="aerp-profile-meta">
                 <span><i class="dashicons dashicons-id"></i> Mã NV: <?= esc_html($employee->employee_code) ?></span>
                 <span><i class="dashicons dashicons-businessman"></i> <?= esc_html(aerp_get_position_name($employee->position_id)) ?></span>
