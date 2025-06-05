@@ -12,8 +12,8 @@ class AERP_Salary_Manager
         $month_start = date('Y-m-01 00:00:00', strtotime($month));
         $month_end   = date('Y-m-t 23:59:59', strtotime($month));
 
-        // 1. Lấy cấu hình lương trong khoảng thời gian
-        $today = date('Y-m-d'); // hoặc truyền vào ngày cần tính
+        // SỬA: Lấy ngày đầu tháng cần tính lương, không lấy ngày hiện tại
+        $target_date = date('Y-m-01', strtotime($month));
         $config = $wpdb->get_row($wpdb->prepare("
         SELECT * FROM {$wpdb->prefix}aerp_hrm_salary_config
         WHERE employee_id = %d
@@ -21,7 +21,7 @@ class AERP_Salary_Manager
           AND end_date >= %s
         ORDER BY start_date DESC
         LIMIT 1
-    ", $employee_id, $today, $today));
+    ", $employee_id, $target_date, $target_date));
 
         if (!$config) return false;
 

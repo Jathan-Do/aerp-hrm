@@ -26,13 +26,11 @@ if (
         + Tạm ứng lương
     </a>
 </p>
-<?php if (aerp_user_can(get_current_user_id(), 'salary')) { ?>
     <form method="post" style="margin-bottom: 20px;">
         <?php wp_nonce_field('aerp_salary_action', 'aerp_salary_nonce'); ?>
     <input type="month" name="salary_month" value="<?= esc_attr($month ?: date('Y-m')) ?>" required>
         <input type="submit" name="aerp_generate_salary" class="button" value="Tính lương tháng này">
     </form>
-<?php } ?>
 
 <?php
 $table = new AERP_Salary_Table($employee_id);
