@@ -35,6 +35,16 @@
                 <th><label for="logo_url">Logo URL</label></th>
                 <td><input type="url" name="logo_url" class="regular-text" value="<?= esc_attr($info->logo_url ?? '') ?>"></td>
             </tr>
+            <tr>
+                <th><label for="work_saturday">Làm việc thứ 7</label></th>
+                <td>
+                    <select name="work_saturday" id="work_saturday">
+                        <option value="off" <?= ($info->work_saturday ?? 'off') === 'off' ? 'selected' : '' ?>>Nghỉ thứ 7</option>
+                        <option value="full" <?= ($info->work_saturday ?? 'off') === 'full' ? 'selected' : '' ?>>Làm cả ngày thứ 7</option>
+                        <option value="half" <?= ($info->work_saturday ?? 'off') === 'half' ? 'selected' : '' ?>>Làm nửa ngày thứ 7</option>
+                    </select>
+                </td>
+            </tr>
         </table>
 
         <p>

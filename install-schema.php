@@ -276,6 +276,7 @@ function aerp_hrm_install_schema()
         address TEXT,
         website VARCHAR(100),
         logo_url TEXT,
+        work_saturday VARCHAR(10) DEFAULT 'off', -- off, full, half
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     ) $charset_collate;";
 

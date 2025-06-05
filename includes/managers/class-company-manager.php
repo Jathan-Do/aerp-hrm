@@ -22,6 +22,7 @@ class AERP_Company_Manager {
             'address'      => sanitize_text_field($_POST['address']),
             'website'      => esc_url_raw($_POST['website']),
             'logo_url'     => esc_url_raw($_POST['logo_url']),
+            'work_saturday' => sanitize_text_field($_POST['work_saturday'] ?? 'off'),
         ];
 
         $info = self::get_info();

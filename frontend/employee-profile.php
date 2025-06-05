@@ -221,11 +221,23 @@ if (isset($_GET['calc_month'])) {
     $end = new DateTime($month_end);
     $now_month = $today->format('Y-m');
     $target_month = (new DateTime($month_start))->format('Y-m');
+    // Lấy cấu hình làm việc thứ 7 từ công ty
+    $company_info = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}aerp_hrm_company_info LIMIT 1");
+    $work_saturday = $company_info->work_saturday ?? 'off';
     // Số ngày công chuẩn của cả tháng (dùng để chia lương/ngày)
     $work_days_standard_full_month = 0;
     for ($d = clone $start; $d <= $end; $d->modify('+1 day')) {
         $w = (int)$d->format('N');
-        if ($w < 6) $work_days_standard_full_month++;
+        if ($w < 6) {
+            $work_days_standard_full_month++;
+        } elseif ($w == 6) {
+            if ($work_saturday === 'full') {
+                $work_days_standard_full_month++;
+            } elseif ($work_saturday === 'half') {
+                $work_days_standard_full_month += 0.5;
+            }
+        }
+        // Chủ nhật (w==7) luôn nghỉ
     }
     // Số ngày công chuẩn tính đến hiện tại (dùng để tính số ngày công thực tế)
     if ($target_month > $now_month) {
