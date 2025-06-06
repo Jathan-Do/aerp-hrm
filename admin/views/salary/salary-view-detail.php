@@ -284,26 +284,26 @@ $configs = $wpdb->get_results($wpdb->prepare("
         <td><b>Họ tên</b></td>
         <td><?= esc_html($row->full_name) ?></td>
         <td><b>Mã NV</b></td>
-        <td><?= esc_html($row->employee_code) ?></td>
-    </tr>
-    <tr>
+                <td><?= esc_html($row->employee_code) ?></td>
+            </tr>
+            <tr>
         <td><b>Phòng ban</b></td>
         <td><?= esc_html(aerp_get_department_name($row->department_id)) ?></td>
         <td><b>Chức vụ</b></td>
         <td><?= esc_html(aerp_get_position_name($row->position_id)) ?></td>
-    </tr>
-    <tr>
+            </tr>
+            <tr>
         <td><b>Ngày vào làm</b></td>
         <td><?= $row->join_date ? date('d/m/Y', strtotime($row->join_date)) : '—' ?></td>
         <td><b>Xếp loại</b></td>
         <td><?= esc_html($row->ranking ?: '--') ?></td>
-    </tr>
-    <tr>
+            </tr>
+            <tr>
         <td><b>Email</b></td>
         <td><?= esc_html($row->email) ?></td>
         <td><b>Ngân hàng</b></td>
         <td><?= esc_html($row->bank_name ?: '—') ?> (<?= esc_html($row->bank_account ?: '—') ?>)</td>
-    </tr>
+            </tr>
 </table>
 
 <table class="aerp-salary-print-table">
@@ -321,15 +321,15 @@ $configs = $wpdb->get_results($wpdb->prepare("
     <tr>
         <td>Thưởng KPI</td>
         <td colspan="3">+<?= number_format($kpi_bonus, 0, ',', '.') ?> đ</td>
-    </tr>
-    <tr>
+            </tr>
+            <tr>
         <td>Thưởng động</td>
         <td colspan="3">+<?= number_format($row->auto_bonus ?? 0, 0, ',', '.') ?> đ</td>
-    </tr>
-    <tr>
+            </tr>
+            <tr>
         <td>Thưởng khác</td>
         <td colspan="3">+<?= number_format(($row->bonus ?? 0) - $kpi_bonus, 0, ',', '.') ?> đ</td>
-    </tr>
+            </tr>
     <?php if (!empty($all_rewards)): ?>
         <?php foreach ($all_rewards as $r): ?>
             <tr>

@@ -182,21 +182,21 @@ function aerp_user_has_permission($user_id, $permission_name) {
  * @param string $feature_key (key chức năng, ví dụ: 'edit_salary')
  * @return bool
  */
-function aerp_user_can($user_id, $feature_key) {
-    $map = get_option('aerp_feature_permission_map', []);
-    $permission = $map[$feature_key] ?? '';
-    if (!$permission) return false;
+// function aerp_user_can($user_id, $feature_key) {
+//     $map = get_option('aerp_feature_permission_map', []);
+//     $permission = $map[$feature_key] ?? '';
+//     if (!$permission) return false;
 
-    // Nếu là mảng, kiểm tra user có ít nhất 1 quyền trong mảng
-    if (is_array($permission)) {
-        foreach ($permission as $perm) {
-            if (aerp_user_has_permission($user_id, $perm)) return true;
-        }
-        return false;
-    }
-    // Nếu là chuỗi
-    return aerp_user_has_permission($user_id, $permission);
-}
+//     // Nếu là mảng, kiểm tra user có ít nhất 1 quyền trong mảng
+//     if (is_array($permission)) {
+//         foreach ($permission as $perm) {
+//             if (aerp_user_has_permission($user_id, $perm)) return true;
+//         }
+//         return false;
+//     }
+//     // Nếu là chuỗi
+//     return aerp_user_has_permission($user_id, $permission);
+// }
 
 /**
  * Kiểm tra user có thuộc nhóm quyền (role) nào đó không

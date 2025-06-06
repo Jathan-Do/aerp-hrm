@@ -23,10 +23,6 @@
                     <?php endforeach; ?>
                 </td>
             </tr>
-            <tr style="display:none;">
-                <th>Slug</th>
-                <td><input type="text" name="role_slug" class="regular-text" value=""></td>
-            </tr>
         </table>
         <p>
             <input type="submit" name="aerp_save_role" class="button button-primary" value="Lưu thông tin">
@@ -34,21 +30,3 @@
         </p>
     </form>
 </div> 
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var systemSlugs = ['admin', 'department_lead', 'accountant', 'employee'];
-    var nameInput = document.querySelector('input[name=\'role_name\']');
-    var slugRow = document.querySelector('tr[style*="display:none"]');
-    if (nameInput && slugRow) {
-        nameInput.addEventListener('input', function() {
-            var val = this.value.trim().toLowerCase().replace(/\s+/g, '_');
-            if (systemSlugs.includes(val)) {
-                slugRow.style.display = 'none';
-            } else {
-                slugRow.style.display = '';
-            }
-        });
-    }
-});
-</script> 

@@ -292,8 +292,7 @@ function aerp_hrm_install_schema()
     $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_roles (
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
-        description TEXT,
-        slug VARCHAR(100) NOT NULL
+        description TEXT
     ) $charset_collate;";
 
     // 22. Permissions (Quyền chi tiết)
@@ -327,5 +326,135 @@ function aerp_hrm_install_schema()
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     foreach ($sqls as $sql) {
         dbDelta($sql);
+    }
+    // ✅ Seed data
+    aerp_hrm_seed_data();
+}
+
+function aerp_hrm_seed_data()
+{
+    global $wpdb;
+
+    // 1. Seed Roles
+    $roles = [
+        ['name' => 'admin', 'description' => 'Quản trị hệ thống'],
+        ['name' => 'department_lead', 'description' => 'Trưởng phòng ban'],
+        ['name' => 'accountant', 'description' => 'Kế toán'],
+        ['name' => 'employee', 'description' => 'Nhân viên thông thường'],
+    ];
+
+    foreach ($roles as $role) {
+        $exists = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$wpdb->prefix}aerp_roles WHERE name = %s",
+            $role['name']
+        ));
+        if (!$exists) {
+            $wpdb->insert($wpdb->prefix . 'aerp_roles', $role);
+        }
+    }
+
+    // 2. Seed Permissions
+    $permissions = [
+        // Salary
+        ['name' => 'salary_calculate', 'description' => 'Tính lương'],
+        ['name' => 'salary_edit', 'description' => 'Chỉnh sửa lương'],
+        ['name' => 'salary_view', 'description' => 'Xem lương'],
+
+        // Employee
+        ['name' => 'employee_add', 'description' => 'Thêm nhân viên'],
+        ['name' => 'employee_edit', 'description' => 'Chỉnh sửa nhân viên'],
+        ['name' => 'employee_view', 'description' => 'Xem thông tin nhân viên'],
+
+        // Attendance
+        ['name' => 'attendance_mark', 'description' => 'Chấm công'],
+        ['name' => 'attendance_approve', 'description' => 'Duyệt chấm công'],
+        ['name' => 'attendance_view', 'description' => 'Xem chấm công'],
+
+        // Task
+        ['name' => 'task_create', 'description' => 'Tạo công việc'],
+        ['name' => 'task_edit', 'description' => 'Chỉnh sửa công việc'],
+        ['name' => 'task_view', 'description' => 'Xem công việc'],
+    ];
+
+    foreach ($permissions as $perm) {
+        $exists = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$wpdb->prefix}aerp_permissions WHERE name = %s",
+            $perm['name']
+        ));
+        if (!$exists) {
+            $wpdb->insert($wpdb->prefix . 'aerp_permissions', $perm);
+        }
+    }
+
+    // 3. Seed Role-Permission mapping
+    $role_permissions = [
+        'admin' => [
+            'salary_calculate',
+            'salary_edit',
+            'salary_view',
+            'employee_add',
+            'employee_edit',
+            'employee_view',
+            'attendance_mark',
+            'attendance_approve',
+            'attendance_view',
+            'task_create',
+            'task_edit',
+            'task_view'
+        ],
+        'department_lead' => [
+            'salary_view',
+            'employee_view',
+            'attendance_mark',
+            'attendance_approve',
+            'attendance_view',
+            'task_create',
+            'task_edit',
+            'task_view'
+        ],
+        'accountant' => [
+            'salary_calculate',
+            'salary_edit',
+            'salary_view',
+            'employee_view',
+            'attendance_view'
+        ],
+        'employee' => [
+            'salary_view',
+            'attendance_mark',
+            'task_view'
+        ]
+    ];
+
+    foreach ($role_permissions as $role_name => $permissions) {
+        $role_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$wpdb->prefix}aerp_roles WHERE name = %s",
+            $role_name
+        ));
+
+        if ($role_id) {
+            foreach ($permissions as $perm_name) {
+                $perm_id = $wpdb->get_var($wpdb->prepare(
+                    "SELECT id FROM {$wpdb->prefix}aerp_permissions WHERE name = %s",
+                    $perm_name
+                ));
+
+                if ($perm_id) {
+                    $exists = $wpdb->get_var($wpdb->prepare(
+                        "SELECT 1 FROM {$wpdb->prefix}aerp_role_permission 
+                        WHERE role_id = %d AND permission_id = %d",
+                        $role_id,
+                        $perm_id
+                    ));
+
+                    if (!$exists) {
+                        $wpdb->insert($wpdb->prefix . 'aerp_role_permission', [
+                            'role_id' => $role_id,
+                            'permission_id' => $perm_id
+                        ]);
+                    }
+                }
+            }
+        }
     }
 }

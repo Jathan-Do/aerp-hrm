@@ -138,10 +138,5 @@ wp_add_inline_style('aerp-admin-employee', '
             <p>Quản lý các quyền và quyền hạn của nhân viên</p>
             <a href="<?php echo admin_url('admin.php?page=aerp_permissions'); ?>" class="button button-primary">Quản lý</a>
         </div>
-        <div class="aerp-category-card">
-            <h3><span class="dashicons dashicons-groups"></span> Phân quyền chức năng</h3>
-            <p>Cấu hình phân quyền chức năng</p>
-            <a href="<?php echo admin_url('admin.php?page=aerp_feature_permission_map'); ?>" class="button button-primary">Quản lý</a>
-        </div>
     </div>
 </div>

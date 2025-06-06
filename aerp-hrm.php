@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: AERP Core – Quản trị doanh nghiệp
  * Description: Plugin tổng hợp gồm nền tảng (framework) và nhân sự (HRM) của hệ thống AERP.
@@ -116,7 +117,8 @@ function aerp_hrm_init()
             wp_enqueue_style('aerp-hrm-frontend', AERP_HRM_URL . 'assets/css/frontend.css', [], '1.0');
             wp_enqueue_style('aerp-hrm-manager-dashboard', AERP_HRM_URL . 'assets/css/manager-dashboard.css', [], '1.0');
             wp_enqueue_style('dashicons');
-            wp_enqueue_script('aerp-hrm-frontend', AERP_HRM_URL . 'assets/js/frontend.js', ['jquery'], '1.0', true);
+            wp_enqueue_script('aerp-hrm-frontend', AERP_HRM_URL . 'assets/js/frontend.js', ['jquery', 'chartjs'], '1.0', true);
+            wp_enqueue_script('chartjs', 'https://cdn.jsdelivr.net/npm/chart.js', [], null, true);
         }
     }, 1);
 
@@ -132,7 +134,7 @@ add_action('plugins_loaded', 'aerp_hrm_init');
 register_activation_hook(__FILE__, function () {
     require_once AERP_HRM_PATH . 'install-schema.php';
     aerp_hrm_install_schema();
-    aerp_hrm_create_system_roles();
+    // aerp_hrm_create_system_roles();
 
     // Tạo các trang mặc định với shortcode
     $pages = [
@@ -244,7 +246,8 @@ function aerp_handle_common_export_excel()
 }
 
 // Redirect khi đăng nhập sai về trang custom login
-function aerp_login_failed_redirect($username) {
+function aerp_login_failed_redirect($username)
+{
     $referrer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
     if (strpos($referrer, 'aerp-dang-nhap') !== false) {
         wp_redirect(home_url('/aerp-dang-nhap?login=failed'));
@@ -254,7 +257,8 @@ function aerp_login_failed_redirect($username) {
 add_action('wp_login_failed', 'aerp_login_failed_redirect');
 
 // AJAX: trả về HTML bình luận cho 1 task (thực tế, tách view)
-function aerp_ajax_get_task_comments() {
+function aerp_ajax_get_task_comments()
+{
     $task_id = absint($_POST['task_id'] ?? 0);
     if (!$task_id) {
         wp_send_json_error('Thiếu task_id');
@@ -267,26 +271,26 @@ function aerp_ajax_get_task_comments() {
 }
 add_action('wp_ajax_aerp_get_task_comments', 'aerp_ajax_get_task_comments');
 
-function aerp_hrm_create_system_roles() {
-    global $wpdb;
-    $table = $wpdb->prefix . 'aerp_roles';
-    $system_roles = [
-        ['slug' => 'admin', 'name' => 'admin', 'description' => 'Quản trị hệ thống'],
-        ['slug' => 'department_lead', 'name' => 'department_lead', 'description' => 'Trưởng phòng'],
-        ['slug' => 'accountant', 'name' => 'accountant', 'description' => 'Kế toán'],
-        ['slug' => 'employee', 'name' => 'employee', 'description' => 'Nhân viên thông thường'],
-    ];
-    foreach ($system_roles as $role) {
-        $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM $table WHERE slug = %s", $role['slug']));
-        if (!$exists) {
-            $result = $wpdb->insert($table, [
-                'slug' => $role['slug'],
-                'name' => $role['name'],
-                'description' => $role['description'],
-            ]);
-            error_log("AERP Insert role: {$role['slug']} - Result: " . var_export($result, true) . ' - Last error: ' . $wpdb->last_error);
-        } else {
-            error_log("AERP Role exists: {$role['slug']}");
-        }
-    }
-}
+// function aerp_hrm_create_system_roles() {
+//     global $wpdb;
+//     $table = $wpdb->prefix . 'aerp_roles';
+//     $system_roles = [
+//         ['slug' => 'admin', 'name' => 'admin', 'description' => 'Quản trị hệ thống'],
+//         ['slug' => 'department_lead', 'name' => 'department_lead', 'description' => 'Trưởng phòng'],
+//         ['slug' => 'accountant', 'name' => 'accountant', 'description' => 'Kế toán'],
+//         ['slug' => 'employee', 'name' => 'employee', 'description' => 'Nhân viên thông thường'],
+//     ];
+//     foreach ($system_roles as $role) {
+//         $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM $table WHERE slug = %s", $role['slug']));
+//         if (!$exists) {
+//             $result = $wpdb->insert($table, [
+//                 'slug' => $role['slug'],
+//                 'name' => $role['name'],
+//                 'description' => $role['description'],
+//             ]);
+//             error_log("AERP Insert role: {$role['slug']} - Result: " . var_export($result, true) . ' - Last error: ' . $wpdb->last_error);
+//         } else {
+//             error_log("AERP Role exists: {$role['slug']}");
+//         }
+//     }
+// }

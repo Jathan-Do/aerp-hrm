@@ -337,16 +337,16 @@ class AERP_HRM_Settings_Manager
         });
 
         // Menu cấu hình mapping động phân quyền chức năng
-        add_submenu_page(
-            'aerp_categories',
-            'Cấu hình phân quyền chức năng',
-            'Phân quyền chức năng',
-            'manage_options',
-            'aerp_feature_permission_map',
-            function () {
-                include AERP_HRM_PATH . 'admin/views/settings/feature-permission-map.php';
-            }
-        );
+        // add_submenu_page(
+        //     'aerp_categories',
+        //     'Cấu hình phân quyền chức năng',
+        //     'Phân quyền chức năng',
+        //     'manage_options',
+        //     'aerp_feature_permission_map',
+        //     function () {
+        //         include AERP_HRM_PATH . 'admin/views/settings/feature-permission-map.php';
+        //     }
+        // );
     }
 
     public static function aerp_hrm_reports_page()
@@ -485,7 +485,7 @@ class AERP_HRM_Settings_Manager
 
     public static function license_page()
     {
-        if (!aerp_user_can(get_current_user_id(), 'license')) {
+        if (!aerp_user_has_permission(get_current_user_id(), 'license_manage')) {
             wp_die('Bạn không có quyền truy cập trang này!');
         }
         if (isset($_POST['aerp_license_update']) && check_admin_referer('aerp_license_action', 'aerp_license_nonce')) {
