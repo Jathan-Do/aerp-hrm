@@ -254,7 +254,7 @@ function aerp_hrm_install_schema()
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         description TEXT,
-        manager_id INT DEFAULT NULL;
+        manager_id INT DEFAULT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     ) $charset_collate;";
 

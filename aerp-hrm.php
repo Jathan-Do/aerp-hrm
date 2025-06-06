@@ -270,27 +270,3 @@ function aerp_ajax_get_task_comments()
     wp_send_json_success(['html' => $html]);
 }
 add_action('wp_ajax_aerp_get_task_comments', 'aerp_ajax_get_task_comments');
-
-// function aerp_hrm_create_system_roles() {
-//     global $wpdb;
-//     $table = $wpdb->prefix . 'aerp_roles';
-//     $system_roles = [
-//         ['slug' => 'admin', 'name' => 'admin', 'description' => 'Quản trị hệ thống'],
-//         ['slug' => 'department_lead', 'name' => 'department_lead', 'description' => 'Trưởng phòng'],
-//         ['slug' => 'accountant', 'name' => 'accountant', 'description' => 'Kế toán'],
-//         ['slug' => 'employee', 'name' => 'employee', 'description' => 'Nhân viên thông thường'],
-//     ];
-//     foreach ($system_roles as $role) {
-//         $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM $table WHERE slug = %s", $role['slug']));
-//         if (!$exists) {
-//             $result = $wpdb->insert($table, [
-//                 'slug' => $role['slug'],
-//                 'name' => $role['name'],
-//                 'description' => $role['description'],
-//             ]);
-//             error_log("AERP Insert role: {$role['slug']} - Result: " . var_export($result, true) . ' - Last error: ' . $wpdb->last_error);
-//         } else {
-//             error_log("AERP Role exists: {$role['slug']}");
-//         }
-//     }
-// }
