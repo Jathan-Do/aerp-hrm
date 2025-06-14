@@ -72,10 +72,10 @@ ob_start();
             </div>
             <div class="mb-3">
                 <label for="work_saturday" class="form-label">Làm việc thứ 7</label>
-                <select name="work_saturday" id="work_saturday">
-                    <option value="off" <?= ($info->work_saturday ?? 'off') === 'off' ? 'selected' : '' ?>>Nghỉ thứ 7</option>
-                    <option value="full" <?= ($info->work_saturday ?? 'off') === 'full' ? 'selected' : '' ?>>Làm cả ngày thứ 7</option>
-                    <option value="half" <?= ($info->work_saturday ?? 'off') === 'half' ? 'selected' : '' ?>>Làm nửa ngày thứ 7</option>
+                <select class="form-select" name="work_saturday" id="work_saturday">
+                    <option value="off" <?= ($editing->work_saturday ?? 'off') === 'off' ? 'selected' : '' ?>>Nghỉ thứ 7</option>
+                    <option value="full" <?= ($editing->work_saturday ?? 'off') === 'full' ? 'selected' : '' ?>>Làm cả ngày thứ 7</option>
+                    <option value="half" <?= ($editing->work_saturday ?? 'off') === 'half' ? 'selected' : '' ?>>Làm nửa ngày thứ 7</option>
                 </select>
             </div>
             <div class="d-flex gap-2">

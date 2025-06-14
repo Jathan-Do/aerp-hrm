@@ -61,7 +61,7 @@ ob_start();
             </div>
             <div class="mb-3">
                 <label for="work_saturday" class="form-label">Làm việc thứ 7</label>
-                <select name="work_saturday" id="work_saturday">
+                <select class="form-select" name="work_saturday" id="work_saturday">
                     <option value="off">Nghỉ thứ 7</option>
                     <option value="full">Làm cả ngày thứ 7</option>
                     <option value="half">Làm nửa ngày thứ 7</option>
