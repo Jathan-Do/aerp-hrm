@@ -74,7 +74,7 @@ function aerp_get_login_redirect_url() {
         $user_id = get_current_user_id();
         // Ưu tiên: admin -> hr_manager -> department_lead -> accountant -> employee
         if (aerp_user_has_role($user_id, 'admin')) {
-            return home_url('/aerp-quan-ly');
+            return home_url('/aerp-dashboard');
         }
         if (aerp_user_has_role($user_id, 'hr_manager')) {
             return home_url('/aerp-quan-ly');
@@ -89,8 +89,8 @@ function aerp_get_login_redirect_url() {
             return home_url('/aerp-ho-so-nhan-vien');
         }
         // Nếu không có role nào thì về trang nhân viên
-        return home_url('/aerp-ho-so-nhan-vien');
+        // return home_url('/aerp-ho-so-nhan-vien');
     }
     // Nếu chưa đăng nhập, mặc định về trang nhân viên
-    return home_url('/aerp-ho-so-nhan-vien');
+    // return home_url('/aerp-ho-so-nhan-vien');
 }

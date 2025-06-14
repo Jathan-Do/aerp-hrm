@@ -18,7 +18,7 @@ jQuery(document).ready(function($) {
                 borderWidth: 1
             }]
         },
-        options: {
+        options: {  
             responsive: true,
             scales: {
                 y: {

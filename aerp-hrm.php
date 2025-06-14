@@ -45,6 +45,13 @@ function aerp_hrm_init()
     require_once AERP_HRM_PATH . 'includes/table/table-company.php';
     require_once AERP_HRM_PATH . 'includes/table/table-work-location.php';
 
+    // Load frontend table classes
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-frontend-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-department-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-company-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-position-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-work-location-table.php';
+
     // Load các class cần thiết khác
     require_once AERP_HRM_PATH . 'includes/class-excel-export-helper.php';
 
@@ -70,6 +77,18 @@ function aerp_hrm_init()
     foreach ($includes as $file) {
         require_once AERP_HRM_PATH . 'includes/managers/' . $file;
     }
+
+    // Load frontend manager classes
+    $includes = [
+        'class-frontend-department-manager.php',
+        'class-frontend-company-manager.php',
+        'class-frontend-position-manager.php',
+        'class-frontend-work-location-manager.php',
+    ];
+    foreach ($includes as $file) {
+        require_once AERP_HRM_PATH . 'frontend/includes/managers/' . $file;
+    }
+
 
     // Shortcodes frontend
     require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-hr-profile.php';
@@ -105,6 +124,24 @@ function aerp_hrm_init()
             add_action('admin_init', [$manager, 'handle_delete']);
         }
     }
+    // Xử lý form và logic frontend
+    $managers = [
+        'AERP_Frontend_Department_Manager',
+        'AERP_Frontend_Company_Manager',
+        'AERP_Frontend_Position_Manager',
+        'AERP_Frontend_Work_Location_Manager',
+    ];
+    foreach ($managers as $manager) {
+        if (method_exists($manager, 'handle_submit')) {
+            add_action('init', [$manager, 'handle_submit']);
+        }
+        if (method_exists($manager, 'handle_form_submit')) {
+            add_action('init', [$manager, 'handle_form_submit']);
+        }
+        if (method_exists($manager, 'handle_delete')) {
+            add_action('init', [$manager, 'handle_delete']);
+        }
+    }
 
     // Admin menu
     if (is_admin()) {
@@ -119,6 +156,7 @@ function aerp_hrm_init()
             wp_enqueue_style('dashicons');
             wp_enqueue_script('aerp-hrm-frontend', AERP_HRM_URL . 'assets/js/frontend.js', ['jquery', 'chartjs'], '1.0', true);
             wp_enqueue_script('chartjs', 'https://cdn.jsdelivr.net/npm/chart.js', [], null, true);
+            wp_enqueue_script('aerp-frontend-table', AERP_HRM_URL . 'assets/js/frontend-table.js', ['jquery'], '1.0', true);
         }
     }, 1);
 
@@ -178,6 +216,7 @@ register_activation_hook(__FILE__, function () {
             ]);
         }
     }
+    flush_rewrite_rules();
 });
 
 // Xóa các trang khi deactivate plugin
@@ -187,6 +226,8 @@ register_deactivation_hook(__FILE__, function () {
         'aerp-cham-cong',
         'aerp-danh-sach-cong-viec',
         'aerp-dang-nhap',
+        'aerp-quan-ly',
+        // 'aerp-dashboard'
     ];
     foreach ($slugs as $slug) {
         $page = get_page_by_path($slug);
@@ -194,6 +235,7 @@ register_deactivation_hook(__FILE__, function () {
             wp_delete_post($page->ID, true); // true = force delete
         }
     }
+    flush_rewrite_rules();
 });
 
 // Tải asset admin
@@ -270,3 +312,6 @@ function aerp_ajax_get_task_comments()
     wp_send_json_success(['html' => $html]);
 }
 add_action('wp_ajax_aerp_get_task_comments', 'aerp_ajax_get_task_comments');
+
+// === REWRITE RULES FOR FRONTEND DASHBOARD ===
+require_once AERP_HRM_PATH . 'frontend/includes/page-rewrite-rules.php';
