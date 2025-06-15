@@ -3,13 +3,13 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+$current_user = wp_get_current_user();
+$user_id = $current_user->ID;
 // Check if user is logged in and has admin capabilities
-if (!is_user_logged_in() || !current_user_can('manage_options')) {
+if (!is_user_logged_in() || !aerp_user_has_role($user_id, 'admin')) {
     wp_die(__('You do not have sufficient permissions to access this page.'));
 }
 
-// Get current user
-$current_user = wp_get_current_user();
 
 $edit_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
 $editing = AERP_Frontend_Work_Location_Manager::get_by_id($edit_id);
@@ -37,13 +37,13 @@ ob_start();
             <input type="hidden" name="work_location_id" value="<?php echo esc_attr($edit_id); ?>">
             <div class="mb-3">
                 <label for="work_location_name" class="form-label">Tên chi nhánh</label>
-                <input type="text" class="form-control" id="work_location_name" name="work_location_name" 
-                       value="<?php echo esc_attr($editing->name); ?>" required>
+                <input type="text" class="form-control" id="work_location_name" name="work_location_name"
+                    value="<?php echo esc_attr($editing->name); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="work_location_desc" class="form-label">Mô tả</label>
-                <textarea class="form-control" id="work_location_desc" name="work_location_desc" 
-                          rows="3"><?php echo esc_textarea($editing->description); ?></textarea>
+                <textarea class="form-control" id="work_location_desc" name="work_location_desc"
+                    rows="3"><?php echo esc_textarea($editing->description); ?></textarea>
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_work_location" class="btn btn-primary">Cập nhật</button>
