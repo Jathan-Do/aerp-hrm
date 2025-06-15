@@ -28,9 +28,6 @@ class AERP_Frontend_Table
     public function __construct($args = [])
     {
         $this->current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
-        $this->sort_column = isset($_GET['orderby']) ? sanitize_text_field($_GET['orderby']) : 'name';
-        $this->sort_order = isset($_GET['order']) ? sanitize_text_field($_GET['order']) : 'asc';
-        $this->search_term = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
 
         // Merge default args with provided args
         $defaults = [
@@ -56,6 +53,12 @@ class AERP_Frontend_Table
                 $this->$key = $value;
             }
         }
+
+        // Set default sort column to first sortable column if available
+        $default_sort_column = !empty($this->sortable_columns) ? $this->sortable_columns[0] : 'id';
+        $this->sort_column = isset($_GET['orderby']) ? sanitize_text_field($_GET['orderby']) : $default_sort_column;
+        $this->sort_order = isset($_GET['order']) ? sanitize_text_field($_GET['order']) : 'asc';
+        $this->search_term = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
     }
 
     protected function get_base_url($args = [])
