@@ -94,7 +94,7 @@ function aerp_get_login_redirect_url()
     }
 
     // Mặc định về trang dashboard
-    return home_url('/aerp-dashboard');
+    return home_url('/aerp-ho-so-nhan-vien');
 }
 
 // Thêm filter để xử lý redirect sau khi đăng nhập
