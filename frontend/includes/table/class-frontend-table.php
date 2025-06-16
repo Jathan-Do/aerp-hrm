@@ -306,7 +306,7 @@ class AERP_Frontend_Table
 
         // Display total items
         if ($total_items > 0) {
-            echo '<span class="displaying-num">' . sprintf(_n('%s item', '%s mục', $total_items, 'aerp-hrm'), number_format_i18n($total_items)) . '</span>';
+            echo '<span class="displaying-num">' . sprintf(_n('%s mục', '%s mục', $total_items, 'aerp-hrm'), number_format_i18n($total_items)) . '</span>';
         }
 
         echo '<span class="pagination-links aerp-pagination">';
