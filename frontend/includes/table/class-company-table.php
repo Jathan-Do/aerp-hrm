@@ -27,6 +27,20 @@ class AERP_Frontend_Company_Table extends AERP_Frontend_Table {
             'delete_item_callback' => ['AERP_Frontend_Company_Manager', 'delete_company_by_id'],
             'nonce_action_prefix' => 'delete_company_',
             'message_transient_key' => 'aerp_company_message',
+            'hidden_columns_option_key' => 'aerp_hrm_company_table_hidden_columns',
         ]);
+    }
+
+    /**
+     * Hiển thị cột work_saturday thân thiện hơn
+     */
+    protected function column_work_saturday($item)
+    {
+        $work_saturday_map = [
+            'off' => 'Nghỉ thứ 7',
+            'full' => 'Làm cả ngày thứ 7',
+            'half' => 'Làm nửa ngày thứ 7',
+        ];
+        return $work_saturday_map[$item->work_saturday] ?? esc_html($item->work_saturday);
     }
 }

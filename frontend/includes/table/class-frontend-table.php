@@ -24,6 +24,9 @@ class AERP_Frontend_Table
     protected $nonce_action_prefix = '';
     protected $message_transient_key = '';
     protected $bulk_action_nonce_key = 'aerp_bulk_action';
+    protected $hidden_columns_option_key = '';
+    protected $visible_columns = [];
+    protected $show_cb = true;
 
     public function __construct($args = [])
     {
@@ -44,6 +47,8 @@ class AERP_Frontend_Table
             'nonce_action_prefix' => '',
             'message_transient_key' => '',
             'bulk_action_nonce_key' => 'aerp_bulk_action',
+            'hidden_columns_option_key' => '',
+            'show_cb' => true,
         ];
 
         $args = wp_parse_args($args, $defaults);
@@ -54,6 +59,9 @@ class AERP_Frontend_Table
             }
         }
 
+        // Load user column preferences
+        $this->load_column_preferences();
+
         // Set default sort column to first sortable column if available
         $default_sort_column = !empty($this->sortable_columns) ? $this->sortable_columns[0] : 'id';
         $this->sort_column = isset($_GET['orderby']) ? sanitize_text_field($_GET['orderby']) : $default_sort_column;
@@ -61,9 +69,43 @@ class AERP_Frontend_Table
         $this->search_term = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
     }
 
+    /**
+     * Load user-specific column display preferences.
+     */
+    protected function load_column_preferences()
+    {
+        if (!empty($this->hidden_columns_option_key) && is_user_logged_in()) {
+            $hidden_cols = get_user_option($this->hidden_columns_option_key, get_current_user_id());
+            if (false === $hidden_cols) {
+                // No saved preference, all columns are visible by default
+                $this->visible_columns = array_keys($this->columns);
+            } else {
+                $this->visible_columns = array_diff(array_keys($this->columns), (array) $hidden_cols);
+            }
+        } else {
+            // If no option key is set or user not logged in, all columns are visible
+            $this->visible_columns = array_keys($this->columns);
+        }
+    }
+
+    /**
+     * Save user-specific column display preferences.
+     * @param array $hidden_cols Array of column keys to hide.
+     */
+    public function save_column_preferences($hidden_cols)
+    {
+        if (!empty($this->hidden_columns_option_key) && is_user_logged_in()) {
+            update_user_option(get_current_user_id(), $this->hidden_columns_option_key, (array) $hidden_cols);
+            return true;
+        }
+        return false;
+    }
+
     protected function get_base_url($args = [])
     {
         $base = $this->base_url;
+        error_log('AERP_Frontend_Table (get_base_url): Initial base_url = ' . $base);
+        error_log('AERP_Frontend_Table (get_base_url): Args for add_query_arg = ' . print_r($args, true));
 
         // Start with relevant query parameters from $_GET
         $query_params = [];
@@ -97,7 +139,9 @@ class AERP_Frontend_Table
         }
 
         // Return the raw URL string. esc_url will be applied at the point of output.
-        return add_query_arg($query_params, $base);
+        $final_url = add_query_arg($query_params, $base);
+        error_log('AERP_Frontend_Table (get_base_url): Final URL = ' . $final_url);
+        return $final_url;
     }
 
     public function get_items()
@@ -138,9 +182,19 @@ class AERP_Frontend_Table
         $params[] = $this->per_page;
         $params[] = $offset;
 
-        $this->items = $wpdb->get_results($wpdb->prepare($query, $params), ARRAY_A);
+        $this->items = $wpdb->get_results($wpdb->prepare($query, $params));
 
         return $this->items;
+    }
+
+    public function get_column_keys()
+    {
+        return array_keys($this->columns);
+    }
+
+    public function get_hidden_columns_option_key()
+    {
+        return $this->hidden_columns_option_key;
     }
 
     public function render()
@@ -156,6 +210,27 @@ class AERP_Frontend_Table
                     <button type="submit" class="btn btn-outline-secondary">Tìm kiếm</button>
                 </div>
             </form>
+
+            <div class="d-flex justify-content-end position-relative mb-3">
+                <a href="#" id="aerp-column-options-button" class="btn btn-secondary action">Tùy chọn cột</a>
+                <div id="aerp-column-options-dropdown" class="dropdown-menu position-absolute bg-white border-1 border-secondary-subtle card-body" style="display:none; top: 50px">
+                    <form id="aerp-column-options-form">
+                        <?php wp_nonce_field('aerp_save_column_preferences', 'aerp_column_prefs_nonce'); ?>
+                        <input type="hidden" name="option_key" value="<?php echo esc_attr($this->hidden_columns_option_key); ?>" />
+                        <?php foreach ($this->columns as $key => $label): ?>
+                            <p>
+                                <label>
+                                    <input class="form-check-input border-secondary" type="checkbox" name="aerp_visible_columns[]" value="<?php echo esc_attr($key); ?>" <?php checked(in_array($key, $this->visible_columns)); ?> />
+                                    <?php echo esc_html($label); ?>
+                                </label>
+                            </p>
+                        <?php endforeach; ?>
+                        <p class="text-end mb-0">
+                            <input type="submit" class="btn btn-primary w-100" value="Lưu thay đổi" />
+                        </p>
+                    </form>
+                </div>
+            </div>
 
             <!-- Bulk actions form and Table -->
             <?php if (!empty($this->bulk_actions)): ?>
@@ -173,36 +248,134 @@ class AERP_Frontend_Table
 
                     <!-- Table -->
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
-                            <thead>
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead class="table-light">
                                 <tr>
-                                    <th class="text-center">
-                                        <input type="checkbox" id="select-all" class="form-check-input border-dark-subtle">
-                                    </th>
+                                    <?php if ($this->show_cb): ?>
+                                        <th scope="col" class="text-center" style="width: 40px;">
+                                            <input id="cb-select-all-1" type="checkbox" class="form-check-input border-secondary" />
+                                        </th>
+                                    <?php endif; ?>
                                     <?php foreach ($this->columns as $key => $label): ?>
-                                        <th>
-                                            <?php if (in_array($key, $this->sortable_columns)): ?>
-                                                <a class="text-decoration-none" href="<?php echo esc_url($this->get_base_url(['orderby' => $key, 'order' => ($this->sort_column === $key && strtoupper($this->sort_order) === 'ASC') ? 'DESC' : 'ASC'])); ?>">
+                                        <?php if (in_array($key, $this->visible_columns)): ?>
+                                            <th scope="col" class="<?php echo in_array($key, $this->sortable_columns) ? 'sortable' : ''; ?>">
+                                                <?php if (in_array($key, $this->sortable_columns)): ?>
+                                                    <a href="<?php echo esc_url($this->get_base_url(['orderby' => $key, 'order' => ($this->sort_column === $key && strtolower($this->sort_order) === 'asc') ? 'desc' : 'asc'])); ?>" class="text-decoration-none">
+                                                        <?php echo esc_html($label); ?>
+                                                        <?php if ($this->sort_column === $key): ?>
+                                                            <i class="fas fa-sort-<?php echo strtolower($this->sort_order); ?> ms-1"></i>
+                                                        <?php else: ?>
+                                                            <i class="fas fa-sort ms-1"></i>
+                                                        <?php endif; ?>
+                                                    </a>
+                                                <?php else: ?>
                                                     <?php echo esc_html($label); ?>
+                                                <?php endif; ?>
+                                            </th>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                    <?php if (!empty($this->actions)): ?>
+                                        <th class="text-center" style="width: 100px;">Thao tác</th>
+                                    <?php endif; ?>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($items)): ?>
+                                    <tr>
+                                        <td colspan="<?php echo count($this->columns) + ($this->show_cb ? 1 : 0); ?>" class="text-center py-4">
+                                            <div class="text-muted">Không tìm thấy dữ liệu.</div>
+                                        </td>
+                                    </tr>
+                                <?php else: ?>
+                                    <?php foreach ($items as $item): ?>
+                                        <tr>
+                                            <?php if ($this->show_cb): ?>
+                                                <td class="text-center">
+                                                    <input type="checkbox" name="bulk_items[]" value="<?php echo esc_attr($item->{$this->primary_key}); ?>" class="form-check-input border-secondary" />
+                                                </td>
+                                            <?php endif; ?>
+                                            <?php foreach ($this->columns as $key => $label): ?>
+                                                <?php if (in_array($key, $this->visible_columns)): ?>
+                                                    <td>
+                                                        <?php
+                                                        $method_name = 'column_' . $key;
+                                                        if (method_exists($this, $method_name)) {
+                                                            echo $this->$method_name($item);
+                                                        } elseif (isset($item->$key)) {
+                                                            echo esc_html($item->$key);
+                                                        } else {
+                                                            echo '--';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                            <?php if (!empty($this->actions)): ?>
+                                                <td class="text-center">
+                                                    <?php $this->render_row_actions($item); ?>
+                                                </td>
+                                            <?php endif; ?>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            <?php else: ?>
+                <!-- Table (without bulk action form) -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <?php foreach ($this->columns as $key => $label): ?>
+                                    <?php if (in_array($key, $this->visible_columns)): ?>
+                                        <th scope="col" class="<?php echo in_array($key, $this->sortable_columns) ? 'sortable' : ''; ?>">
+                                            <?php if (in_array($key, $this->sortable_columns)): ?>
+                                                <a href="<?php echo esc_url($this->get_base_url(['orderby' => $key, 'order' => ($this->sort_column === $key && strtolower($this->sort_order) === 'asc') ? 'desc' : 'asc'])); ?>" class="text-decoration-none text-dark">
+                                                    <?php echo esc_html($label); ?>
+                                                    <?php if ($this->sort_column === $key): ?>
+                                                        <i class="fas fa-sort-<?php echo strtolower($this->sort_order); ?> ms-1"></i>
+                                                    <?php else: ?>
+                                                        <i class="fas fa-sort ms-1"></i>
+                                                    <?php endif; ?>
                                                 </a>
                                             <?php else: ?>
                                                 <?php echo esc_html($label); ?>
                                             <?php endif; ?>
                                         </th>
-                                    <?php endforeach; ?>
-                                    <?php if (!empty($this->actions)): ?>
-                                        <th class="text-center">Thao tác</th>
                                     <?php endif; ?>
+                                <?php endforeach; ?>
+                                <?php if (!empty($this->actions)): ?>
+                                    <th class="text-center" style="width: 100px;">Thao tác</th>
+                                <?php endif; ?>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($items)): ?>
+                                <tr>
+                                    <td colspan="<?php echo count($this->columns); ?>" class="text-center py-4">
+                                        <div class="text-muted">Không tìm thấy dữ liệu.</div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
+                            <?php else: ?>
                                 <?php foreach ($items as $item): ?>
                                     <tr>
-                                        <td class="text-center">
-                                            <input type="checkbox" name="ids[]" value="<?php echo esc_attr($item[$this->primary_key]); ?>" class="form-check-input border-dark-subtle">
-                                        </td>
                                         <?php foreach ($this->columns as $key => $label): ?>
-                                            <td><?php echo esc_html($item[$key]); ?></td>
+                                            <?php if (in_array($key, $this->visible_columns)): ?>
+                                                <td>
+                                                    <?php
+                                                    $method_name = 'column_' . $key;
+                                                    if (method_exists($this, $method_name)) {
+                                                        echo $this->$method_name($item);
+                                                    } elseif (isset($item->$key)) {
+                                                        echo esc_html($item->$key);
+                                                    } else {
+                                                        echo '--';
+                                                    }
+                                                    ?>
+                                                </td>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
                                         <?php if (!empty($this->actions)): ?>
                                             <td class="text-center">
@@ -211,46 +384,7 @@ class AERP_Frontend_Table
                                         <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </form>
-            <?php else: // Nếu không có bulk actions, vẫn hiển thị bảng 
-            ?>
-                <!-- Table (without bulk action form) -->
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <?php foreach ($this->columns as $key => $label): ?>
-                                    <th>
-                                        <?php if (in_array($key, $this->sortable_columns)): ?>
-                                            <a class="text-decoration-none" href="<?php echo esc_url($this->get_base_url(['orderby' => $key, 'order' => ($this->sort_column === $key && strtoupper($this->sort_order) === 'ASC') ? 'DESC' : 'ASC'])); ?>">
-                                                <?php echo esc_html($label); ?>
-                                            </a>
-                                        <?php else: ?>
-                                            <?php echo esc_html($label); ?>
-                                        <?php endif; ?>
-                                    </th>
-                                <?php endforeach; ?>
-                                <?php if (!empty($this->actions)): ?>
-                                    <th>Thao tác</th>
-                                <?php endif; ?>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($items as $item): ?>
-                                <tr>
-                                    <?php foreach ($this->columns as $key => $label): ?>
-                                        <td><?php echo esc_html($item[$key]); ?></td>
-                                    <?php endforeach; ?>
-                                    <?php if (!empty($this->actions)): ?>
-                                        <td>
-                                            <?php $this->render_row_actions($item); ?>
-                                        </td>
-                                    <?php endif; ?>
-                                </tr>
-                            <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -259,6 +393,9 @@ class AERP_Frontend_Table
             <!-- Pagination -->
             <?php $this->render_pagination(); ?>
         </div>
+        <?php wp_nonce_field($this->nonce_action_prefix . '_bulk_action', $this->bulk_action_nonce_key); ?>
+        </div>
+
 <?php
     }
 
@@ -269,14 +406,14 @@ class AERP_Frontend_Table
         if (in_array('edit', $this->actions)) {
             $actions['edit'] = sprintf(
                 '<a href="%s" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a>',
-                esc_url($this->get_base_url(['action' => 'edit', 'id' => $item[$this->primary_key]]))
+                esc_url($this->get_base_url(['action' => 'edit', 'id' => $item->{$this->primary_key}]))
             );
         }
 
         if (in_array('delete', $this->actions)) {
             $actions['delete'] = sprintf(
                 '<a href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
-                esc_url($this->get_base_url(['action' => 'delete', 'id' => $item[$this->primary_key], '_wpnonce' => wp_create_nonce($this->nonce_action_prefix . $item[$this->primary_key])]))
+                esc_url($this->get_base_url(['action' => 'delete', 'id' => $item->{$this->primary_key}, '_wpnonce' => wp_create_nonce($this->nonce_action_prefix . $item->{$this->primary_key})]))
             );
         }
 
@@ -292,7 +429,7 @@ class AERP_Frontend_Table
         return ceil($this->total_items / $this->per_page);
     }
 
-    protected function render_pagination()
+    protected function render_pagination($location = 'top')
     {
         $total_items = $this->total_items;
         $total_pages = $this->get_total_pages();
@@ -332,7 +469,7 @@ class AERP_Frontend_Table
 
     public function process_bulk_action()
     {
-        if (!isset($_POST['bulk_action']) || empty($_POST['ids'])) {
+        if (!isset($_POST['bulk_action']) || empty($_POST['bulk_items'])) {
             error_log('AERP_Frontend_Table: Bulk action - No action or no IDs. Exiting.');
             return;
         }
@@ -343,7 +480,7 @@ class AERP_Frontend_Table
         }
 
         $action = sanitize_text_field($_POST['bulk_action']);
-        $ids = array_map('intval', $_POST['ids']);
+        $ids = array_map('intval', $_POST['bulk_items']);
 
         if (!in_array($action, $this->bulk_actions)) {
             error_log('AERP_Frontend_Table: Bulk action - Invalid action: ' . $action);
@@ -381,5 +518,38 @@ class AERP_Frontend_Table
             wp_redirect($this->get_base_url());
             exit;
         }
+    }
+
+    /**
+     * AJAX handler to save user column preferences.
+     */
+    public static function handle_save_column_preferences()
+    {
+        if (!isset($_POST['_ajax_nonce']) || !wp_verify_nonce($_POST['_ajax_nonce'], 'aerp_save_column_preferences')) {
+            wp_send_json_error('Nonce verification failed.');
+        }
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error('User not logged in.');
+        }
+
+        $hidden_columns = isset($_POST['hidden_columns']) ? array_map('sanitize_text_field', (array) $_POST['hidden_columns']) : [];
+        $option_key = isset($_POST['option_key']) ? sanitize_text_field($_POST['option_key']) : '';
+
+        if (empty($option_key)) {
+            wp_send_json_error('Option key is missing.');
+        }
+
+        // Create a dummy instance of the table class to access the save_column_preferences method
+        // This is a workaround as save_column_preferences is not static.
+        // In a real scenario, you might refactor save_column_preferences to be static or use a different approach.
+        $dummy_table = new self(['hidden_columns_option_key' => $option_key, 'columns' => []]); // Pass a dummy columns array
+
+        if ($dummy_table->save_column_preferences($hidden_columns)) {
+            wp_send_json_success('Column preferences saved successfully.');
+        } else {
+            wp_send_json_error('Failed to save column preferences.');
+        }
+        wp_die(); // Always die to terminate the AJAX request properly
     }
 }

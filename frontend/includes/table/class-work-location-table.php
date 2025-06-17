@@ -24,6 +24,7 @@ class AERP_Frontend_Work_Location_Table extends AERP_Frontend_Table
             'delete_item_callback' => ['AERP_Frontend_Work_Location_Manager', 'delete_work_location_by_id'],
             'nonce_action_prefix' => 'delete_work_location_',
             'message_transient_key' => 'aerp_work_location_message',
+            'hidden_columns_option_key' => 'aerp_hrm_work_location_table_hidden_columns',
         ]);
     }
 }

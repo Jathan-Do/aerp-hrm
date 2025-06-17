@@ -154,9 +154,21 @@ function aerp_hrm_init()
             wp_enqueue_style('aerp-hrm-frontend', AERP_HRM_URL . 'assets/css/frontend.css', [], '1.0');
             wp_enqueue_style('aerp-hrm-manager-dashboard', AERP_HRM_URL . 'assets/css/manager-dashboard.css', [], '1.0');
             wp_enqueue_style('dashicons');
+            wp_enqueue_style('aerp-fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
             wp_enqueue_script('aerp-hrm-frontend', AERP_HRM_URL . 'assets/js/frontend.js', ['jquery', 'chartjs'], '1.0', true);
             wp_enqueue_script('chartjs', 'https://cdn.jsdelivr.net/npm/chart.js', [], null, true);
-            wp_enqueue_script('aerp-frontend-table', AERP_HRM_URL . 'assets/js/frontend-table.js', ['jquery'], '1.0', true);
+            wp_enqueue_script('jquery-ui-dialog');
+            wp_enqueue_script('aerp-frontend-table', AERP_HRM_URL . 'assets/js/frontend-table.js', ['jquery', 'jquery-ui-dialog'], '1.0', true);
+
+            // Prepare data for wp_localize_script
+            $dummy_table_instance = new AERP_Frontend_Table();
+            $all_column_keys = $dummy_table_instance->get_column_keys();
+            $hidden_columns_option_key = $dummy_table_instance->get_hidden_columns_option_key();
+
+            wp_localize_script('aerp-frontend-table', 'aerp_table_ajax', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce'    => wp_create_nonce('aerp_save_column_preferences'),
+            ));
         }
     }, 1);
 
@@ -165,6 +177,8 @@ function aerp_hrm_init()
         wp_schedule_event(time(), 'daily', 'aerp_check_late_tasks_daily');
     }
     add_action('aerp_check_late_tasks_daily', ['AERP_Discipline_Manager', 'handle_late_tasks']);
+    add_action('wp_ajax_aerp_save_column_preferences', ['AERP_Frontend_Table', 'handle_save_column_preferences']);
+    add_action('wp_ajax_nopriv_aerp_save_column_preferences', ['AERP_Frontend_Table', 'handle_save_column_preferences']);
 }
 add_action('plugins_loaded', 'aerp_hrm_init');
 

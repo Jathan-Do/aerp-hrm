@@ -24,6 +24,7 @@ class AERP_Frontend_Position_Table extends AERP_Frontend_Table
             'delete_item_callback' => ['AERP_Frontend_Position_Manager', 'delete_position_by_id'],
             'nonce_action_prefix' => 'delete_position_',
             'message_transient_key' => 'aerp_position_message',
+            'hidden_columns_option_key' => 'aerp_hrm_position_table_hidden_columns',
         ]);
     }
 }

@@ -80,6 +80,22 @@ function aerp_get_position_name($id)
         $id
     ));
 }
+
+
+/**
+ * Lấy danh sách tất cả nhân viên
+ */
+function aerp_get_employees_with_location()
+{
+    global $wpdb;
+    return $wpdb->get_results(
+        "SELECT e.*, wl.name AS work_location_name
+         FROM {$wpdb->prefix}aerp_hrm_employees e
+         LEFT JOIN {$wpdb->prefix}aerp_hrm_work_locations wl ON e.work_location_id = wl.id
+         ORDER BY e.full_name ASC"
+    );
+}
+
 function aerp_safe_select_options($items, $selected = '', $key = 'id', $label = 'name', $show_all_option = false)
 {
     if ($show_all_option) {
@@ -112,6 +128,7 @@ add_filter('aerp_get_departments', 'aerp_get_departments');
 add_filter('aerp_get_positions', 'aerp_get_positions');
 add_filter('aerp_get_company_info', 'aerp_get_company_info');
 add_filter('aerp_get_work_locations', 'aerp_get_work_locations');
+add_filter('aerp_get_employees_with_location', 'aerp_get_employees_with_location');
 
 /**
  * Hook tính thưởng động: chỉ cộng các mục thưởng động đã gán cho nhân viên trong tháng

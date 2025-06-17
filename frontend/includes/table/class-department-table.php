@@ -24,6 +24,7 @@ class AERP_Frontend_Department_Table extends AERP_Frontend_Table
             'delete_item_callback' => ['AERP_Frontend_Department_Manager', 'delete_department_by_id'],
             'nonce_action_prefix' => 'delete_department_',
             'message_transient_key' => 'aerp_department_message',
+            'hidden_columns_option_key' => 'aerp_hrm_department_table_hidden_columns',
         ]);
     }
 }
