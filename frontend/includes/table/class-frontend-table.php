@@ -138,7 +138,6 @@ class AERP_Frontend_Table
 
         // Return the raw URL string. esc_url will be applied at the point of output.
         $final_url = add_query_arg($query_params, $base);
-        error_log('AERP_Frontend_Table (get_base_url): Final URL = ' . $final_url);
         return $final_url;
     }
 

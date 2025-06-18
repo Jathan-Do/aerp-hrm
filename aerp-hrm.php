@@ -16,6 +16,18 @@ define('AERP_HRM_PATH', plugin_dir_path(__FILE__));
 define('AERP_HRM_URL', plugin_dir_url(__FILE__));
 define('AERP_HRM_VERSION', '1.0.0');
 
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($actions) {
+    if (function_exists('is_plugin_active')) {
+        include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+    }
+    if (is_plugin_active('aerp-crm/aerp-crm.php')) {
+        // Disable deactivate link
+        unset($actions['deactivate']);
+        $actions['deactivate'] = '<span style="color:#aaa;">Vui lòng deactivate AERP CRM trước</span>';
+    }
+    return $actions;
+});
+
 // Kiểm tra bản Pro
 if (!function_exists('aerp_hrm_is_pro')) {
     function aerp_hrm_is_pro()
@@ -23,6 +35,7 @@ if (!function_exists('aerp_hrm_is_pro')) {
         return function_exists('aerp_is_pro_module') && aerp_is_pro_module('hrm');
     }
 }
+
 
 // Khởi tạo plugin
 function aerp_hrm_init()
@@ -186,7 +199,6 @@ add_action('plugins_loaded', 'aerp_hrm_init');
 register_activation_hook(__FILE__, function () {
     require_once AERP_HRM_PATH . 'install-schema.php';
     aerp_hrm_install_schema();
-    // aerp_hrm_create_system_roles();
 
     // Tạo các trang mặc định với shortcode
     $pages = [
@@ -215,6 +227,36 @@ register_activation_hook(__FILE__, function () {
             'slug'    => 'aerp-dang-nhap',
             'content' => '[aerp_login]'
         ],
+        [
+            'title'   => 'AERP Công ty',
+            'slug'    => 'aerp-company',
+            'content' => ''
+        ],
+        [
+            'title'   => 'AERP Chi nhánh',
+            'slug'    => 'aerp-work-location',
+            'content' => ''
+        ],
+        [
+            'title'   => 'AERP Phòng ban',
+            'slug'    => 'aerp-departments',
+            'content' => ''
+        ],
+        [
+            'title'   => 'AERP Chức vụ',
+            'slug'    => 'aerp-position',
+            'content' => ''
+        ],
+        [
+            'title'   => 'AERP Dashboard',
+            'slug'    => 'aerp-dashboard',
+            'content' => ''
+        ],
+        [
+            'title'   => 'AERP Danh mục',
+            'slug'    => 'aerp-categories',
+            'content' => ''
+        ],
     ];
 
     foreach ($pages as $page) {
@@ -241,7 +283,12 @@ register_deactivation_hook(__FILE__, function () {
         'aerp-danh-sach-cong-viec',
         'aerp-dang-nhap',
         'aerp-quan-ly',
-        // 'aerp-dashboard'
+        'aerp-dashboard',
+        'aerp-categories',
+        'aerp-company',
+        'aerp-work-location',
+        'aerp-departments',
+        'aerp-position',
     ];
     foreach ($slugs as $slug) {
         $page = get_page_by_path($slug);

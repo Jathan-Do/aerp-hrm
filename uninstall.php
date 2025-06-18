@@ -12,6 +12,6 @@ foreach ($tables as $table) {
     $wpdb->query("DROP TABLE IF EXISTS `$table`");
 }
 
-// Xóa các option liên quan
+// Xóa các option liên quan HRM
 delete_option('aerp_hrm_delete_data_on_uninstall');
 delete_option('aerp_license_keys');

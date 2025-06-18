@@ -7,6 +7,7 @@ add_action('init', function () {
     add_rewrite_rule('^aerp-company/?$', 'index.php?aerp_company=1', 'top');
     add_rewrite_rule('^aerp-position/?$', 'index.php?aerp_position=1', 'top');
     add_rewrite_rule('^aerp-work-location/?$', 'index.php?aerp_work_location=1', 'top');
+    add_rewrite_rule('^aerp-setting/?$', 'index.php?aerp_setting=1', 'top');
     $rules = get_option('rewrite_rules');
     if ($rules && (!isset($rules['^aerp-dashboard/?$']))) {
         flush_rewrite_rules();
@@ -26,6 +27,9 @@ add_action('init', function () {
     if ($rules && !isset($rules['^aerp-work-location/?$'])) {
         flush_rewrite_rules();
     }
+    if ($rules && !isset($rules['^aerp-setting/?$'])) {
+        flush_rewrite_rules();
+    }
 });
 
 add_filter('query_vars', function ($vars) {
@@ -35,6 +39,10 @@ add_filter('query_vars', function ($vars) {
     $vars[] = 'aerp_company';
     $vars[] = 'aerp_position';
     $vars[] = 'aerp_work_location';
+    $vars[] = 'paged';
+    $vars[] = 'orderby';
+    $vars[] = 'order';
+    $vars[] = 'aerp_setting';
     return $vars;
 });
 
@@ -123,4 +131,19 @@ add_action('template_redirect', function () {
         }
         exit;
     }
+    if (get_query_var('aerp_setting')) {
+        include AERP_HRM_PATH . 'frontend/dashboard/setting.php';
+        exit;
+    }
 });
+
+// Tắt canonical redirect cho các trang HRM ảo (refactor)
+add_action('template_redirect', function() {
+    $virtual_routes = ['aerp_company', 'aerp_departments', 'aerp_position', 'aerp_work_location'];
+    foreach ($virtual_routes as $route) {
+        if (get_query_var($route)) {
+            remove_filter('template_redirect', 'redirect_canonical');
+            break;
+        }
+    }
+}, 0);
