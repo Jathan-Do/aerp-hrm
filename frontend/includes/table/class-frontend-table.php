@@ -104,8 +104,6 @@ class AERP_Frontend_Table
     protected function get_base_url($args = [])
     {
         $base = $this->base_url;
-        error_log('AERP_Frontend_Table (get_base_url): Initial base_url = ' . $base);
-        error_log('AERP_Frontend_Table (get_base_url): Args for add_query_arg = ' . print_r($args, true));
 
         // Start with relevant query parameters from $_GET
         $query_params = [];

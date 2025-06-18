@@ -15,10 +15,6 @@ class AERP_Frontend_Company_Manager
             wp_die('Invalid nonce for department save.');
         }
 
-        if (!current_user_can('manage_options')) {
-            wp_die('Permission denied.');
-        }
-
         global $wpdb;
         $table = $wpdb->prefix . 'aerp_hrm_company_info';
 

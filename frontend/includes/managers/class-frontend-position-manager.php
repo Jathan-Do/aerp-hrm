@@ -15,9 +15,6 @@ class AERP_Frontend_Position_Manager
             wp_die('Invalid nonce for position save.');
         }
 
-        if (!current_user_can('manage_options')) {
-            wp_die('Permission denied.');
-        }
 
         global $wpdb;
         $table = $wpdb->prefix . 'aerp_hrm_positions';
