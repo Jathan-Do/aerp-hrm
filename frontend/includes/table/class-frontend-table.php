@@ -201,9 +201,16 @@ class AERP_Frontend_Table
         <div class="aerp-table-wrapper">
             <!-- Search form -->
             <form method="get" class="mb-4">
+                <?php
+                $keep_params = ['action', 'aerp_crm_customer_id'];
+                foreach ($keep_params as $param) {
+                    if (!empty($_GET[$param])) {
+                        echo '<input type="hidden" name="' . esc_attr($param) . '" value="' . esc_attr($_GET[$param]) . '">';
+                    }
+                }
+                ?>
                 <div class="input-group" style="justify-self: end;">
-                    <input type="search" name="s" class="form-control" placeholder="Tìm kiếm..."
-                        value="<?php echo esc_attr($this->search_term); ?>">
+                    <input type="search" name="s" class="form-control" placeholder="Tìm kiếm..." value="<?php echo esc_attr($this->search_term); ?>">
                     <button type="submit" class="btn btn-outline-secondary">Tìm kiếm</button>
                 </div>
             </form>
@@ -223,7 +230,7 @@ class AERP_Frontend_Table
                             </p>
                         <?php endforeach; ?>
                         <p class="text-end mb-0">
-                            <input type="submit" class="btn btn-primary w-100" value="Lưu thay đổi" />
+                            <button type="submit" class="btn btn-primary w-100">Lưu thay đổi</button>
                         </p>
                     </form>
                 </div>
