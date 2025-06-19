@@ -227,36 +227,6 @@ register_activation_hook(__FILE__, function () {
             'slug'    => 'aerp-dang-nhap',
             'content' => '[aerp_login]'
         ],
-        [
-            'title'   => 'AERP Công ty',
-            'slug'    => 'aerp-company',
-            'content' => ''
-        ],
-        [
-            'title'   => 'AERP Chi nhánh',
-            'slug'    => 'aerp-work-location',
-            'content' => ''
-        ],
-        [
-            'title'   => 'AERP Phòng ban',
-            'slug'    => 'aerp-departments',
-            'content' => ''
-        ],
-        [
-            'title'   => 'AERP Chức vụ',
-            'slug'    => 'aerp-position',
-            'content' => ''
-        ],
-        [
-            'title'   => 'AERP Dashboard',
-            'slug'    => 'aerp-dashboard',
-            'content' => ''
-        ],
-        [
-            'title'   => 'AERP Danh mục',
-            'slug'    => 'aerp-categories',
-            'content' => ''
-        ],
     ];
 
     foreach ($pages as $page) {
@@ -283,12 +253,6 @@ register_deactivation_hook(__FILE__, function () {
         'aerp-danh-sach-cong-viec',
         'aerp-dang-nhap',
         'aerp-quan-ly',
-        'aerp-dashboard',
-        'aerp-categories',
-        'aerp-company',
-        'aerp-work-location',
-        'aerp-departments',
-        'aerp-position',
     ];
     foreach ($slugs as $slug) {
         $page = get_page_by_path($slug);
