@@ -16,10 +16,12 @@ if (!defined('ABSPATH')) exit;
             min-height: 100vh;
             background: #2c3e50;
             color: white;
+            transition: width 0.3s ease;
         }
 
         .dashboard-content {
             padding: 20px;
+            transition: margin-left 0.3s ease;
         }
 
         .nav-link {
@@ -34,6 +36,20 @@ if (!defined('ABSPATH')) exit;
 
         .nav-link.active {
             background: #3498db;
+        }
+
+        .menu-text {
+            display: inline-block;
+            vertical-align: middle;
+            opacity: 1;
+            max-width: 150px;
+            transition: all 0.1s linear;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .dashboard-sidebar:not(.collapsed) .menu-text {
+            transition-delay: 0.1s;
         }
 
         .category-card {
@@ -54,31 +70,62 @@ if (!defined('ABSPATH')) exit;
 
         /* Sidebar collapse styles */
         .dashboard-sidebar.collapsed {
-            width: 60px !important;
-            min-width: 60px !important;
-            max-width: 60px !important;
-            transition: width 0.2s;
+            width: 80px;
         }
 
-        .dashboard-sidebar.collapsed .nav-link,
-        .dashboard-sidebar.collapsed h4,
-        .dashboard-sidebar.collapsed .collapsible-menu-header,
-        .dashboard-sidebar.collapsed .collapsible-menu-content {
-            display: none !important;
+        .dashboard-sidebar.collapsed .menu-text,
+        .dashboard-sidebar.collapsed .collapsible-menu-header {
+            opacity: 0;
+            max-width: 0;
+        }
+
+        .dashboard-sidebar.collapsed .nav-link {
+            text-align: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .dashboard-sidebar.collapsed .nav-link i {
+            margin-right: 0 !important;
         }
 
         .dashboard-sidebar.collapsed .logo {
-            margin-bottom: 0;
-        }
-
-        .dashboard-sidebar .logo {
-            transition: width 0.2s;
+            margin-bottom: 10px;
         }
 
         @media (min-width: 768px) {
             .dashboard-sidebar.collapsed~.dashboard-content {
-                width: calc(100% - 60px);
-                transition: margin-left 0.2s, width 0.2s;
+                width: calc(100% - 80px);
+            }
+        }
+
+        /* Loading overlay for tables */
+        .aerp-table-loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: .375rem;
+        }
+
+        .aerp-table-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top-color: #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
         }
     </style>
@@ -122,4 +169,5 @@ if (!defined('ABSPATH')) exit;
         });
     </script>
 </body>
+
 </html>

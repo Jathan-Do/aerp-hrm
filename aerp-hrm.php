@@ -171,7 +171,7 @@ function aerp_hrm_init()
             wp_enqueue_script('aerp-hrm-frontend', AERP_HRM_URL . 'assets/js/frontend.js', ['jquery', 'chartjs'], '1.0', true);
             wp_enqueue_script('chartjs', 'https://cdn.jsdelivr.net/npm/chart.js', [], null, true);
             wp_enqueue_script('jquery-ui-dialog');
-            wp_enqueue_script('aerp-frontend-table', AERP_HRM_URL . 'assets/js/frontend-table.js', ['jquery', 'jquery-ui-dialog'], '1.0', true);
+            wp_enqueue_script('aerp-frontend-table', AERP_HRM_URL . 'assets/js/frontend-table.js', ['jquery'], '1.0', true);
 
             // Prepare data for wp_localize_script
             $dummy_table_instance = new AERP_Frontend_Table();

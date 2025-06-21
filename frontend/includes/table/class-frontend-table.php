@@ -27,6 +27,9 @@ class AERP_Frontend_Table
     protected $hidden_columns_option_key = '';
     protected $visible_columns = [];
     protected $show_cb = true;
+    protected $ajax_action = '';
+    protected $table_wrapper = '';
+    protected $filters = [];
 
     public function __construct($args = [])
     {
@@ -49,6 +52,8 @@ class AERP_Frontend_Table
             'bulk_action_nonce_key' => 'aerp_bulk_action',
             'hidden_columns_option_key' => '',
             'show_cb' => true,
+            'ajax_action' => '',
+            'table_wrapper' => '',
         ];
 
         $args = wp_parse_args($args, $defaults);
@@ -141,45 +146,97 @@ class AERP_Frontend_Table
         return $final_url;
     }
 
+    public function set_filters($filters = [])
+    {
+        $this->filters = $filters;
+        if (!empty($filters['search_term'])) $this->search_term = $filters['search_term'];
+        if (!empty($filters['paged'])) $this->current_page = $filters['paged'];
+        if (!empty($filters['orderby'])) $this->sort_column = $filters['orderby'];
+        if (!empty($filters['order'])) $this->sort_order = $filters['order'];
+    }
+
+    /**
+     * Cho phép class con mở rộng điều kiện search liên bảng
+     * @return array [conditions[], params[]]
+     */
+    protected function get_extra_search_conditions($search_term)
+    {
+        return [[], []];
+    }
+
+    /**
+     * Cho phép class con mở rộng filter đặc thù
+     * @return array [conditions[], params[]]
+     */
+    protected function get_extra_filters()
+    {
+        return [[], []];
+    }
+
     public function get_items()
     {
         global $wpdb;
-
-        // Build where clause for search
         $where = [];
         $params = [];
 
+        // Search
         if ($this->search_term && !empty($this->searchable_columns)) {
             $search_conditions = [];
             foreach ($this->searchable_columns as $column) {
                 $search_conditions[] = "$column LIKE %s";
                 $params[] = '%' . $wpdb->esc_like($this->search_term) . '%';
             }
+            // Thêm điều kiện search mở rộng từ class con
+            list($extra_search, $extra_params) = $this->get_extra_search_conditions($this->search_term);
+            $search_conditions = array_merge($search_conditions, $extra_search);
+            $params = array_merge($params, $extra_params);
             $where[] = '(' . implode(' OR ', $search_conditions) . ')';
         }
 
-        $where_clause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+        // Filter mở rộng từ class con
+        list($extra_filters, $extra_filter_params) = $this->get_extra_filters();
+        $where = array_merge($where, $extra_filters);
+        $params = array_merge($params, $extra_filter_params);
 
-        // Get total items
+        $where_clause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+        $offset = ($this->current_page - 1) * $this->per_page;
+
+        // Tạo cache key duy nhất cho truy vấn này
+        $cache_key = 'aerp_table_' . md5(
+            $this->table_name . '|' .
+                $where_clause . '|' .
+                serialize($params) . '|' .
+                $this->sort_column . '|' .
+                $this->sort_order . '|' .
+                $this->per_page . '|' .
+                $offset . '|' .
+                get_current_user_id()
+        );
+
+        // Thử lấy từ cache
+        $cached = get_transient($cache_key);
+        if ($cached !== false && isset($cached['items'], $cached['total_items'])) {
+            $this->items = $cached['items'];
+            $this->total_items = $cached['total_items'];
+            return $this->items;
+        }
+
+        // Nếu không có cache, truy vấn như cũ
         $total_query = "SELECT COUNT(*) FROM {$this->table_name} $where_clause";
         if (!empty($params)) {
             $total_query = $wpdb->prepare($total_query, $params);
         }
         $this->total_items = $wpdb->get_var($total_query);
 
-        // Get items with pagination
-        $offset = ($this->current_page - 1) * $this->per_page;
-
-        // Validate sort column
-        if (!in_array($this->sort_column, $this->sortable_columns)) {
-            $this->sort_column = 'name';
-        }
-
         $query = "SELECT * FROM {$this->table_name} $where_clause ORDER BY {$this->sort_column} {$this->sort_order} LIMIT %d OFFSET %d";
-        $params[] = $this->per_page;
-        $params[] = $offset;
+        $params2 = array_merge($params, [$this->per_page, $offset]);
+        $this->items = $wpdb->get_results($wpdb->prepare($query, $params2));
 
-        $this->items = $wpdb->get_results($wpdb->prepare($query, $params));
+        // Lưu cache
+        set_transient($cache_key, [
+            'items' => $this->items,
+            'total_items' => $this->total_items
+        ], 3600); // 1 hour cache
 
         return $this->items;
     }
@@ -200,18 +257,24 @@ class AERP_Frontend_Table
 ?>
         <div class="aerp-table-wrapper">
             <!-- Search form -->
-            <form method="get" class="mb-4">
+            <form method="get" class="mb-4 aerp-table-search-form aerp-table-ajax-form"
+                data-table-wrapper="<?php echo esc_attr($this->table_wrapper); ?>"
+                data-ajax-action="<?php echo esc_attr($this->ajax_action); ?>"
+                onsubmit="return false;">
                 <?php
-                $keep_params = ['action', 'aerp_crm_customer_id'];
-                foreach ($keep_params as $param) {
-                    if (!empty($_GET[$param])) {
-                        echo '<input type="hidden" name="' . esc_attr($param) . '" value="' . esc_attr($_GET[$param]) . '">';
+                // Giữ lại các tham số filter từ form chính để đảm bảo chúng không bị mất khi tìm kiếm, phân trang, sort
+                if (!empty($this->filters)) {
+                    foreach ($this->filters as $key => $value) {
+                        // Bỏ qua các tham số đã có sẵn trong form tìm kiếm hoặc do table tự quản lý
+                        if (in_array($key, ['s', 'orderby', 'order', 'paged', 'search_term']) || empty($value)) {
+                            continue;
+                        }
+                        echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr(stripslashes($value)) . '">';
                     }
                 }
                 ?>
                 <div class="input-group" style="justify-self: end;">
-                    <input type="search" name="s" class="form-control" placeholder="Tìm kiếm..." value="<?php echo esc_attr($this->search_term); ?>">
-                    <button type="submit" class="btn btn-outline-secondary">Tìm kiếm</button>
+                    <input type="search" name="s" class="form-control aerp-table-search-input" placeholder="Tìm kiếm..." value="<?php echo esc_attr($this->search_term); ?>">
                 </div>
             </form>
 
@@ -240,7 +303,7 @@ class AERP_Frontend_Table
             <?php if (!empty($this->bulk_actions)): ?>
                 <form method="post" class="mb-3">
                     <?php wp_nonce_field($this->bulk_action_nonce_key, 'aerp_bulk_nonce'); ?>
-                    <div class="d-flex gap-2 align-items-center mb-3">
+                    <div class="d-flex gap-2 align-items-center mb-3 justify-content-md-start justify-content-between">
                         <select name="bulk_action" class="form-select" style="width: auto;">
                             <option value="">Hành động hàng loạt</option>
                             <?php foreach ($this->bulk_actions as $action): ?>
@@ -264,7 +327,10 @@ class AERP_Frontend_Table
                                         <?php if (in_array($key, $this->visible_columns)): ?>
                                             <th scope="col" class="<?php echo in_array($key, $this->sortable_columns) ? 'sortable' : ''; ?>">
                                                 <?php if (in_array($key, $this->sortable_columns)): ?>
-                                                    <a href="<?php echo esc_url($this->get_base_url(['orderby' => $key, 'order' => ($this->sort_column === $key && strtolower($this->sort_order) === 'asc') ? 'desc' : 'asc'])); ?>" class="text-decoration-none">
+                                                    <a href="<?php echo esc_url($this->get_base_url(['orderby' => $key, 'order' => ($this->sort_column === $key && strtolower($this->sort_order) === 'asc') ? 'desc' : 'asc'])); ?>"
+                                                        class="text-decoration-none aerp-table-sort"
+                                                        data-orderby="<?php echo esc_attr($key); ?>"
+                                                        data-order="<?php echo esc_attr(($this->sort_column === $key && strtolower($this->sort_order) === 'asc') ? 'desc' : 'asc'); ?>">
                                                         <?php echo esc_html($label); ?>
                                                         <?php if ($this->sort_column === $key): ?>
                                                             <i class="fas fa-sort-<?php echo strtolower($this->sort_order); ?> ms-1"></i>
@@ -315,8 +381,11 @@ class AERP_Frontend_Table
                                                 <?php endif; ?>
                                             <?php endforeach; ?>
                                             <?php if (!empty($this->actions)): ?>
-                                                <td class="text-center">
-                                                    <?php $this->render_row_actions($item); ?>
+                                                <td class="text-center ">
+                                                    <div class="d-flex gap-2 justify-content-center">
+                                                        <?php $this->render_row_actions($item); ?>
+                                                    </div>
+
                                                 </td>
                                             <?php endif; ?>
                                         </tr>
@@ -336,7 +405,10 @@ class AERP_Frontend_Table
                                     <?php if (in_array($key, $this->visible_columns)): ?>
                                         <th scope="col" class="<?php echo in_array($key, $this->sortable_columns) ? 'sortable' : ''; ?>">
                                             <?php if (in_array($key, $this->sortable_columns)): ?>
-                                                <a href="<?php echo esc_url($this->get_base_url(['orderby' => $key, 'order' => ($this->sort_column === $key && strtolower($this->sort_order) === 'asc') ? 'desc' : 'asc'])); ?>" class="text-decoration-none text-dark">
+                                                <a href="<?php echo esc_url($this->get_base_url(['orderby' => $key, 'order' => ($this->sort_column === $key && strtolower($this->sort_order) === 'asc') ? 'desc' : 'asc'])); ?>"
+                                                    class="text-decoration-none aerp-table-sort"
+                                                    data-orderby="<?php echo esc_attr($key); ?>"
+                                                    data-order="<?php echo esc_attr(($this->sort_column === $key && strtolower($this->sort_order) === 'asc') ? 'desc' : 'asc'); ?>">
                                                     <?php echo esc_html($label); ?>
                                                     <?php if ($this->sort_column === $key): ?>
                                                         <i class="fas fa-sort-<?php echo strtolower($this->sort_order); ?> ms-1"></i>
@@ -383,7 +455,9 @@ class AERP_Frontend_Table
                                         <?php endforeach; ?>
                                         <?php if (!empty($this->actions)): ?>
                                             <td class="text-center">
-                                                <?php $this->render_row_actions($item); ?>
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                        <?php $this->render_row_actions($item); ?>
+                                                    </div>
                                             </td>
                                         <?php endif; ?>
                                     </tr>
@@ -443,14 +517,15 @@ class AERP_Frontend_Table
             return;
         }
 
-        echo '<div class="tablenav-pages d-flex align-items-center justify-content-end">';
+        echo '<div class="tablenav-pages d-flex align-items-center justify-content-md-end justify-content-center">';
 
         // Display total items
         if ($total_items > 0) {
             echo '<span class="displaying-num">' . sprintf(_n('%s mục', '%s mục', $total_items, 'aerp-hrm'), number_format_i18n($total_items)) . '</span>';
         }
-
+        // if ($total_pages > 10) {
         echo '<span class="pagination-links aerp-pagination">';
+        // }
 
         $big = 999999999; // need a large number to represent the page number placeholder
 
