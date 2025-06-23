@@ -257,6 +257,7 @@ class AERP_Frontend_Table
 ?>
         <div class="aerp-table-wrapper">
             <!-- Search form -->
+            <?php if (!empty($this->searchable_columns)) : ?>
             <form method="get" class="mb-4 aerp-table-search-form aerp-table-ajax-form"
                 data-table-wrapper="<?php echo esc_attr($this->table_wrapper); ?>"
                 data-ajax-action="<?php echo esc_attr($this->ajax_action); ?>"
@@ -277,6 +278,7 @@ class AERP_Frontend_Table
                     <input type="search" name="s" class="form-control aerp-table-search-input" placeholder="Tìm kiếm..." value="<?php echo esc_attr($this->search_term); ?>">
                 </div>
             </form>
+            <?php endif; ?>
 
             <div class="d-flex justify-content-end position-relative mb-3">
                 <a href="#" id="aerp-column-options-button" class="btn btn-secondary action">Tùy chọn cột</a>

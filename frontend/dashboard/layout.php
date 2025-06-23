@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) exit;
 
         .dashboard-content {
             padding: 20px;
-            transition: margin-left 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .nav-link {

@@ -38,6 +38,13 @@
             </a> -->
         </div>
     <?php endif; ?>
+    <?php if ($order_active): ?>
+        <div class="collapsible-menu-content">
+            <a class="nav-link <?php echo aerp_menu_active('aerp-order-orders'); ?>" href="<?php echo home_url('/aerp-order-orders'); ?>">
+                <i class="fas fa-file-invoice me-2"></i> <span class="menu-text">Đơn hàng</span>
+            </a>
+        </div>
+    <?php endif; ?>
     <!-- Setting Menu -->
     <!-- <div class="px-3 py-2 text-white-50 text-uppercase collapsible-menu-header">
         <i class="fas fa-cogs me-2"></i> Cài đặt <i class="fas fa-chevron-down float-end"></i>

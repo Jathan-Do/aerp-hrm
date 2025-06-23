@@ -102,12 +102,26 @@ function aerp_safe_select_options($items, $selected = '', $key = 'id', $label = 
         echo '<option value="">-- Tất cả --</option>';
     }
     foreach ((array)$items as $item) {
-        if (!is_object($item) || !isset($item->$key) || !isset($item->$label)) continue;
+        $option_value = '';
+        $option_label = '';
+
+        if (is_object($item) && isset($item->$key) && isset($item->$label)) {
+            // Xử lý mảng object (từ get_results)
+            $option_value = $item->$key;
+            $option_label = $item->$label;
+        } elseif (!is_object($item) && !is_array($item)) {
+            // Xử lý mảng giá trị đơn (từ get_col)
+            $option_value = $item;
+            $option_label = $item;
+        } else {
+            continue; // Bỏ qua nếu định dạng không nhận ra
+        }
+
         printf(
             '<option value="%s"%s>%s</option>',
-            esc_attr($item->$key),
-            selected($selected, $item->$key, false),
-            esc_html($item->$label)
+            esc_attr($option_value),
+            selected($selected, $option_value, false),
+            esc_html($option_label)
         );
     }
 }
