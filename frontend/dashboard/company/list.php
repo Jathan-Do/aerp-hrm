@@ -8,9 +8,9 @@ $table->process_bulk_action();
 
 ob_start();
 ?>
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column-reverse flex-md-row justify-content-between align-items-md-center mb-4">
     <h2>Quản lý công ty</h2>
-    <div class="user-info">
+    <div class="user-info text-end">
         Welcome, <?php echo esc_html($current_user->display_name); ?>
         <a href="<?php echo wp_logout_url(site_url('/aerp-dang-nhap')); ?>" class="btn btn-sm btn-outline-danger ms-2">
             <i class="fas fa-sign-out-alt"></i> Logout
@@ -35,7 +35,10 @@ ob_start();
                   </div>';
             delete_transient('aerp_company_message'); // Xóa transient sau khi hiển thị
         }
-        $table->render(); ?>
+        ?>
+        <div id="aerp-company-table-wrapper">
+            <?php $table->render(); ?>
+        </div>
     </div>
 </div>
 <?php

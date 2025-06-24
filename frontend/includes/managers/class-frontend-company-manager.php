@@ -37,7 +37,7 @@ class AERP_Frontend_Company_Manager
             $wpdb->insert($table, $data);
             $msg = 'Đã thêm thông tin công ty!';
         }
-
+        aerp_clear_table_cache();
         set_transient('aerp_company_message', $msg, 10);
         wp_redirect(home_url('/aerp-company'));
         exit;
@@ -54,6 +54,7 @@ class AERP_Frontend_Company_Manager
             } else {
                 $message = 'Không thể xóa công ty.';
             }
+            aerp_clear_table_cache();
             set_transient('aerp_company_message', $message, 10);
             wp_redirect(home_url('/aerp-company'));
             exit;
@@ -67,6 +68,7 @@ class AERP_Frontend_Company_Manager
     {
         global $wpdb;
         $deleted = $wpdb->delete($wpdb->prefix . 'aerp_hrm_company_info', ['id' => absint($id)]);
+        aerp_clear_table_cache();
         return (bool) $deleted;
     }
     public static function get_by_id($id)

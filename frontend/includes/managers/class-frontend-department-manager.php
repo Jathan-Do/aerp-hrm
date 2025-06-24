@@ -38,7 +38,7 @@ class AERP_Frontend_Department_Manager
             ]);
             $msg = 'Đã thêm phòng ban!';
         }
-
+        aerp_clear_table_cache();
         set_transient('aerp_department_message', $msg, 10);
         wp_redirect(home_url('/aerp-departments'));
         exit;
@@ -55,6 +55,7 @@ class AERP_Frontend_Department_Manager
             } else {
                 $message = 'Không thể xóa phòng ban.';
             }
+            aerp_clear_table_cache();
             set_transient('aerp_department_message', $message, 10);
             wp_redirect(home_url('/aerp-departments'));
             exit;
@@ -73,6 +74,7 @@ class AERP_Frontend_Department_Manager
     {
         global $wpdb;
         $deleted = $wpdb->delete($wpdb->prefix . 'aerp_hrm_departments', ['id' => absint($id)]);
+        aerp_clear_table_cache();
         return (bool) $deleted;
     }
     public static function get_by_id($id)

@@ -28,6 +28,8 @@ class AERP_Frontend_Company_Table extends AERP_Frontend_Table {
             'nonce_action_prefix' => 'delete_company_',
             'message_transient_key' => 'aerp_company_message',
             'hidden_columns_option_key' => 'aerp_hrm_company_table_hidden_columns',
+            'ajax_action' => 'aerp_hrm_filter_company',
+            'table_wrapper' => '#aerp-company-table-wrapper',
         ]);
     }
 

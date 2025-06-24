@@ -37,7 +37,7 @@ class AERP_Frontend_Work_Location_Manager
             ]);
             $msg = 'Đã thêm chi nhánh!';
         }
-
+        aerp_clear_table_cache();
         set_transient('aerp_work_location_message', $msg, 10);
         wp_redirect(home_url('/aerp-work-location'));
         exit;
@@ -54,6 +54,7 @@ class AERP_Frontend_Work_Location_Manager
             } else {
                 $message = 'Không thể xóa chi nhánh.';
             }
+            aerp_clear_table_cache();
             set_transient('aerp_work_location_message', $message, 10);
             wp_redirect(home_url('/aerp-work-location'));
             exit;
@@ -67,6 +68,8 @@ class AERP_Frontend_Work_Location_Manager
     {
         global $wpdb;
         $deleted = $wpdb->delete($wpdb->prefix . 'aerp_hrm_work_locations', ['id' => absint($id)]);
+        aerp_clear_table_cache();
+        
         return (bool) $deleted;
     }
     public static function get_work_locations() {

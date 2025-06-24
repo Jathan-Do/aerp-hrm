@@ -1,10 +1,10 @@
 jQuery(document).ready(function ($) {
     // --- CORE TABLE FUNCTIONALITY ---
-    
+
     // Select all checkbox functionality
     $(document).on("change", "#cb-select-all-1", function () {
-        var isChecked = $(this).prop('checked');
-        $('input[name="bulk_items[]"]').prop('checked', isChecked);
+        var isChecked = $(this).prop("checked");
+        $('input[name="bulk_items[]"]').prop("checked", isChecked);
     });
 
     // Column options functionality
@@ -15,7 +15,7 @@ jQuery(document).ready(function ($) {
 
     // Close column options dropdown when clicking outside
     $(document).on("click", function (e) {
-        if (!$(e.target).closest('#aerp-column-options-button, #aerp-column-options-dropdown').length) {
+        if (!$(e.target).closest("#aerp-column-options-button, #aerp-column-options-dropdown").length) {
             $("#aerp-column-options-dropdown").hide();
         }
     });
@@ -32,7 +32,7 @@ jQuery(document).ready(function ($) {
         $form.find('input[name="aerp_visible_columns[]"]').each(function () {
             allColumns.push($(this).val());
         });
-        
+
         // Get checked columns
         $.each(formData, function (i, field) {
             if (field.name === "aerp_visible_columns[]") {
@@ -41,7 +41,7 @@ jQuery(document).ready(function ($) {
         });
 
         // Calculate hidden columns
-        var hiddenColumns = allColumns.filter(function(col) {
+        var hiddenColumns = allColumns.filter(function (col) {
             return $.inArray(col, checkedColumns) === -1;
         });
 
@@ -53,7 +53,7 @@ jQuery(document).ready(function ($) {
                 action: "aerp_save_column_preferences",
                 _ajax_nonce: aerp_table_ajax.nonce,
                 hidden_columns: hiddenColumns,
-                option_key: $form.find('input[name="option_key"]').val()
+                option_key: $form.find('input[name="option_key"]').val(),
             },
             success: function (response) {
                 if (response.success) {
@@ -65,12 +65,12 @@ jQuery(document).ready(function ($) {
             },
             error: function () {
                 console.error("Failed to save column preferences");
-            }
+            },
         });
     });
 
     // --- AJAX TABLE OPERATIONS ---
-    
+
     // Handle form submissions
     $(document).on("submit", ".aerp-table-ajax-form", function (e) {
         e.preventDefault();
@@ -79,10 +79,10 @@ jQuery(document).ready(function ($) {
 
     // Live search with debouncing
     var searchTimeout;
-    $(document).on('input', '.aerp-table-search-input', function (e) {
+    $(document).on("input", ".aerp-table-search-input", function (e) {
         e.preventDefault();
         clearTimeout(searchTimeout);
-        var $form = $(this).closest('form');
+        var $form = $(this).closest("form");
         searchTimeout = setTimeout(function () {
             reloadTable($form);
         }, 400);
@@ -107,26 +107,38 @@ jQuery(document).ready(function ($) {
         var $form = $(this).closest(".aerp-table-wrapper").find("form.aerp-table-search-form, form.aerp-table-ajax-form").first();
         var sortData = {
             orderby: $(this).data("orderby"),
-            order: $(this).data("order")
+            order: $(this).data("order"),
         };
         reloadTable($form, sortData);
     });
 
     // --- CORE AJAX FUNCTION ---
     var isLoading = false;
-    
+
     function reloadTable($form, additionalData) {
         if (isLoading) {
             return;
         }
         isLoading = true;
 
-        var wrapper = $form.data("table-wrapper") || "#aerp-customer-table-wrapper";
-        var ajaxAction = $form.data("ajax-action") || "aerp_crm_filter_customers";
-        var $tableWrapper = $(wrapper);
+        // Ưu tiên lấy từ data-table-wrapper nếu có
+        var wrapperSelector = $form.data("table-wrapper");
+        var $tableWrapper;
+        if (wrapperSelector) {
+            $tableWrapper = $(wrapperSelector);
+            if ($tableWrapper.length === 0) {
+                $tableWrapper = $form.closest('[id$="-table-wrapper"]');
+            }
+        } else {
+            $tableWrapper = $form.closest('[id$="-table-wrapper"]');
+        }
+        if ($tableWrapper.length === 0) {
+            $tableWrapper = $('[id$="-table-wrapper"]').first();
+        }
 
         // Prepare data
         var data = $form.serializeArray();
+        var ajaxAction = $form.data("ajax-action") || "aerp_crm_filter_customers";
         data.push({ name: "action", value: ajaxAction });
         
         if (additionalData) {
@@ -163,14 +175,13 @@ jQuery(document).ready(function ($) {
     }
 
     // --- UTILITY FUNCTIONS ---
-    
+
     function showLoadingOverlay($wrapper) {
-        $wrapper.css('position', 'relative')
-               .append('<div class="aerp-table-loading-overlay"><div class="aerp-table-spinner"></div></div>');
+        $wrapper.css("position", "relative").append('<div class="aerp-table-loading-overlay"><div class="aerp-table-spinner"></div></div>');
     }
 
     function hideLoadingOverlay($wrapper) {
-        $wrapper.find('.aerp-table-loading-overlay').remove();
+        $wrapper.find(".aerp-table-loading-overlay").remove();
     }
 });
 

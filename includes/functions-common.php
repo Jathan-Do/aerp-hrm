@@ -245,3 +245,19 @@ function aerp_user_has_role($user_id, $role_name) {
         "SELECT 1 FROM {$wpdb->prefix}aerp_user_role WHERE user_id = %d AND role_id = %d", $user_id, $role_id
     ));
 }
+
+
+/**
+ * Xóa toàn bộ cache transient bảng (prefix aerp_table_)
+ */
+function aerp_clear_table_cache()
+{
+    global $wpdb;
+    $transients = $wpdb->get_col(
+        "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE '_transient_aerp_table_%'"
+    );
+    foreach ($transients as $transient) {
+        $key = str_replace('_transient_', '', $transient);
+        delete_transient($key);
+    }
+}

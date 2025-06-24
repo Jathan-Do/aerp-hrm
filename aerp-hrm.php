@@ -64,6 +64,13 @@ function aerp_hrm_init()
     require_once AERP_HRM_PATH . 'frontend/includes/table/class-company-table.php';
     require_once AERP_HRM_PATH . 'frontend/includes/table/class-position-table.php';
     require_once AERP_HRM_PATH . 'frontend/includes/table/class-work-location-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-discipline-rule-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-ranking-settings-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-reward-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-kpi-settings-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-salary-summary-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-role-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-permission-table.php';
 
     // Load các class cần thiết khác
     require_once AERP_HRM_PATH . 'includes/class-excel-export-helper.php';
@@ -97,6 +104,12 @@ function aerp_hrm_init()
         'class-frontend-company-manager.php',
         'class-frontend-position-manager.php',
         'class-frontend-work-location-manager.php',
+        'class-frontend-discipline-rule-manager.php',
+        'class-frontend-ranking-settings-manager.php',
+        'class-frontend-reward-manager.php',
+        'class-frontend-kpi-settings-manager.php',
+        'class-frontend-role-manager.php',
+        'class-frontend-permission-manager.php',
     ];
     foreach ($includes as $file) {
         require_once AERP_HRM_PATH . 'frontend/includes/managers/' . $file;
@@ -143,6 +156,12 @@ function aerp_hrm_init()
         'AERP_Frontend_Company_Manager',
         'AERP_Frontend_Position_Manager',
         'AERP_Frontend_Work_Location_Manager',
+        'AERP_Frontend_Discipline_Rule_Manager',
+        'AERP_Frontend_Ranking_Settings_Manager',
+        'AERP_Frontend_Reward_Manager',
+        'AERP_Frontend_KPI_Settings_Manager',
+        'AERP_Frontend_Role_Manager',
+        'AERP_Frontend_Permission_Manager',
     ];
     foreach ($managers as $manager) {
         if (method_exists($manager, 'handle_submit')) {
@@ -340,3 +359,5 @@ add_action('wp_ajax_aerp_get_task_comments', 'aerp_ajax_get_task_comments');
 
 // === REWRITE RULES FOR FRONTEND DASHBOARD ===
 require_once AERP_HRM_PATH . 'frontend/includes/page-rewrite-rules.php';
+// Ajax hooks
+require_once AERP_HRM_PATH . 'frontend/includes/ajax/ajax-hook.php';
