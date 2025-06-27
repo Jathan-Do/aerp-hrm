@@ -18,7 +18,7 @@ $table->process_bulk_action();
 ?>
 <div class="card">
     <div class="card-body">
-        <div class="d-flex justify-content-between align-items-md-center flex-column flex-md-row">
+        <div class="d-flex justify-content-between align-items-md-center flex-column flex-md-row mb-3">
             <h3>Hồ sơ đính kèm</h3>
             <a href="<?= home_url("/aerp-hrm-employees/?action=view&id={$employee_id}&section=attachment&sub_action=add") ?>" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Thêm hồ sơ

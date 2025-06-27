@@ -113,7 +113,7 @@ ob_start();
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="birthday" class="form-label">Ngày sinh</label>
-                    <input type="date" class="form-control" id="birthday" name="birthday" value="<?php echo esc_attr($employee->birthday); ?>">
+                    <input type="date" class="form-control bg-body" id="birthday" name="birthday" value="<?php echo esc_attr($employee->birthday); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="cccd_number" class="form-label">Số CCCD</label>
@@ -121,7 +121,7 @@ ob_start();
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="cccd_issued_date" class="form-label">Ngày cấp CCCD</label>
-                    <input type="date" class="form-control" id="cccd_issued_date" name="cccd_issued_date" value="<?php echo esc_attr($employee->cccd_issued_date); ?>">
+                    <input type="date" class="form-control bg-body" id="cccd_issued_date" name="cccd_issued_date" value="<?php echo esc_attr($employee->cccd_issued_date); ?>">
                 </div>
 
                 <div class="col-md-3 mb-3">
@@ -199,10 +199,10 @@ ob_start();
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="join_date" class="form-label">Ngày vào làm</label>
-                    <input type="date" class="form-control" id="join_date" name="join_date" value="<?php echo esc_attr($employee->join_date); ?>">
+                    <input type="date" class="form-control bg-body" id="join_date" name="join_date" value="<?php echo esc_attr($employee->join_date); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="off_date" class="form-label">Ngày nghỉ việc</label>
+                    <label for="off_date" class="form-label bg-body">Ngày nghỉ việc</label>
                     <input type="date" class="form-control" id="off_date" name="off_date" value="<?php echo esc_attr($employee->off_date); ?>">
                 </div>
 

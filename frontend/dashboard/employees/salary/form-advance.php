@@ -48,7 +48,7 @@ ob_start();
             </div>
             <div class="mb-3">
                 <label class="form-label">Ngày ứng</label>
-                <input type="date" class="form-control" name="advance_date" value="<?= esc_attr($advance->advance_date ?? date('Y-m-d')) ?>" required>
+                <input type="date" class="form-control bg-body" name="advance_date" value="<?= esc_attr($advance->advance_date ?? date('Y-m-d')) ?>" required>
             </div>
 
             <div class="d-flex gap-2">

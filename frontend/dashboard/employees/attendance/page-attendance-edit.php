@@ -31,7 +31,7 @@ ob_start();
             <div class="row">
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Ngày áp dụng</label>
-                    <input type="date" name="work_date" required class="form-control" value="<?= esc_attr(date('Y-m-d', strtotime($attendance->work_date))) ?>">
+                    <input type="date" name="work_date" required class="form-control bg-body" value="<?= esc_attr(date('Y-m-d', strtotime($attendance->work_date))) ?>">
                 </div>
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Loại chấm công</label>

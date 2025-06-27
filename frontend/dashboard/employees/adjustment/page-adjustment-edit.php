@@ -37,7 +37,7 @@ ob_start();
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ngày áp dụng</label>
-                    <input type="date" name="date_effective" value="<?= esc_attr($adjustment->date_effective) ?>" required class="form-control">
+                    <input type="date" name="date_effective" value="<?= esc_attr($adjustment->date_effective) ?>" required class="form-control bg-body">
                 </div>
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Loại</label>

@@ -43,11 +43,11 @@ ob_start();
             </div>
             <div class="mb-3">
                 <label class="form-label" for="start_date">Từ ngày</label>
-                <input type="date" class="form-control" name="start_date" id="start_date" value="<?= esc_attr($config->start_date ?? '') ?>" required>
+                <input type="date" class="form-control bg-body" name="start_date" id="start_date" value="<?= esc_attr($config->start_date ?? '') ?>" required>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="end_date">Đến ngày</label>
-                <input type="date" class="form-control" name="end_date" id="end_date" value="<?= esc_attr($config->end_date ?? '') ?>" required>
+                <input type="date" class="form-control bg-body" name="end_date" id="end_date" value="<?= esc_attr($config->end_date ?? '') ?>" required>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="base_salary">Lương cơ bản</label>

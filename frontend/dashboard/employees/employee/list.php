@@ -73,15 +73,15 @@ ob_start();
                 <div class="col-12 col-md-3 mb-2">
                     <label class="form-label mb-1">Ngày vào làm</label>
                     <div class="d-flex gap-1">
-                        <input type="date" name="join_date_from" class="form-control" placeholder="Từ">
-                        <input type="date" name="join_date_to" class="form-control" placeholder="Đến">
+                        <input type="date" name="join_date_from" class="form-control bg-body" placeholder="Từ">
+                        <input type="date" name="join_date_to" class="form-control bg-body" placeholder="Đến">
                     </div>
                 </div>
                 <div class="col-12 col-md-3 mb-2">
                     <label class="form-label mb-1">Ngày nghỉ</label>
                     <div class="d-flex gap-1">
-                        <input type="date" name="off_date_from" class="form-control" placeholder="Từ">
-                        <input type="date" name="off_date_to" class="form-control" placeholder="Đến">
+                        <input type="date" name="off_date_from" class="form-control bg-body" placeholder="Từ">
+                        <input type="date" name="off_date_to" class="form-control bg-body" placeholder="Đến">
                     </div>
                 </div>
                 <div class="col-12 col-md-2 mb-2">

@@ -14,6 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aerp_save_settings'])
     // Save CRM setting
     update_option('aerp_crm_delete_data_on_uninstall', isset($_POST['aerp_crm_delete_data_on_uninstall']) ? 1 : 0);
 
+    // Save Order setting
+    update_option('aerp_order_delete_data_on_uninstall', isset($_POST['aerp_order_delete_data_on_uninstall']) ? 1 : 0);
+
     // Success message
     echo '<div class="alert alert-success alert-dismissible fade show" role="alert">Đã lưu cài đặt thành công!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
 }
@@ -21,8 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aerp_save_settings'])
 // Get current settings
 $hrm_checked = get_option('aerp_hrm_delete_data_on_uninstall', 0) ? 'checked' : '';
 $crm_checked = get_option('aerp_crm_delete_data_on_uninstall', 0) ? 'checked' : '';
+$crm_checked = get_option('aerp_order_delete_data_on_uninstall', 0) ? 'checked' : '';
 $hrm_active = function_exists('aerp_hrm_init') || is_plugin_active('aerp-hrm/aerp-hrm.php');
 $crm_active = function_exists('aerp_crm_init') || is_plugin_active('aerp-crm/aerp-crm.php');
+$order_active = function_exists('aerp_order_init') || is_plugin_active('aerp-order/aerp-order.php');
 
 ob_start();
 ?>
@@ -77,7 +82,20 @@ ob_start();
                     </div>
                 </div>
             <?php endif; ?>
-
+            <?php if ($order_active): ?>
+                <div class="form-group mb-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                            name="aerp_order_delete_data_on_uninstall"
+                            id="aerp_order_delete_data_on_uninstall"
+                            value="1" <?php echo $order_checked; ?>>
+                        <label class="form-check-label" for="aerp_order_delete_data_on_uninstall">
+                            <strong>Xóa toàn bộ dữ liệu Plugin Order</strong>
+                            <p class="text-muted small mb-0">Tất cả dữ liệu đơn hàng, lịch sử đơn hàng sẽ bị xóa khi gỡ plugin</p>
+                        </label>
+                    </div>
+                </div>
+            <?php endif; ?>
             <div class="form-footer pt-3 border-top">
                 <button type="submit" name="aerp_save_settings" class="btn btn-primary px-4">
                     <i class="fas fa-save me-2"></i>Lưu cài đặt

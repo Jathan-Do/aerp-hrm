@@ -35,7 +35,7 @@ ob_start();
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ngày thưởng</label>
-                    <input type="date" name="month" value="<?= esc_attr($month) ?>" required class="form-control">
+                    <input type="date" name="month" value="<?= esc_attr($month) ?>" required class="form-control bg-body">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ngày thưởng</label>

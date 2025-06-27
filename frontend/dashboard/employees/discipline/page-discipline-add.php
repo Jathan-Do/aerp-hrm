@@ -39,7 +39,7 @@ ob_start();
             </div>
             <div class="mb-3">
                 <label class="form-label">Ngày vi phạm</label>
-                <input type="date" class="form-control" name="date_violation" value="<?= esc_attr($today) ?>" required>
+                <input type="date" class="form-control bg-body" name="date_violation" value="<?= esc_attr($today) ?>" required>
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_discipline_log" class="btn btn-primary">
