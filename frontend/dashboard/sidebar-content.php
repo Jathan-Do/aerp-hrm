@@ -15,7 +15,7 @@
             <a class="nav-link <?php echo aerp_menu_active('aerp-categories'); ?>" href="<?php echo home_url('/aerp-categories'); ?>">
                 <i class="fas fa-th-large me-2"></i> <span class="menu-text">Danh Mục</span>
             </a>
-            <a class="nav-link" href="#employees">
+            <a class="nav-link <?php echo aerp_menu_active('aerp-hrm-employees'); ?>" href="<?php echo home_url('/aerp-hrm-employees'); ?>">
                 <i class="fas fa-users me-2"></i> <span class="menu-text">Nhân sự</span>
             </a>
         </div>

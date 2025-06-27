@@ -1,4 +1,42 @@
 <?php
+add_action('wp_ajax_aerp_hrm_employee_tab_content', function() {
+    $employee_id = absint($_POST['id'] ?? 0);
+    $section = sanitize_text_field($_POST['section'] ?? 'detail-view');
+    ob_start();
+    switch ($section) {
+        case 'salary':
+            include AERP_HRM_PATH . 'frontend/dashboard/employees/salary/tab-salary.php';
+            break;
+        case 'task':
+            include AERP_HRM_PATH . 'frontend/dashboard/employees/task/tab-task.php';
+            break;
+        case 'discipline':
+            include AERP_HRM_PATH . 'frontend/dashboard/employees/discipline/tab-discipline.php';
+            break;
+        case 'reward':
+            include AERP_HRM_PATH . 'frontend/dashboard/employees/reward/tab-reward.php';
+            break;
+        case 'adjustment':
+            include AERP_HRM_PATH . 'frontend/dashboard/employees/adjustment/tab-adjustment.php';
+            break;
+        case 'attachment':
+            include AERP_HRM_PATH . 'frontend/dashboard/employees/attachment/tab-attachment.php';
+            break;
+        case 'attendance':
+            include AERP_HRM_PATH . 'frontend/dashboard/employees/attendance/tab-attendance.php';
+            break;
+        case 'journey':
+            include AERP_HRM_PATH . 'frontend/dashboard/employees/journey/tab-employee-journey.php';
+            break;
+        default:
+            include AERP_HRM_PATH . 'frontend/dashboard/employees/employee/tab-view-detail.php';
+            break;
+    }
+    $html = ob_get_clean();
+    echo $html;
+    wp_die();
+});
+
 add_action('wp_ajax_aerp_hrm_filter_company', 'aerp_hrm_filter_company_callback');
 add_action('wp_ajax_nopriv_aerp_hrm_filter_company', 'aerp_hrm_filter_company_callback');
 function aerp_hrm_filter_company_callback()
@@ -191,6 +229,230 @@ function aerp_hrm_filter_permission_callback()
         'order' => sanitize_text_field($_POST['order'] ?? ''),
     ];
     $table = new AERP_Frontend_Permission_Table();
+    $table->set_filters($filters);
+    ob_start();
+    $table->render();
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
+
+
+add_action('wp_ajax_aerp_hrm_filter_employees', 'aerp_hrm_filter_employees_callback');
+add_action('wp_ajax_nopriv_aerp_hrm_filter_employees', 'aerp_hrm_filter_employees_callback');
+function aerp_hrm_filter_employees_callback()
+{
+    $filters = [
+        'department_id' => sanitize_text_field($_POST['department_id'] ?? ''),
+        'position_id' => sanitize_text_field($_POST['position_id'] ?? ''),
+        'work_location_id' => sanitize_text_field($_POST['work_location_id'] ?? ''),
+        'status' => sanitize_text_field($_POST['status'] ?? ''),
+        'birthday_month' => sanitize_text_field($_POST['birthday_month'] ?? ''),
+        'join_date_from' => sanitize_text_field($_POST['join_date_from'] ?? ''),
+        'join_date_to' => sanitize_text_field($_POST['join_date_to'] ?? ''),
+        'off_date_from' => sanitize_text_field($_POST['off_date_from'] ?? ''),
+        'off_date_to' => sanitize_text_field($_POST['off_date_to'] ?? ''),
+        'search_term' => sanitize_text_field($_POST['s'] ?? ''),
+        'paged' => intval($_POST['paged'] ?? 1),
+        'orderby' => sanitize_text_field($_POST['orderby'] ?? ''),
+        'order' => sanitize_text_field($_POST['order'] ?? ''),
+    ];
+    $table = new AERP_Frontend_Employee_Table();
+    $table->set_filters($filters);
+    ob_start();
+    $table->render();
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
+
+add_action('wp_ajax_aerp_hrm_filter_salary', 'aerp_hrm_filter_salary_callback');
+add_action('wp_ajax_nopriv_aerp_hrm_filter_salary', 'aerp_hrm_filter_salary_callback');
+function aerp_hrm_filter_salary_callback()
+{
+    $filters = [
+        'employee_id' => sanitize_text_field($_POST['employee_id'] ?? ''),
+        'search_term' => sanitize_text_field($_POST['s'] ?? ''),
+        'paged' => intval($_POST['paged'] ?? 1),
+        'orderby' => sanitize_text_field($_POST['orderby'] ?? ''),
+        'order' => sanitize_text_field($_POST['order'] ?? ''),
+    ];
+    $table = new AERP_Frontend_Salary_Table([
+        'employee_id' => $filters['employee_id'],
+    ]);
+    $table->set_filters($filters);
+    ob_start();
+    $table->render();
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
+
+add_action('wp_ajax_aerp_hrm_filter_advance', 'aerp_hrm_filter_advance_callback');
+add_action('wp_ajax_nopriv_aerp_hrm_filter_advance', 'aerp_hrm_filter_advance_callback');
+function aerp_hrm_filter_advance_callback()
+{
+    $filters = [
+        'employee_id' => sanitize_text_field($_POST['employee_id'] ?? ''),
+        'search_term' => sanitize_text_field($_POST['s'] ?? ''),
+        'paged' => intval($_POST['paged'] ?? 1),
+        'orderby' => sanitize_text_field($_POST['orderby'] ?? ''),
+        'order' => sanitize_text_field($_POST['order'] ?? ''),
+    ];
+    $table = new AERP_Frontend_Advance_Table([
+        'employee_id' => $filters['employee_id'],
+    ]);
+    $table->set_filters($filters);
+    ob_start();
+    $table->render();
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
+
+add_action('wp_ajax_aerp_hrm_filter_salary_config', 'aerp_hrm_filter_salary_config_callback');
+add_action('wp_ajax_nopriv_aerp_hrm_filter_salary_config', 'aerp_hrm_filter_salary_config_callback');
+function aerp_hrm_filter_salary_config_callback()
+{
+    $filters = [
+        'employee_id' => sanitize_text_field($_POST['employee_id'] ?? ''),
+        'search_term' => sanitize_text_field($_POST['s'] ?? ''),
+        'paged' => intval($_POST['paged'] ?? 1),
+        'orderby' => sanitize_text_field($_POST['orderby'] ?? ''),
+        'order' => sanitize_text_field($_POST['order'] ?? ''),
+    ];
+    $table = new AERP_Frontend_Salary_Config_Table([
+        'employee_id' => $filters['employee_id'],
+    ]);
+    $table->set_filters($filters);
+    ob_start();
+    $table->render();
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
+
+add_action('wp_ajax_aerp_hrm_filter_task', 'aerp_hrm_filter_task_callback');
+add_action('wp_ajax_nopriv_aerp_hrm_filter_task', 'aerp_hrm_filter_task_callback');
+function aerp_hrm_filter_task_callback()
+{
+    $filters = [
+        'employee_id' => sanitize_text_field($_POST['employee_id'] ?? ''),
+        'status' => sanitize_text_field($_POST['status'] ?? ''),
+        'month' => sanitize_text_field($_POST['month'] ?? ''),
+        'year' => sanitize_text_field($_POST['year'] ?? ''),
+        'search_term' => sanitize_text_field($_POST['s'] ?? ''),
+        'paged' => intval($_POST['paged'] ?? 1),
+        'orderby' => sanitize_text_field($_POST['orderby'] ?? ''),
+        'order' => sanitize_text_field($_POST['order'] ?? ''),
+    ];
+    $table = new AERP_Frontend_Task_Table([
+        'employee_id' => $filters['employee_id'],
+    ]);
+    $table->set_filters($filters);
+    ob_start();
+    $table->render();
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
+
+add_action('wp_ajax_aerp_hrm_filter_discipline_log', 'aerp_hrm_filter_discipline_log_callback');
+add_action('wp_ajax_nopriv_aerp_hrm_filter_discipline_log', 'aerp_hrm_filter_discipline_log_callback');
+function aerp_hrm_filter_discipline_log_callback()
+{
+    $filters = [
+        'employee_id' => sanitize_text_field($_POST['employee_id'] ?? ''),
+        'violation_month' => sanitize_text_field($_POST['violation_month'] ?? ''),
+        'search_term' => sanitize_text_field($_POST['s'] ?? ''),
+        'paged' => intval($_POST['paged'] ?? 1),
+        'orderby' => sanitize_text_field($_POST['orderby'] ?? ''),
+        'order' => sanitize_text_field($_POST['order'] ?? ''),
+    ];
+    $table = new AERP_Frontend_Discipline_Log_Table([
+        'employee_id' => $filters['employee_id'],
+    ]);
+    $table->set_filters($filters);
+    ob_start();
+    $table->render();
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
+add_action('wp_ajax_aerp_hrm_filter_employee_reward', 'aerp_hrm_filter_employee_reward_callback');
+add_action('wp_ajax_nopriv_aerp_hrm_filter_employee_reward', 'aerp_hrm_filter_employee_reward_callback');
+function aerp_hrm_filter_employee_reward_callback()
+{
+    $filters = [
+        'employee_id' => sanitize_text_field($_POST['employee_id'] ?? ''),
+        'month' => sanitize_text_field($_POST['month'] ?? ''),
+        'search_term' => sanitize_text_field($_POST['s'] ?? ''),
+        'paged' => intval($_POST['paged'] ?? 1),
+        'orderby' => sanitize_text_field($_POST['orderby'] ?? ''),
+        'order' => sanitize_text_field($_POST['order'] ?? ''),
+    ];
+    $table = new AERP_Frontend_Employee_Reward_Table([
+        'employee_id' => $filters['employee_id'],
+    ]);
+    $table->set_filters($filters);
+    ob_start();
+    $table->render();
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
+
+add_action('wp_ajax_aerp_hrm_filter_adjustment', 'aerp_hrm_filter_adjustment_callback');
+add_action('wp_ajax_nopriv_aerp_hrm_filter_adjustment', 'aerp_hrm_filter_adjustment_callback');
+function aerp_hrm_filter_adjustment_callback()
+{
+    $filters = [
+        'employee_id' => sanitize_text_field($_POST['employee_id'] ?? ''),
+        'month' => sanitize_text_field($_POST['month'] ?? ''),
+        'type' => sanitize_text_field($_POST['type'] ?? ''),
+        'search_term' => sanitize_text_field($_POST['s'] ?? ''),
+        'paged' => intval($_POST['paged'] ?? 1),
+        'orderby' => sanitize_text_field($_POST['orderby'] ?? ''),
+        'order' => sanitize_text_field($_POST['order'] ?? ''),
+    ];
+    $table = new AERP_Frontend_Adjustment_Table([
+        'employee_id' => $filters['employee_id'],
+    ]);
+    $table->set_filters($filters);
+    ob_start();
+    $table->render();
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
+add_action('wp_ajax_aerp_hrm_filter_attachment', 'aerp_hrm_filter_attachment_callback');
+add_action('wp_ajax_nopriv_aerp_hrm_filter_attachment', 'aerp_hrm_filter_attachment_callback');
+function aerp_hrm_filter_attachment_callback()
+{
+    $filters = [
+        'employee_id' => sanitize_text_field($_POST['employee_id'] ?? ''),
+        'search_term' => sanitize_text_field($_POST['s'] ?? ''),
+        'paged' => intval($_POST['paged'] ?? 1),
+        'orderby' => sanitize_text_field($_POST['orderby'] ?? ''),
+        'order' => sanitize_text_field($_POST['order'] ?? ''),
+    ];
+    $table = new AERP_Frontend_Attachment_Table([
+        'employee_id' => $filters['employee_id'],
+    ]);
+    $table->set_filters($filters);
+    ob_start();
+    $table->render();
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
+
+add_action('wp_ajax_aerp_hrm_filter_attendance', 'aerp_hrm_filter_attendance_callback');
+add_action('wp_ajax_nopriv_aerp_hrm_filter_attendance', 'aerp_hrm_filter_attendance_callback');
+function aerp_hrm_filter_attendance_callback()
+{
+    $filters = [
+        'employee_id' => sanitize_text_field($_POST['employee_id'] ?? ''),
+        'work_date' => sanitize_text_field($_POST['work_date'] ?? ''),
+        'shift' => sanitize_text_field($_POST['shift'] ?? ''),
+        'search_term' => sanitize_text_field($_POST['s'] ?? ''),
+        'paged' => intval($_POST['paged'] ?? 1),
+        'orderby' => sanitize_text_field($_POST['orderby'] ?? ''),
+        'order' => sanitize_text_field($_POST['order'] ?? ''),
+    ];
+    $table = new AERP_Frontend_Attendance_Table([
+        'employee_id' => $filters['employee_id'],
+    ]);
     $table->set_filters($filters);
     ob_start();
     $table->render();

@@ -485,9 +485,9 @@ class AERP_HRM_Settings_Manager
 
     public static function license_page()
     {
-        if (!aerp_user_has_permission(get_current_user_id(), 'license_manage')) {
-            wp_die('Bạn không có quyền truy cập trang này!');
-        }
+        // if (!aerp_user_has_permission(get_current_user_id(), 'license_manage')) {
+        //     wp_die('Bạn không có quyền truy cập trang này!');
+        // }
         if (isset($_POST['aerp_license_update']) && check_admin_referer('aerp_license_action', 'aerp_license_nonce')) {
             $data = [];
 

@@ -6,9 +6,11 @@ $hrm_active = function_exists('aerp_hrm_init') || is_plugin_active('aerp-hrm/aer
 $crm_active = function_exists('aerp_crm_init') || is_plugin_active('aerp-crm/aerp-crm.php');
 $order_active = function_exists('aerp_order_init') || is_plugin_active('aerp-order/aerp-order.php');
 
-function aerp_menu_active($slug)
-{
-    return strpos($_SERVER['REQUEST_URI'], $slug) !== false ? 'active' : '';
+if (!function_exists('aerp_menu_active')) {
+    function aerp_menu_active($slug)
+    {
+        return strpos($_SERVER['REQUEST_URI'], $slug) !== false ? 'active' : '';
+    }
 }
 ?>
 <div class="offcanvas offcanvas-start d-md-none p-0" tabindex="-1" id="aerpSidebar">

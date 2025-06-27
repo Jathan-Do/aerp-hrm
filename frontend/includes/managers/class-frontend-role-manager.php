@@ -118,4 +118,11 @@ class AERP_Frontend_Role_Manager
         global $wpdb;
         return $wpdb->get_col($wpdb->prepare("SELECT permission_id FROM {$wpdb->prefix}aerp_role_permission WHERE role_id = %d", $role_id));
     }
+    public static function get_roles_of_user($user_id)
+    {
+        global $wpdb;
+        return $wpdb->get_col($wpdb->prepare(
+            "SELECT role_id FROM {$wpdb->prefix}aerp_user_role WHERE user_id = %d", $user_id
+        ));
+    }
 }

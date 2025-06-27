@@ -16,6 +16,11 @@ add_action('init', function () {
     add_rewrite_rule('^aerp-salary-summary/view/([0-9]+)/?$', 'index.php?aerp_salary_summary=1&action=view&id=$matches[1]', 'top');
     add_rewrite_rule('^aerp-role/?$', 'index.php?aerp_role=1', 'top');
     add_rewrite_rule('^aerp-permission/?$', 'index.php?aerp_permission=1', 'top');
+    add_rewrite_rule('^aerp-hrm-employees/?$', 'index.php?aerp_hrm_employees=1', 'top');
+    add_rewrite_rule('^aerp-hrm-employees/view/([0-9]+)/?$', 'index.php?aerp_hrm_employees=1&action=view&id=$matches[1]', 'top');
+    add_rewrite_rule('^aerp-hrm-employees/view/([0-9]+)/section/([a-zA-Z0-9_-]+)/?$', 'index.php?aerp_hrm_employees=1&action=view&id=$matches[1]&section=$matches[2]', 'top');
+
+
 
     $rules = get_option('rewrite_rules');
     if ($rules && (!isset($rules['^aerp-dashboard/?$']))) {
@@ -60,6 +65,12 @@ add_action('init', function () {
     if ($rules && !isset($rules['^aerp-permission/?$'])) {
         flush_rewrite_rules();
     }
+    if ($rules && !isset($rules['^aerp-hrm-employees/?$'])) {
+        flush_rewrite_rules();
+    }
+    if ($rules && !isset($rules['^aerp-hrm-employees/view/([0-9]+)/section/([a-zA-Z0-9_-]+)/?$'])) {
+        flush_rewrite_rules();
+    }
 });
 
 add_filter('query_vars', function ($vars) {
@@ -81,6 +92,8 @@ add_filter('query_vars', function ($vars) {
     $vars[] = 'id';
     $vars[] = 'aerp_role';
     $vars[] = 'aerp_permission';
+    $vars[] = 'aerp_hrm_employees';
+    $vars[] = 'section';
     return $vars;
 });
 
@@ -294,11 +307,134 @@ add_action('template_redirect', function () {
         }
         exit;
     }
+    if (get_query_var('aerp_hrm_employees')) {
+        $action = $_GET['action'] ?? '';
+        $section = $_GET['section'] ?? get_query_var('section') ?? '';
+        switch ($action) {
+            case 'add':
+                include AERP_HRM_PATH . 'frontend/dashboard/employees/employee/form-add.php';
+                break;
+            case 'edit':
+                include AERP_HRM_PATH . 'frontend/dashboard/employees/employee/form-edit.php';
+                break;
+            case 'delete':
+                AERP_Frontend_Employee_Manager::handle_single_delete();
+                break;
+            case 'view':
+                if ($section === 'advance') {
+                    $sub_action = $_GET['sub_action'] ?? '';
+                    switch ($sub_action) {
+                        case 'add':
+                            include AERP_HRM_PATH . 'frontend/dashboard/employees/salary/form-advance.php';
+                            break;
+                        case 'edit':
+                            include AERP_HRM_PATH . 'frontend/dashboard/employees/salary/form-advance.php';
+                            break;
+                        case 'delete':
+                            AERP_Frontend_Advance_Manager::handle_single_delete();
+                            break;
+                        default:
+                            include AERP_HRM_PATH . 'frontend/dashboard/employees/salary/page-advance.php';
+                            break;
+                    }
+                } elseif ($section === 'salary_config') {
+                    $sub_action = $_GET['sub_action'] ?? '';
+                    switch ($sub_action) {
+                        case 'add':
+                            include AERP_HRM_PATH . 'frontend/dashboard/employees/salary/form-salary-config.php';
+                            break;
+                        case 'edit':
+                            include AERP_HRM_PATH . 'frontend/dashboard/employees/salary/form-salary-config.php';
+                            break;
+                        case 'delete':
+                            AERP_Frontend_Salary_Config_Manager::handle_single_delete();
+                            break;
+                        default:
+                            include AERP_HRM_PATH . 'frontend/dashboard/employees/salary/page-salary-config.php';
+                            break;
+                    }
+                } elseif ($section === 'task' && isset($_GET['sub_action'])) {
+                    $sub_action = $_GET['sub_action'];
+                    if ($sub_action === 'add') {
+                        include AERP_HRM_PATH . 'frontend/dashboard/employees/task/page-task-add.php';
+                        exit;
+                    } elseif ($sub_action === 'edit') {
+                        include AERP_HRM_PATH . 'frontend/dashboard/employees/task/page-task-edit.php';
+                        exit;
+                    } elseif ($sub_action === 'delete') {
+                        AERP_Frontend_Task_Manager::handle_single_delete();
+                        exit;
+                    }
+                } elseif ($section === 'discipline' && isset($_GET['sub_action'])) {
+                    $sub_action = $_GET['sub_action'];
+                    if ($sub_action === 'add') {
+                        include AERP_HRM_PATH . 'frontend/dashboard/employees/discipline/page-discipline-add.php';
+                        exit;
+                    }
+                } elseif ($section === 'reward' && isset($_GET['sub_action'])) {
+                    $sub_action = $_GET['sub_action'];
+                    if ($sub_action === 'add') {
+                        include AERP_HRM_PATH . 'frontend/dashboard/employees/reward/page-employee-reward-add.php';
+                        exit;
+                    } elseif ($sub_action === 'edit') {
+                        include AERP_HRM_PATH . 'frontend/dashboard/employees/reward/page-employee-reward-edit.php';
+                        exit;
+                    } elseif ($sub_action === 'delete') {
+                        AERP_Frontend_Employee_Reward_Manager::handle_single_delete();
+                        exit;
+                    }
+                } elseif ($section === 'adjustment' && isset($_GET['sub_action'])) {
+                    $sub_action = $_GET['sub_action'];
+                    if ($sub_action === 'add') {
+                        include AERP_HRM_PATH . 'frontend/dashboard/employees/adjustment/page-adjustment-add.php';
+                        exit;
+                    } elseif ($sub_action === 'edit') {
+                        include AERP_HRM_PATH . 'frontend/dashboard/employees/adjustment/page-adjustment-edit.php';
+                        exit;
+                    } elseif ($sub_action === 'delete') {
+                        AERP_Frontend_Adjustment_Manager::handle_single_delete();
+                        exit;
+                    }
+                } elseif ($section === 'attachment' && isset($_GET['sub_action'])) {
+                    $sub_action = $_GET['sub_action'];
+                    if ($sub_action === 'add') {
+                        include AERP_HRM_PATH . 'frontend/dashboard/employees/attachment/page-attachment-add.php';
+                        exit;
+                    } elseif ($sub_action === 'edit') {
+                        include AERP_HRM_PATH . 'frontend/dashboard/employees/attachment/page-attachment-edit.php';
+                        exit;
+                    } elseif ($sub_action === 'delete') {
+                        AERP_Frontend_Attachment_Manager::handle_single_delete();
+                        exit;
+                    }
+                } elseif ($section === 'attendance' && isset($_GET['sub_action'])) {
+                    $sub_action = $_GET['sub_action'];
+                    if ($sub_action === 'add') {
+                        include AERP_HRM_PATH . 'frontend/dashboard/employees/attendance/page-attendance-add.php';
+                        exit;
+                    } elseif ($sub_action === 'edit') {
+                        include AERP_HRM_PATH . 'frontend/dashboard/employees/attendance/page-attendance-edit.php';
+                        exit;
+                    } elseif ($sub_action === 'delete') {
+                        AERP_Frontend_Attendance_Manager::handle_single_delete();
+                        exit;
+                    }
+                } else {
+                    include AERP_HRM_PATH . 'frontend/dashboard/employees/form-view.php';
+                }
+                break;
+
+            default:
+                include AERP_HRM_PATH . 'frontend/dashboard/employees/employee/list.php';
+                break;
+        }
+        exit;
+    }
 });
 
 // Tắt canonical redirect cho các trang HRM ảo (refactor)
 add_action('template_redirect', function () {
-    $virtual_routes = ['aerp_company', 'aerp_departments', 'aerp_position', 'aerp_work_location', 'aerp_discipline_rule', 'aerp_reward_settings', 'aerp_ranking_settings', 'aerp_kpi_settings', 'aerp_role', 'aerp_permission'];
+    $virtual_routes = ['aerp_company', 'aerp_departments', 'aerp_position', 'aerp_work_location', 'aerp_discipline_rule', 'aerp_reward_settings', 'aerp_ranking_settings', 'aerp_kpi_settings', 'aerp_role', 'aerp_permission', 'aerp_hrm_employees'];
     foreach ($virtual_routes as $route) {
         if (get_query_var($route)) {
             remove_filter('template_redirect', 'redirect_canonical');

@@ -258,26 +258,26 @@ class AERP_Frontend_Table
         <div class="aerp-table-wrapper">
             <!-- Search form -->
             <?php if (!empty($this->searchable_columns)) : ?>
-            <form method="get" class="mb-4 aerp-table-search-form aerp-table-ajax-form"
-                data-table-wrapper="<?php echo esc_attr($this->table_wrapper); ?>"
-                data-ajax-action="<?php echo esc_attr($this->ajax_action); ?>"
-                onsubmit="return false;">
-                <?php
-                // Giữ lại các tham số filter từ form chính để đảm bảo chúng không bị mất khi tìm kiếm, phân trang, sort
-                if (!empty($this->filters)) {
-                    foreach ($this->filters as $key => $value) {
-                        // Bỏ qua các tham số đã có sẵn trong form tìm kiếm hoặc do table tự quản lý
-                        if (in_array($key, ['s', 'orderby', 'order', 'paged', 'search_term']) || empty($value)) {
-                            continue;
+                <form method="get" class="mb-4 aerp-table-search-form aerp-table-ajax-form"
+                    data-table-wrapper="<?php echo esc_attr($this->table_wrapper); ?>"
+                    data-ajax-action="<?php echo esc_attr($this->ajax_action); ?>"
+                    onsubmit="return false;">
+                    <?php
+                    // Giữ lại các tham số filter từ form chính để đảm bảo chúng không bị mất khi tìm kiếm, phân trang, sort
+                    if (!empty($this->filters)) {
+                        foreach ($this->filters as $key => $value) {
+                            // Bỏ qua các tham số đã có sẵn trong form tìm kiếm hoặc do table tự quản lý
+                            if (in_array($key, ['s', 'orderby', 'order', 'paged', 'search_term']) || empty($value)) {
+                                continue;
+                            }
+                            echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr(stripslashes($value)) . '">';
                         }
-                        echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr(stripslashes($value)) . '">';
                     }
-                }
-                ?>
-                <div class="input-group" style="justify-self: end;">
-                    <input type="search" name="s" class="form-control aerp-table-search-input" placeholder="Tìm kiếm..." value="<?php echo esc_attr($this->search_term); ?>">
-                </div>
-            </form>
+                    ?>
+                    <div class="input-group" style="justify-self: end;">
+                        <input type="search" name="s" class="form-control aerp-table-search-input" placeholder="Tìm kiếm..." value="<?php echo esc_attr($this->search_term); ?>">
+                    </div>
+                </form>
             <?php endif; ?>
 
             <div class="d-flex justify-content-end position-relative mb-3">
@@ -457,9 +457,9 @@ class AERP_Frontend_Table
                                         <?php endforeach; ?>
                                         <?php if (!empty($this->actions)): ?>
                                             <td class="text-center">
-                                            <div class="d-flex gap-2 justify-content-center">
-                                                        <?php $this->render_row_actions($item); ?>
-                                                    </div>
+                                                <div class="d-flex gap-2 justify-content-center">
+                                                    <?php $this->render_row_actions($item); ?>
+                                                </div>
                                             </td>
                                         <?php endif; ?>
                                     </tr>
@@ -474,7 +474,6 @@ class AERP_Frontend_Table
             <?php $this->render_pagination(); ?>
         </div>
         <?php wp_nonce_field($this->nonce_action_prefix . '_bulk_action', $this->bulk_action_nonce_key); ?>
-        </div>
 
 <?php
     }

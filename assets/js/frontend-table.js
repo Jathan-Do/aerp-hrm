@@ -141,6 +141,11 @@ jQuery(document).ready(function ($) {
         var ajaxAction = $form.data("ajax-action") || "aerp_crm_filter_customers";
         data.push({ name: "action", value: ajaxAction });
         
+        var employeeId = $tableWrapper.data('employee-id');
+        if (employeeId && !data.some(item => item.name === 'employee_id')) {
+            data.push({ name: 'employee_id', value: employeeId });
+        }
+        
         if (additionalData) {
             $.each(additionalData, function(key, value) {
                 // Remove existing key if present

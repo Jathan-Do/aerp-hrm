@@ -40,13 +40,6 @@ if (!function_exists('aerp_hrm_is_pro')) {
 // Khởi tạo plugin
 function aerp_hrm_init()
 {
-    // Cảnh báo nếu thiếu framework
-    // if (!function_exists('aerp_get_departments')) {
-    //     add_action('admin_notices', function () {
-    //         echo '<div class="error"><p><strong>AERP HRM</strong> yêu cầu plugin nền <strong>AERP Framework</strong> để hoạt động.</p></div>';
-    //     });
-    //     return;
-    // }
     //load func dùng chung
     require_once AERP_HRM_PATH . 'includes/functions-common.php';
 
@@ -71,6 +64,16 @@ function aerp_hrm_init()
     require_once AERP_HRM_PATH . 'frontend/includes/table/class-salary-summary-table.php';
     require_once AERP_HRM_PATH . 'frontend/includes/table/class-role-table.php';
     require_once AERP_HRM_PATH . 'frontend/includes/table/class-permission-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-employee-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-salary-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-salary-config-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-advance-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-task-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-discipline-log-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-employee-reward-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-adjustment-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-attachment-table.php';
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-attendance-table.php';
 
     // Load các class cần thiết khác
     require_once AERP_HRM_PATH . 'includes/class-excel-export-helper.php';
@@ -110,6 +113,17 @@ function aerp_hrm_init()
         'class-frontend-kpi-settings-manager.php',
         'class-frontend-role-manager.php',
         'class-frontend-permission-manager.php',
+        'class-frontend-employee-manager.php',
+        'class-frontend-salary-manager.php',
+        'class-frontend-salary-config-manager.php',
+        'class-frontend-advance-manager.php',
+        'class-frontend-task-manager.php',
+        'class-frontend-discipline-log-manager.php',
+        'class-frontend-employee-reward-manager.php',
+        'class-frontend-adjustment-manager.php',
+        'class-frontend-attachment-manager.php',
+        'class-frontend-attendance-manager.php',
+
     ];
     foreach ($includes as $file) {
         require_once AERP_HRM_PATH . 'frontend/includes/managers/' . $file;
@@ -162,6 +176,16 @@ function aerp_hrm_init()
         'AERP_Frontend_KPI_Settings_Manager',
         'AERP_Frontend_Role_Manager',
         'AERP_Frontend_Permission_Manager',
+        'AERP_Frontend_Employee_Manager',
+        'AERP_Frontend_Salary_Manager',
+        'AERP_Frontend_Salary_Config_Manager',
+        'AERP_Frontend_Advance_Manager',
+        'AERP_Frontend_Task_Manager',
+        'AERP_Frontend_Discipline_Log_Manager',
+        'AERP_Frontend_Employee_Reward_Manager',
+        'AERP_Frontend_Adjustment_Manager',
+        'AERP_Frontend_Attachment_Manager',
+        'AERP_Frontend_Attendance_Manager',
     ];
     foreach ($managers as $manager) {
         if (method_exists($manager, 'handle_submit')) {
@@ -191,7 +215,8 @@ function aerp_hrm_init()
             wp_enqueue_script('chartjs', 'https://cdn.jsdelivr.net/npm/chart.js', [], null, true);
             wp_enqueue_script('jquery-ui-dialog');
             wp_enqueue_script('aerp-frontend-table', AERP_HRM_URL . 'assets/js/frontend-table.js', ['jquery'], '1.0', true);
-
+            wp_enqueue_script('aerp-frontend-employee', AERP_HRM_URL . 'assets/js/frontend-employee.js', ['jquery'], '1.0', true);
+            wp_enqueue_media();
             // Prepare data for wp_localize_script
             $dummy_table_instance = new AERP_Frontend_Table();
             $all_column_keys = $dummy_table_instance->get_column_keys();

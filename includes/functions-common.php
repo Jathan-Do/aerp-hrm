@@ -81,6 +81,15 @@ function aerp_get_position_name($id)
     ));
 }
 
+// Lấy tên nhân viên theo ID
+function aerp_get_employee_name($id)
+{
+    global $wpdb;
+    return $wpdb->get_var($wpdb->prepare(
+        "SELECT full_name FROM {$wpdb->prefix}aerp_hrm_employees WHERE id = %d",
+        $id
+    ));
+}
 
 /**
  * Lấy danh sách tất cả nhân viên
