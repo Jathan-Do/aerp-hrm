@@ -33,7 +33,7 @@ if (!empty($selected_month) && isset($_POST['aerp_generate_salary'])) {
 $table = new AERP_Frontend_Salary_Table([
     'employee_id' => $employee_id,
 ]);
-
+$table->set_filters($filters); 
 $table->process_bulk_action();
 
 ?>
