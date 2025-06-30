@@ -16,15 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aerp_save_settings'])
 
     // Save Order setting
     update_option('aerp_order_delete_data_on_uninstall', isset($_POST['aerp_order_delete_data_on_uninstall']) ? 1 : 0);
-
-    // Success message
-    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">Đã lưu cài đặt thành công!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
 }
 
 // Get current settings
 $hrm_checked = get_option('aerp_hrm_delete_data_on_uninstall', 0) ? 'checked' : '';
 $crm_checked = get_option('aerp_crm_delete_data_on_uninstall', 0) ? 'checked' : '';
-$crm_checked = get_option('aerp_order_delete_data_on_uninstall', 0) ? 'checked' : '';
+$order_checked = get_option('aerp_order_delete_data_on_uninstall', 0) ? 'checked' : '';
 $hrm_active = function_exists('aerp_hrm_init') || is_plugin_active('aerp-hrm/aerp-hrm.php');
 $crm_active = function_exists('aerp_crm_init') || is_plugin_active('aerp-crm/aerp-crm.php');
 $order_active = function_exists('aerp_order_init') || is_plugin_active('aerp-order/aerp-order.php');
@@ -53,6 +50,9 @@ ob_start();
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 <strong>Cảnh báo:</strong> Các tùy chọn này sẽ xóa vĩnh viễn dữ liệu khi bạn gỡ plugin. Hãy chắc chắn trước khi lưu cài đặt.
             </div>
+            <?php
+            echo '<div class="alert alert-success alert-dismissible fade show" role="alert">Đã lưu cài đặt thành công!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+            ?>
             <?php if ($hrm_active): ?>
                 <div class="form-group mb-4">
                     <div class="form-check form-switch">

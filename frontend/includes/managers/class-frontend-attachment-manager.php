@@ -8,7 +8,6 @@ class AERP_Frontend_Attachment_Manager
     // =============================
     public static function handle_submit()
     {
-        error_log('Attachment update: ' . print_r($_POST, true));
         // Upload file
         if (
             isset($_POST['aerp_upload_attachment']) &&

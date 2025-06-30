@@ -1,5 +1,9 @@
 <?php
 if (!defined('ABSPATH')) exit;
+if (!function_exists('is_plugin_active')) {
+    include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+}
+$order_active = function_exists('aerp_order_init') || is_plugin_active('aerp-order/aerp-order.php');
 $current_user = wp_get_current_user();
 $management_menu = [
     [
@@ -80,6 +84,38 @@ $management_menu = [
         'color' => 'secondary',
     ],
 ];
+if ($order_active) {
+    $management_menu = array_merge($management_menu, [
+        [
+            'icon' => 'fa-box',
+            'title' => 'Sản phẩm kho',
+            'desc' => 'Quản lý sản phẩm kho',
+            'url' => home_url('/aerp-products'),
+            'color' => 'primary',
+        ],
+        [
+            'icon' => 'fa-weight-scale',
+            'title' => 'Đơn vị tính sản phẩm',
+            'desc' => 'Quản lý đơn vị tính',
+            'url' => home_url('/aerp-units'),
+            'color' => 'primary',
+        ],
+        [
+            'icon' => 'fa-tags',
+            'title' => 'Danh mục sản phẩm',
+            'desc' => 'Quản lý danh mục sản phẩm',
+            'url' => home_url('/aerp-product-categories'),
+            'color' => 'primary',
+        ],
+        [
+            'icon' => 'fa-history',
+            'title' => 'Lịch sử nhập/xuất kho',
+            'desc' => 'Quản lý lịch sử nhập/xuất kho',
+            'url' => home_url('/aerp-inventory-logs'),
+            'color' => 'primary',
+        ],
+    ]);
+}
 ob_start();
 ?>
 <div class="card mb-4">
