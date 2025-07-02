@@ -104,7 +104,27 @@ function aerp_get_employees_with_location()
          ORDER BY e.full_name ASC"
     );
 }
-
+function aerp_get_employees_with_location_select2($q = '')
+{
+    global $wpdb;
+    $where = '';
+    $where = '';
+    if ($q !== '') {
+        $q_like = '%' . $wpdb->esc_like($q) . '%';
+        $where = $wpdb->prepare(
+            " AND (e.full_name LIKE %s OR wl.name LIKE %s)",
+            $q_like,
+            $q_like
+        );
+    }
+    return $wpdb->get_results(
+        "SELECT e.user_id, e.full_name, wl.name AS work_location_name
+         FROM {$wpdb->prefix}aerp_hrm_employees e
+         LEFT JOIN {$wpdb->prefix}aerp_hrm_work_locations wl ON e.work_location_id = wl.id
+         WHERE 1=1 $where
+         ORDER BY e.full_name ASC"
+    );
+}
 function aerp_safe_select_options($items, $selected = '', $key = 'id', $label = 'name', $show_all_option = false)
 {
     if ($show_all_option) {
@@ -193,17 +213,21 @@ function aerp_js_redirect($url)
  * @param string $permission_name (tên quyền, cột name trong bảng aerp_permissions)
  * @return bool
  */
-function aerp_user_has_permission($user_id, $permission_name) {
+function aerp_user_has_permission($user_id, $permission_name)
+{
     global $wpdb;
     // Lấy permission_id từ tên quyền
     $permission_id = $wpdb->get_var($wpdb->prepare(
-        "SELECT id FROM {$wpdb->prefix}aerp_permissions WHERE name = %s", $permission_name
+        "SELECT id FROM {$wpdb->prefix}aerp_permissions WHERE name = %s",
+        $permission_name
     ));
     if (!$permission_id) return false;
 
     // Kiểm tra quyền đặc biệt
     $has_special = $wpdb->get_var($wpdb->prepare(
-        "SELECT 1 FROM {$wpdb->prefix}aerp_user_permission WHERE user_id = %d AND permission_id = %d", $user_id, $permission_id
+        "SELECT 1 FROM {$wpdb->prefix}aerp_user_permission WHERE user_id = %d AND permission_id = %d",
+        $user_id,
+        $permission_id
     ));
     if ($has_special) return true;
 
@@ -211,7 +235,9 @@ function aerp_user_has_permission($user_id, $permission_name) {
     $has_role = $wpdb->get_var($wpdb->prepare(
         "SELECT 1 FROM {$wpdb->prefix}aerp_user_role ur
          JOIN {$wpdb->prefix}aerp_role_permission rp ON ur.role_id = rp.role_id
-         WHERE ur.user_id = %d AND rp.permission_id = %d", $user_id, $permission_id
+         WHERE ur.user_id = %d AND rp.permission_id = %d",
+        $user_id,
+        $permission_id
     ));
     return (bool)$has_role;
 }
@@ -244,14 +270,18 @@ function aerp_user_has_permission($user_id, $permission_name) {
  * @param string $role_name (tên nhóm quyền, ví dụ: 'admin', 'department_lead')
  * @return bool
  */
-function aerp_user_has_role($user_id, $role_name) {
+function aerp_user_has_role($user_id, $role_name)
+{
     global $wpdb;
     $role_id = $wpdb->get_var($wpdb->prepare(
-        "SELECT id FROM {$wpdb->prefix}aerp_roles WHERE name = %s", $role_name
+        "SELECT id FROM {$wpdb->prefix}aerp_roles WHERE name = %s",
+        $role_name
     ));
     if (!$role_id) return false;
     return (bool) $wpdb->get_var($wpdb->prepare(
-        "SELECT 1 FROM {$wpdb->prefix}aerp_user_role WHERE user_id = %d AND role_id = %d", $user_id, $role_id
+        "SELECT 1 FROM {$wpdb->prefix}aerp_user_role WHERE user_id = %d AND role_id = %d",
+        $user_id,
+        $role_id
     ));
 }
 

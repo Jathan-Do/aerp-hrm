@@ -5,7 +5,7 @@ if (!function_exists('is_plugin_active')) {
 }
 $order_active = function_exists('aerp_order_init') || is_plugin_active('aerp-order/aerp-order.php');
 $current_user = wp_get_current_user();
-$management_menu = [
+$management_hrm_menu  = [
     [
         'icon' => 'fa-building',
         'title' => 'Thông tin công ty',
@@ -84,8 +84,9 @@ $management_menu = [
         'color' => 'secondary',
     ],
 ];
+$management_order_menu = [];
 if ($order_active) {
-    $management_menu = array_merge($management_menu, [
+    $management_order_menu  = [
         [
             'icon' => 'fa-box',
             'title' => 'Sản phẩm kho',
@@ -98,23 +99,31 @@ if ($order_active) {
             'title' => 'Đơn vị tính sản phẩm',
             'desc' => 'Quản lý đơn vị tính',
             'url' => home_url('/aerp-units'),
-            'color' => 'primary',
+            'color' => 'info',
         ],
         [
             'icon' => 'fa-tags',
             'title' => 'Danh mục sản phẩm',
             'desc' => 'Quản lý danh mục sản phẩm',
             'url' => home_url('/aerp-product-categories'),
-            'color' => 'primary',
+            'color' => 'warning',
+        ],
+        [
+            'icon' => 'fa-warehouse',
+            'title' => 'Kho',
+            'desc' => 'Quản lý kho',
+            'url' => home_url('/aerp-warehouses'),
+            'color' => 'success',
         ],
         [
             'icon' => 'fa-history',
             'title' => 'Lịch sử nhập/xuất kho',
             'desc' => 'Quản lý lịch sử nhập/xuất kho',
             'url' => home_url('/aerp-inventory-logs'),
-            'color' => 'primary',
+            'color' => 'warning',
         ],
-    ]);
+
+    ];
 }
 ob_start();
 ?>
@@ -123,8 +132,9 @@ ob_start();
         <h5 class="mb-0"><i class="fas fa-th-large me-2"></i> Danh mục quản lý</h5>
     </div>
     <div class="card-body">
-        <div class="row g-3">
-            <?php foreach ($management_menu as $item): ?>
+        <div class="row g-3 mb-3">
+            <h5 class="mb-0">1. Danh mục plugin HRM</h5>
+            <?php foreach ($management_hrm_menu  as $item): ?>
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="card category-card h-100">
                         <div class="card-body text-center d-flex flex-column">
@@ -137,6 +147,24 @@ ob_start();
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <?php if (!empty($management_order_menu)) : ?>
+            <div class="row g-3">
+                <h5 class="mb-0">2. Danh mục plugin Order</h5>
+                <?php foreach ($management_order_menu  as $item): ?>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card category-card h-100">
+                            <div class="card-body text-center d-flex flex-column">
+                                <i class="fas <?php echo $item['icon']; ?> category-icon text-<?php echo $item['color']; ?>"></i>
+                                <h6 class="text-uppercase mt-2"><?php echo $item['title']; ?></h6>
+                                <p class="fs-6 text-muted flex-grow-1"><?php echo $item['desc']; ?></p>
+                                <a href="<?php echo esc_url($item['url']); ?>" class="btn btn-sm btn-outline-<?php echo $item['color']; ?>">Quản lý</a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 <?php
