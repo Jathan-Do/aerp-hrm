@@ -1,6 +1,12 @@
 <?php
 // Get current user
 $current_user = wp_get_current_user();
+$user_id = $current_user->ID;
+
+// Check if user is logged in and has admin capabilities
+if (!is_user_logged_in() || !aerp_user_has_role($user_id, 'admin')) {
+    wp_die(__('You do not have sufficient permissions to access this page.'));
+}
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aerp_save_settings'])) {
     // Verify nonce for security
@@ -16,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aerp_save_settings'])
 
     // Save Order setting
     update_option('aerp_order_delete_data_on_uninstall', isset($_POST['aerp_order_delete_data_on_uninstall']) ? 1 : 0);
+    $message = 'Đã lưu cài đặt thành công!';
+    set_transient('aerp_setting_message', $message, 10);
 }
 
 // Get current settings
@@ -50,9 +58,10 @@ ob_start();
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 <strong>Cảnh báo:</strong> Các tùy chọn này sẽ xóa vĩnh viễn dữ liệu khi bạn gỡ plugin. Hãy chắc chắn trước khi lưu cài đặt.
             </div>
-            <?php
-            echo '<div class="alert alert-success alert-dismissible fade show" role="alert">Đã lưu cài đặt thành công!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
-            ?>
+            <?php if ($message) {
+                echo '<div class="notice notice-success alert alert-success alert-dismissible fade show" role="alert">' . esc_html($message) . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                delete_transient('aerp_setting_message');
+            } ?>
             <?php if ($hrm_active): ?>
                 <div class="form-group mb-4">
                     <div class="form-check form-switch">

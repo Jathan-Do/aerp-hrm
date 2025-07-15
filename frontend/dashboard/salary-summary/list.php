@@ -2,6 +2,12 @@
 if (!defined('ABSPATH')) exit;
 
 $current_user = wp_get_current_user();
+$user_id = $current_user->ID;
+
+// Check if user is logged in and has admin capabilities
+if (!is_user_logged_in() || !aerp_user_has_role($user_id, 'admin')) {
+    wp_die(__('You do not have sufficient permissions to access this page.'));
+}
 $month = sanitize_text_field($_GET['salary_month'] ?? '');
 $table = new AERP_Frontend_Salary_Summary_Table();
 $table->set_filters(['salary_month' => $month]);
@@ -38,7 +44,7 @@ ob_start();
             <input type="hidden" name="action" value="aerp_export_excel_common">
             <input type="hidden" name="callback" value="salary_summary_export">
             <input type="hidden" name="salary_month" value="<?= esc_attr($month) ?>">
-            <button type="submit" name="aerp_export_excel" class="btn btn-success ms-3 mb-3">📥 Xuất Excel</button>
+            <button type="submit" name="aerp_export_excel" class="btn btn-success">📥 Xuất Excel</button>
         </form>
     </div>
 </div>

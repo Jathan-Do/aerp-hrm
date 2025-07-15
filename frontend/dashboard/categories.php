@@ -3,6 +3,14 @@ if (!defined('ABSPATH')) exit;
 if (!function_exists('is_plugin_active')) {
     include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 }
+// Get current user
+$current_user = wp_get_current_user();
+$user_id = $current_user->ID;
+
+// Check if user is logged in and has admin capabilities
+if (!is_user_logged_in() || !aerp_user_has_role($user_id, 'admin')) {
+    wp_die(__('You do not have sufficient permissions to access this page.'));
+}
 $order_active = function_exists('aerp_order_init') || is_plugin_active('aerp-order/aerp-order.php');
 $current_user = wp_get_current_user();
 $management_hrm_menu  = [
@@ -117,7 +125,7 @@ if ($order_active) {
         ],
         [
             'icon' => 'fa-history',
-            'title' => 'Lịch sử nhập/xuất kho',
+            'title' => 'Ghi nhận nhập/ xuất kho',
             'desc' => 'Quản lý lịch sử nhập/xuất kho',
             'url' => home_url('/aerp-inventory-logs'),
             'color' => 'warning',
