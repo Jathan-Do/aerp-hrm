@@ -17,7 +17,7 @@ class AERP_Frontend_Role_Table extends AERP_Frontend_Table
             'searchable_columns' => ['name', 'description'],
             'primary_key' => 'id',
             'per_page' => 10,
-            'actions' => ['edit', 'delete'],
+            'actions' => ['delete'],
             'bulk_actions' => ['delete'],
             'base_url' => home_url('/aerp-role'),
             'delete_item_callback' => ['AERP_Frontend_Role_Manager', 'delete_role_by_id'],

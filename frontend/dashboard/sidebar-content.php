@@ -43,6 +43,9 @@
             <a class="nav-link <?php echo aerp_menu_active('aerp-order-orders'); ?>" href="<?php echo home_url('/aerp-order-orders'); ?>">
                 <i class="fas fa-file-invoice me-2"></i> <span class="menu-text">Đơn hàng</span>
             </a>
+            <a class="nav-link <?php echo aerp_menu_active('aerp-warehouses'); ?>" href="<?php echo home_url('/aerp-warehouses'); ?>">
+                <i class="fas fa-warehouse me-2"></i> <span class="menu-text">Quản lý kho</span>
+            </a>
         </div>
     <?php endif; ?>
     <!-- Setting Menu -->

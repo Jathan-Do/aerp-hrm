@@ -7,19 +7,38 @@ if (!function_exists('is_plugin_active')) {
 $current_user = wp_get_current_user();
 $user_id = $current_user->ID;
 
-// Check if user is logged in and has admin capabilities
-if (!is_user_logged_in() || !aerp_user_has_role($user_id, 'admin')) {
+if (!is_user_logged_in()) {
+    wp_die(__('You must be logged in to access this page.'));
+}
+
+// Danh sách điều kiện, chỉ cần 1 cái đúng là qua
+$access_conditions = [
+    aerp_user_has_role($user_id, 'admin'),
+    aerp_user_has_role($user_id, 'department_lead'),
+    aerp_user_has_permission($user_id,'salary_view'),
+];
+if (!in_array(true, $access_conditions, true)) {
     wp_die(__('You do not have sufficient permissions to access this page.'));
 }
-$order_active = function_exists('aerp_order_init') || is_plugin_active('aerp-order/aerp-order.php');
-$current_user = wp_get_current_user();
-$management_hrm_menu  = [
+
+// Hàm kiểm tra user có role bất kỳ trong mảng không
+if (!function_exists('aerp_user_has_any_role')) {
+    function aerp_user_has_any_role($user_id, $roles = []) {
+        foreach ($roles as $role) {
+            if (aerp_user_has_role($user_id, $role)) return true;
+        }
+        return false;
+    }
+}
+// Định nghĩa tất cả menu HRM
+$all_hrm_menu = [
     [
         'icon' => 'fa-building',
         'title' => 'Thông tin công ty',
         'desc' => 'Quản lý thông tin doanh nghiệp và các thông tin cơ bản',
         'url' => home_url('/aerp-company'),
         'color' => 'primary',
+        'show_for' => ['admin'],
     ],
     [
         'icon' => 'fa-map-marker-alt',
@@ -27,6 +46,7 @@ $management_hrm_menu  = [
         'desc' => 'Quản lý các chi nhánh và vị trí làm việc trong công ty',
         'url' => home_url('/aerp-work-location'),
         'color' => 'info',
+        'show_for' => ['admin'],
     ],
     [
         'icon' => 'fa-sitemap',
@@ -34,6 +54,7 @@ $management_hrm_menu  = [
         'desc' => 'Thiết lập cơ cấu tổ chức và quản lý các phòng ban trong công ty',
         'url' => home_url('/aerp-departments'),
         'color' => 'success',
+        'show_for' => ['admin'],
     ],
     [
         'icon' => 'fa-user-tie',
@@ -41,6 +62,7 @@ $management_hrm_menu  = [
         'desc' => 'Quản lý các vị trí, chức vụ và cấp bậc trong tổ chức',
         'url' => home_url('/aerp-position'),
         'color' => 'secondary',
+        'show_for' => ['admin', 'department_lead'],
     ],
     [
         'icon' => 'fa-exclamation-circle',
@@ -48,6 +70,7 @@ $management_hrm_menu  = [
         'desc' => 'Thiết lập các quy định, mức phạt và quản lý vi phạm',
         'url' => home_url('/aerp-discipline-rule'),
         'color' => 'danger',
+        'show_for' => ['admin', 'department_lead'],
     ],
     [
         'icon' => 'fa-star',
@@ -55,6 +78,7 @@ $management_hrm_menu  = [
         'desc' => 'Thiết lập tiêu chí và quản lý xếp loại đánh giá nhân viên',
         'url' => home_url('/aerp-ranking-settings'),
         'color' => 'warning',
+        'show_for' => ['admin', 'department_lead'],
     ],
     [
         'icon' => 'fa-gift',
@@ -62,6 +86,7 @@ $management_hrm_menu  = [
         'desc' => 'Cấu hình các quy định thưởng và mức thưởng tự động',
         'url' => home_url('/aerp-reward-settings'),
         'color' => 'success',
+        'show_for' => ['admin', 'department_lead'],
     ],
     [
         'icon' => 'fa-chart-line',
@@ -69,6 +94,7 @@ $management_hrm_menu  = [
         'desc' => 'Thiết lập các chỉ tiêu KPI và mức thưởng theo hiệu suất',
         'url' => home_url('/aerp-kpi-settings'),
         'color' => 'info',
+        'show_for' => ['admin', 'department_lead'],
     ],
     [
         'icon' => 'fa-money-bill-wave',
@@ -76,6 +102,7 @@ $management_hrm_menu  = [
         'desc' => 'Tổng hợp lương của tất cả nhân viên',
         'url' => home_url('/aerp-salary-summary'),
         'color' => 'primary',
+        'permission' => 'salary_view',
     ],
     [
         'icon' => 'fa-users-cog',
@@ -83,6 +110,7 @@ $management_hrm_menu  = [
         'desc' => 'Quản lý các nhóm quyền và quyền hạn của nhân viên',
         'url' => home_url('/aerp-role'),
         'color' => 'primary',
+        'show_for' => ['admin'],
     ],
     [
         'icon' => 'fa-user-shield',
@@ -90,49 +118,92 @@ $management_hrm_menu  = [
         'desc' => 'Quản lý các quyền và quyền hạn của nhân viên',
         'url' => home_url('/aerp-permission'),
         'color' => 'secondary',
+        'show_for' => ['admin'],
     ],
 ];
+
+// Lọc menu theo role/permission
+$management_hrm_menu = array_filter($all_hrm_menu, function($item) use ($user_id) {
+    // Nếu có trường 'permission' thì phải có permission đó
+    if (isset($item['permission']) && !aerp_user_has_permission($user_id, $item['permission'])) {
+        return false;
+    }
+    // Nếu có trường 'show_for' thì phải có ít nhất 1 role trong đó
+    if (isset($item['show_for']) && !aerp_user_has_any_role($user_id, $item['show_for'])) {
+        return false;
+    }
+    return true;
+});
+$management_hrm_menu = array_values($management_hrm_menu); // reset key
+
+$order_active = function_exists('aerp_order_init') || is_plugin_active('aerp-order/aerp-order.php');
+
+// Định nghĩa tất cả menu Order
+$all_order_menu = [
+    [
+        'icon' => 'fa-box',
+        'title' => 'Sản phẩm kho',
+        'desc' => 'Quản lý sản phẩm kho',
+        'url' => home_url('/aerp-products'),
+        'color' => 'primary',
+        'show_for' => ['admin', 'department_lead'],
+    ],
+    [
+        'icon' => 'fa-weight-scale',
+        'title' => 'Đơn vị tính sản phẩm',
+        'desc' => 'Quản lý đơn vị tính',
+        'url' => home_url('/aerp-units'),
+        'color' => 'info',
+        'show_for' => ['admin', 'department_lead'],
+    ],
+    [
+        'icon' => 'fa-tags',
+        'title' => 'Danh mục sản phẩm',
+        'desc' => 'Quản lý danh mục sản phẩm',
+        'url' => home_url('/aerp-product-categories'),
+        'color' => 'warning',
+        'show_for' => ['admin', 'department_lead'],
+    ],
+    // [
+    //     'icon' => 'fa-warehouse',
+    //     'title' => 'Kho',
+    //     'desc' => 'Quản lý kho',
+    //     'url' => home_url('/aerp-warehouses'),
+    //     'color' => 'success',
+    //     'show_for' => ['admin', 'department_lead'],
+    // ],
+    [
+        'icon' => 'fa-history',
+        'title' => 'Ghi nhận nhập/ xuất kho',
+        'desc' => 'Quản lý lịch sử nhập/xuất kho',
+        'url' => home_url('/aerp-inventory-logs'),
+        'color' => 'warning',
+        'show_for' => ['admin', 'department_lead'],
+    ],
+    [
+        'icon' => 'fa-users',
+        'title' => 'Nhà cung cấp',
+        'desc' => 'Quản lý nhà cung cấp',
+        'url' => home_url('/aerp-suppliers'),
+        'color' => 'danger',
+        'show_for' => ['admin', 'department_lead'],
+    ],
+];
+
 $management_order_menu = [];
 if ($order_active) {
-    $management_order_menu  = [
-        [
-            'icon' => 'fa-box',
-            'title' => 'Sản phẩm kho',
-            'desc' => 'Quản lý sản phẩm kho',
-            'url' => home_url('/aerp-products'),
-            'color' => 'primary',
-        ],
-        [
-            'icon' => 'fa-weight-scale',
-            'title' => 'Đơn vị tính sản phẩm',
-            'desc' => 'Quản lý đơn vị tính',
-            'url' => home_url('/aerp-units'),
-            'color' => 'info',
-        ],
-        [
-            'icon' => 'fa-tags',
-            'title' => 'Danh mục sản phẩm',
-            'desc' => 'Quản lý danh mục sản phẩm',
-            'url' => home_url('/aerp-product-categories'),
-            'color' => 'warning',
-        ],
-        [
-            'icon' => 'fa-warehouse',
-            'title' => 'Kho',
-            'desc' => 'Quản lý kho',
-            'url' => home_url('/aerp-warehouses'),
-            'color' => 'success',
-        ],
-        [
-            'icon' => 'fa-history',
-            'title' => 'Ghi nhận nhập/ xuất kho',
-            'desc' => 'Quản lý lịch sử nhập/xuất kho',
-            'url' => home_url('/aerp-inventory-logs'),
-            'color' => 'warning',
-        ],
-
-    ];
+    $management_order_menu = array_filter($all_order_menu, function($item) use ($user_id) {
+        if (isset($item['permission']) && !aerp_user_has_permission($user_id, $item['permission'])) {
+            return false;
+        }
+        if (isset($item['show_for']) && !aerp_user_has_any_role($user_id, $item['show_for'])) {
+            return false;
+        }
+        return true;
+    });
+    $management_order_menu = array_values($management_order_menu);
 }
+
 ob_start();
 ?>
 <div class="card mb-4">

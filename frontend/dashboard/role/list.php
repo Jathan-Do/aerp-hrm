@@ -2,11 +2,19 @@
 // File: frontend/dashboard/roles/list.php
 if (!defined('ABSPATH')) exit;
 
+// Get current user
 $current_user = wp_get_current_user();
 $user_id = $current_user->ID;
 
-// Check if user is logged in and has admin capabilities
-if (!is_user_logged_in() || !aerp_user_has_role($user_id, 'admin')) {
+if (!is_user_logged_in()) {
+    wp_die(__('You must be logged in to access this page.'));
+}
+
+// Danh sách điều kiện, chỉ cần 1 cái đúng là qua
+$access_conditions = [
+    aerp_user_has_role($user_id, 'admin'),
+];
+if (!in_array(true, $access_conditions, true)) {
     wp_die(__('You do not have sufficient permissions to access this page.'));
 }
 $table = new AERP_Frontend_Role_Table();
@@ -27,9 +35,9 @@ ob_start();
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Danh sách nhóm quyền</h5>
-        <a href="<?php echo esc_url(home_url('/aerp-role/?action=add')); ?>" class="btn btn-primary">
+        <!-- <a href="<?php echo esc_url(home_url('/aerp-role/?action=add')); ?>" class="btn btn-primary">
             <i class="fas fa-plus"></i> Thêm mới
-        </a>
+        </a> -->
     </div>
     <div class="card-body">
         <?php

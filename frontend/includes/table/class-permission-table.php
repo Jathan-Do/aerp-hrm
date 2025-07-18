@@ -16,7 +16,7 @@ class AERP_Frontend_Permission_Table extends AERP_Frontend_Table
             'searchable_columns' => ['name', 'description'],
             'primary_key' => 'id',
             'per_page' => 10,
-            'actions' => ['edit', 'delete'],
+            'actions' => ['delete'],
             'bulk_actions' => ['delete'],
             'base_url' => home_url('/aerp-permission'),
             'delete_item_callback' => ['AERP_Frontend_Permission_Manager', 'delete_permission_by_id'],

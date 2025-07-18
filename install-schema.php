@@ -355,11 +355,14 @@ function aerp_hrm_seed_data()
 
     // 2. Seed Permissions
     $permissions = [
+        // Plugin HRM
         // Salary
         ['name' => 'salary_calculate', 'description' => 'Tính lương'],
-        ['name' => 'salary_edit', 'description' => 'Chỉnh sửa lương'],
+        ['name' => 'salary_add', 'description' => 'Thêm cấu hình lương'],
+        ['name' => 'salary_edit', 'description' => 'Chỉnh sửa cấu hình lương'],
         ['name' => 'salary_view', 'description' => 'Xem lương'],
-
+        ['name' => 'salary_advance_add', 'description' => 'Thêm tạm ứng lương'],
+        ['name' => 'salary_advance_edit', 'description' => 'Chỉnh sửa tạm ứng lương'],
         // Employee
         ['name' => 'employee_add', 'description' => 'Thêm nhân viên'],
         ['name' => 'employee_edit', 'description' => 'Chỉnh sửa nhân viên'],
@@ -367,13 +370,71 @@ function aerp_hrm_seed_data()
 
         // Attendance
         ['name' => 'attendance_mark', 'description' => 'Chấm công'],
-        ['name' => 'attendance_approve', 'description' => 'Duyệt chấm công'],
+        ['name' => 'attendance_edit', 'description' => 'Chỉnh sửa chấm công'],
         ['name' => 'attendance_view', 'description' => 'Xem chấm công'],
 
         // Task
         ['name' => 'task_create', 'description' => 'Tạo công việc'],
         ['name' => 'task_edit', 'description' => 'Chỉnh sửa công việc'],
         ['name' => 'task_view', 'description' => 'Xem công việc'],
+
+        // Reward
+        ['name' => 'reward_add', 'description' => 'Thêm thưởng'],
+        ['name' => 'reward_edit', 'description' => 'Chỉnh sửa thưởng'],
+        ['name' => 'reward_view', 'description' => 'Xem thưởng'],
+
+        // Disciplinary
+        ['name' => 'disciplinary_add', 'description' => 'Thêm vi phạm'],
+        ['name' => 'disciplinary_edit', 'description' => 'Chỉnh sửa vi phạm'],
+        ['name' => 'disciplinary_view', 'description' => 'Xem vi phạm'],
+
+        // Attachment
+        ['name' => 'attachment_add', 'description' => 'Thêm hồ sơ đính kèm'],
+        ['name' => 'attachment_edit', 'description' => 'Chỉnh sửa hồ sơ đính kèm'],
+        ['name' => 'attachment_view', 'description' => 'Xem hồ sơ đính kèm'],
+
+        // Plugin CRM
+        // Customer
+        ['name' => 'customer_add', 'description' => 'Thêm khách hàng'],
+        ['name' => 'customer_edit', 'description' => 'Chỉnh sửa khách hàng'],
+        ['name' => 'customer_view', 'description' => 'Xem khách hàng'],
+
+        // Customer Type
+        ['name' => 'customer_type_add', 'description' => 'Thêm loại khách hàng'],
+        ['name' => 'customer_type_edit', 'description' => 'Chỉnh sửa loại khách hàng'],
+        ['name' => 'customer_type_view', 'description' => 'Xem loại khách hàng'],
+
+        // Plugin Order
+        // Order
+        ['name' => 'order_add', 'description' => 'Thêm đơn hàng'],
+        ['name' => 'order_edit', 'description' => 'Chỉnh sửa đơn hàng'],
+        ['name' => 'order_view', 'description' => 'Xem đơn hàng'],
+
+        // Order Status
+        ['name' => 'order_status_add', 'description' => 'Thêm trạng thái đơn hàng'],
+        ['name' => 'order_status_edit', 'description' => 'Chỉnh sửa trạng thái đơn hàng'],
+        ['name' => 'order_status_view', 'description' => 'Xem trạng thái đơn hàng'],
+
+        // Product
+        ['name' => 'product_add', 'description' => 'Thêm sản phẩm'],
+        ['name' => 'product_edit', 'description' => 'Chỉnh sửa sản phẩm'],
+        ['name' => 'product_view', 'description' => 'Xem sản phẩm'],
+
+        // Warehouse
+        ['name' => 'warehouse_add', 'description' => 'Thêm kho'],
+        ['name' => 'warehouse_edit', 'description' => 'Chỉnh sửa kho'],
+
+        // Stock
+        ['name' => 'stock_view', 'description' => 'Xem tồn kho'],
+        ['name' => 'stock_adjustment', 'description' => 'Nhập/ Xuất kho'],
+        ['name' => 'stock_transfer', 'description' => 'Chuyển kho'],
+        ['name' => 'stocktake', 'description' => 'Kiểm kê tồn kho'],
+
+        // Supplier
+        ['name' => 'supplier_add', 'description' => 'Thêm nhà cung cấp'],
+        ['name' => 'supplier_edit', 'description' => 'Chỉnh sửa nhà cung cấp'],
+        ['name' => 'supplier_view', 'description' => 'Xem nhà cung cấp'],
+
     ];
 
     foreach ($permissions as $perm) {
@@ -390,32 +451,106 @@ function aerp_hrm_seed_data()
     $role_permissions = [
         'admin' => [
             'salary_calculate',
+            'salary_add',
             'salary_edit',
             'salary_view',
+            'salary_advance_add', 
+            'salary_advance_edit', 
             'employee_add',
             'employee_edit',
             'employee_view',
             'attendance_mark',
-            'attendance_approve',
+            'attendance_edit',
             'attendance_view',
             'task_create',
             'task_edit',
-            'task_view'
+            'task_view',
+            'reward_add', 
+            'reward_edit', 
+            'reward_view', 
+            'disciplinary_add', 
+            'disciplinary_edit', 
+            'disciplinary_view',
+            'attachment_add',
+            'attachment_edit',
+            'attachment_view',
+            'customer_add',
+            'customer_edit',
+            'customer_view',
+            'customer_type_add', 
+            'customer_type_edit', 
+            'customer_type_view',
+            'order_add',
+            'order_edit',
+            'order_view',
+            'order_status_add',
+            'order_status_edit', 
+            'order_status_view', 
+            'product_add',
+            'product_edit',
+            'product_view',
+            'warehouse_add',
+            'warehouse_edit',
+            'stock_view',
+            'stock_adjustment', 
+            'stock_transfer',
+            'stocktake',
+            'supplier_add',
+            'supplier_edit',
+            'supplier_view'
         ],
         'department_lead' => [
             'salary_view',
             'employee_view',
+            'employee_add', 
+            'employee_edit', 
             'attendance_mark',
-            'attendance_approve',
+            'attendance_edit',
             'attendance_view',
             'task_create',
             'task_edit',
-            'task_view'
+            'task_view',
+            'reward_add', 
+            'reward_edit', 
+            'reward_view', 
+            'disciplinary_add', 
+            'disciplinary_edit', 
+            'disciplinary_view',
+            'attachment_add',
+            'attachment_edit',
+            'attachment_view',
+            'customer_add', 
+            'customer_edit', 
+            'customer_view',
+            'customer_type_add', 
+            'customer_type_edit', 
+            'customer_type_view',
+            'order_add',
+            'order_edit',
+            'order_view', 
+            'order_status_add', 
+            'order_status_edit', 
+            'order_status_view', 
+            'product_add',
+            'product_edit',
+            'product_view',
+            'warehouse_add',
+            'warehouse_edit', 
+            'stock_view',
+            'stock_adjustment', 
+            'stock_transfer',
+            'stocktake',
+            'supplier_add',
+            'supplier_edit',
+            'supplier_view'
         ],
         'accountant' => [
             'salary_calculate',
             'salary_edit',
             'salary_view',
+            'salary_add', 
+            'salary_advance_add', 
+            'salary_advance_edit', 
             'employee_view',
             'attendance_view'
         ],

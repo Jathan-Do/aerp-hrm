@@ -89,7 +89,7 @@ jQuery(document).ready(function ($) {
     });
 
     // Handle pagination
-    $(document).on("click", ".pagination-links a, .aerp-pagination a", function (e) {
+    $(document).on("click", ".pagination-links a, .pagination-links.aerp-pagination a", function (e) {
         e.preventDefault();
         var href = $(this).attr("href");
         var paged = 1;
