@@ -75,8 +75,8 @@ ob_start();
                 </select>
             </div>
             <div class="d-flex gap-2">
-                <button type="submit" name="aerp_save_department" class="btn btn-primary">Thêm mới</button>
-                <a href="?page=aerp_departments" class="btn btn-secondary">Quay lại</a>
+                <button type="submit" name="aerp_save_company" class="btn btn-primary">Thêm mới</button>
+                <a href="?page=aerp_company" class="btn btn-secondary">Quay lại</a>
             </div>
         </form>
     </div>

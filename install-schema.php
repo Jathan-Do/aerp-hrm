@@ -422,6 +422,7 @@ function aerp_hrm_seed_data()
 
         // Warehouse
         ['name' => 'warehouse_add', 'description' => 'Thêm kho'],
+        ['name' => 'warehouse_view', 'description' => 'Xem kho'],
         ['name' => 'warehouse_edit', 'description' => 'Chỉnh sửa kho'],
 
         // Stock
@@ -491,6 +492,7 @@ function aerp_hrm_seed_data()
             'product_view',
             'warehouse_add',
             'warehouse_edit',
+            'warehouse_view',
             'stock_view',
             'stock_adjustment', 
             'stock_transfer',
@@ -535,6 +537,7 @@ function aerp_hrm_seed_data()
             'product_edit',
             'product_view',
             'warehouse_add',
+            'warehouse_view',
             'warehouse_edit', 
             'stock_view',
             'stock_adjustment', 

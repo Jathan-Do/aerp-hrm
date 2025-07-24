@@ -16,6 +16,7 @@ $access_conditions = [
     aerp_user_has_role($user_id, 'admin'),
     aerp_user_has_role($user_id, 'department_lead'),
     aerp_user_has_permission($user_id,'salary_view'),
+    aerp_user_has_permission($user_id,'stock_adjustment'),
 ];
 if (!in_array(true, $access_conditions, true)) {
     wp_die(__('You do not have sufficient permissions to access this page.'));
@@ -146,7 +147,7 @@ $all_order_menu = [
         'desc' => 'Quản lý sản phẩm kho',
         'url' => home_url('/aerp-products'),
         'color' => 'primary',
-        'show_for' => ['admin', 'department_lead'],
+        'permission' => 'product_view',
     ],
     [
         'icon' => 'fa-weight-scale',
@@ -178,7 +179,7 @@ $all_order_menu = [
         'desc' => 'Quản lý lịch sử nhập/xuất kho',
         'url' => home_url('/aerp-inventory-logs'),
         'color' => 'warning',
-        'show_for' => ['admin', 'department_lead'],
+        'permission' => 'stock_adjustment',
     ],
     [
         'icon' => 'fa-users',
@@ -186,7 +187,7 @@ $all_order_menu = [
         'desc' => 'Quản lý nhà cung cấp',
         'url' => home_url('/aerp-suppliers'),
         'color' => 'danger',
-        'show_for' => ['admin', 'department_lead'],
+        'permission' => 'supplier_view',
     ],
 ];
 

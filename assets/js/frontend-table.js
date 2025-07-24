@@ -190,9 +190,9 @@ jQuery(document).ready(function ($) {
     }
 });
 
-// jQuery(document).ready(function ($) {
-//     $(".collapsible-menu-header").on("click", function () {
-//         $(this).next(".collapsible-menu-content").slideToggle(200); // Adjust speed as needed
-//         $(this).find(".fa-chevron-down, .fa-chevron-up").toggleClass("fa-chevron-down fa-chevron-up");
-//     });
-// });
+jQuery(document).ready(function ($) {
+    $(".collapsible-menu-header").on("click", function () {
+        $(this).next(".collapsible-menu-content").slideToggle(200); // Adjust speed as needed
+        $(this).find(".fa-chevron-down, .fa-chevron-up").toggleClass("fa-chevron-down fa-chevron-up");
+    });
+});

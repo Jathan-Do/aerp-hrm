@@ -80,13 +80,16 @@ function aerp_get_login_redirect_url()
             return home_url('/aerp-dashboard');
         }
         if (aerp_user_has_role($user_id, 'hr_manager')) {
+            // return home_url('/aerp-quan-ly');
             return home_url('/aerp-quan-ly');
         }
         if (aerp_user_has_role($user_id, 'department_lead')) {
-            return home_url('/aerp-quan-ly');
+            // return home_url('/aerp-quan-ly');
+            return home_url('/aerp-categories');
         }
         if (aerp_user_has_role($user_id, 'accountant')) {
-            return home_url('/aerp-ke-toan');
+            // return home_url('/aerp-ke-toan');
+            return home_url('/aerp-categories');
         }
         if (aerp_user_has_role($user_id, 'employee')) {
             return home_url('/aerp-ho-so-nhan-vien');
@@ -106,13 +109,16 @@ add_filter('login_redirect', function ($redirect_to, $requested_redirect_to, $us
             return home_url('/aerp-dashboard');
         }
         if (aerp_user_has_role($user_id, 'hr_manager')) {
+            // return home_url('/aerp-quan-ly');
             return home_url('/aerp-quan-ly');
         }
         if (aerp_user_has_role($user_id, 'department_lead')) {
-            return home_url('/aerp-quan-ly');
+            // return home_url('/aerp-quan-ly');
+            return home_url('/aerp-categories');
         }
         if (aerp_user_has_role($user_id, 'accountant')) {
-            return home_url('/aerp-ke-toan');
+            // return home_url('/aerp-ke-toan');
+            return home_url('/aerp-categories');
         }
         if (aerp_user_has_role($user_id, 'employee')) {
             return home_url('/aerp-ho-so-nhan-vien');
