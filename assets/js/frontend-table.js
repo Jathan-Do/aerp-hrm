@@ -191,8 +191,17 @@ jQuery(document).ready(function ($) {
 });
 
 jQuery(document).ready(function ($) {
+    // Đóng tất cả menu con khi load
+    $(".collapsible-menu-content").hide();
+
+    // Mở menu con nếu có nav-link active bên trong
+    $(".collapsible-menu-content").each(function () {
+        if ($(this).find('.nav-link.active').length > 0) {
+            $(this).show();
+        }
+    });
     $(".collapsible-menu-header").on("click", function () {
-        $(this).next(".collapsible-menu-content").slideToggle(200); // Adjust speed as needed
+        $(this).next(".collapsible-menu-content").slideToggle(200);
         $(this).find(".fa-chevron-down, .fa-chevron-up").toggleClass("fa-chevron-down fa-chevron-up");
     });
 });

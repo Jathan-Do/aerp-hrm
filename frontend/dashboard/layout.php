@@ -12,6 +12,10 @@ if (!defined('ABSPATH')) exit;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        .collapsible-menu-content {
+            display: none;
+        }
+
         .dashboard-sidebar {
             min-height: 100vh;
             background: #2c3e50;
@@ -73,8 +77,8 @@ if (!defined('ABSPATH')) exit;
             width: 80px;
         }
 
-        .dashboard-sidebar.collapsed .menu-text,
-        .dashboard-sidebar.collapsed .collapsible-menu-header {
+        /* .dashboard-sidebar.collapsed .collapsible-menu-header, */
+        .dashboard-sidebar.collapsed .menu-text {
             opacity: 0;
             max-width: 0;
         }
@@ -96,6 +100,14 @@ if (!defined('ABSPATH')) exit;
         @media (min-width: 768px) {
             .dashboard-sidebar.collapsed~.dashboard-content {
                 width: calc(100% - 80px);
+            }
+
+
+        }
+        @media (max-width: 768px) {
+            .dashboard-sidebar {
+                height: 100vh;
+                min-height: 0;
             }
         }
 
@@ -154,6 +166,7 @@ if (!defined('ABSPATH')) exit;
     <script>
         jQuery(function($) {
             var $sidebar = $('.dashboard-sidebar.d-none.d-md-block');
+            var $menu_content = $('.collapsible-menu-content>a>span');
             var $btn = $('#sidebarCollapseBtn');
             if ($btn.length && $sidebar.length) {
                 $btn.on('click', function() {
@@ -161,8 +174,10 @@ if (!defined('ABSPATH')) exit;
                     var $icon = $btn.find('i');
                     if ($sidebar.hasClass('collapsed')) {
                         $icon.removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
+                        $menu_content.removeClass('ms-4');
                     } else {
                         $icon.removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
+                        $menu_content.addClass('ms-4');
                     }
                 });
             }

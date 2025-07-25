@@ -1,4 +1,4 @@
-<div class="p-3 text-center collapsible-menu-content" style="max-height: 80px;">
+<div class="p-3 text-center" style="max-height: 80px;">
     <img src="<?php echo AERP_HRM_URL . 'assets/images/logo.png'; ?>" alt="Logo" class="logo me-2" style="width: 50px; margin-bottom: 10px;">
     <h4 class="menu-text">Dashboard</h4>
 </div>
@@ -8,51 +8,83 @@
         <!-- <div class="px-3 py-2 text-white-50 text-uppercase collapsible-menu-header">
             <i class="fas fa-users me-2"></i> Nhân sự <i class="fas fa-chevron-down float-end"></i>
         </div> -->
+        <!-- <div class="collapsible-menu-content"> -->
+        <a class="nav-link <?php echo aerp_menu_active('aerp-dashboard'); ?>" href="<?php echo home_url('/aerp-dashboard'); ?>">
+            <i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span>
+        </a>
+        <a class="nav-link <?php echo aerp_menu_active('aerp-categories'); ?>" href="<?php echo home_url('/aerp-categories'); ?>">
+            <i class="fas fa-th-large me-2"></i> <span class="menu-text">Danh Mục</span>
+        </a>
+        <div class="px-3 py-2 collapsible-menu-header">
+            <i class="fas fa-users me-2"></i> <span class="menu-text">Nhân sự</span> <i class="fas fa-chevron-down float-end"></i>
+        </div>
         <div class="collapsible-menu-content">
-            <a class="nav-link <?php echo aerp_menu_active('aerp-dashboard'); ?>" href="<?php echo home_url('/aerp-dashboard'); ?>">
-                <i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span>
-            </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-categories'); ?>" href="<?php echo home_url('/aerp-categories'); ?>">
-                <i class="fas fa-th-large me-2"></i> <span class="menu-text">Danh Mục</span>
-            </a>
             <a class="nav-link <?php echo aerp_menu_active('aerp-hrm-employees'); ?>" href="<?php echo home_url('/aerp-hrm-employees'); ?>">
-                <i class="fas fa-users me-2"></i> <span class="menu-text">Nhân sự</span>
+                <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Danh sách</span></span>
+            </a>
+            <a class="nav-link <?php echo aerp_menu_active('aerp-hrm-employees/?action=add'); ?>" href="<?php echo home_url('/aerp-hrm-employees/?action=add'); ?>">
+                <span class="ms-4"><i class="fas fa-plus me-2"></i> <span class="menu-text">Thêm mới</span></span>
             </a>
         </div>
+        <!-- </div> -->
     <?php endif; ?>
 
     <?php if ($crm_active): ?>
         <!-- CRM Menu -->
-        <!-- <div class="px-3 py-2 text-white-50 text-uppercase mt-3 collapsible-menu-header">
-            <i class="fas fa-address-book me-2"></i> Khách hàng <i class="fas fa-chevron-down float-end"></i>
-        </div> -->
-        <div class="collapsible-menu-content">
-            <!-- <a class="nav-link <?php echo aerp_menu_active('aerp-crm-dashboard'); ?>" href="<?php echo home_url('/aerp-crm-dashboard'); ?>">
+        <!-- <a class="nav-link <?php echo aerp_menu_active('aerp-crm-dashboard'); ?>" href="<?php echo home_url('/aerp-crm-dashboard'); ?>">
                 <i class="fas fa-tachometer-alt me-2"></i> CRM Dashboard
             </a> -->
+
+        <div class="px-3 py-2 collapsible-menu-header">
+            <i class="fas fa-address-book me-2"></i> <span class="menu-text">Khách Hàng</span> <i class="fas fa-chevron-down float-end"></i>
+        </div>
+        <div class="collapsible-menu-content">
             <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customers'); ?>" href="<?php echo home_url('/aerp-crm-customers'); ?>">
-                <i class="fas fa-address-book me-2"></i> <span class="menu-text">Khách Hàng</span>
+                <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Danh sách</span></span>
             </a>
-            <!-- <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customer-types'); ?>" href="<?php echo home_url('/aerp-crm-customer-types'); ?>">
-                <i class="fas fa-tags me-2"></i> Loại khách hàng
-            </a> -->
+            <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customers/?action=add'); ?>" href="<?php echo home_url('/aerp-crm-customers/?action=add'); ?>">
+                <span class="ms-4"><i class="fas fa-plus me-2"></i> <span class="menu-text">Thêm mới</span></span>
+            </a>
+            <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customer-types'); ?>" href="<?php echo home_url('/aerp-crm-customer-types'); ?>">
+                <span class="ms-4"><i class="fas fa-tags me-2"></i> <span class="menu-text">Loại khách hàng</span></span>
+            </a>
         </div>
     <?php endif; ?>
     <?php if ($order_active): ?>
+        <div class="px-3 py-2 collapsible-menu-header">
+            <i class="fas fa-file-invoice me-2"></i> <span class="menu-text">Đơn hàng</span> <i class="fas fa-chevron-down float-end"></i>
+        </div>
         <div class="collapsible-menu-content">
             <a class="nav-link <?php echo aerp_menu_active('aerp-order-orders'); ?>" href="<?php echo home_url('/aerp-order-orders'); ?>">
-                <i class="fas fa-file-invoice me-2"></i> <span class="menu-text">Đơn hàng</span>
+                <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Danh sách</span></span>
             </a>
+            <a class="nav-link <?php echo aerp_menu_active('aerp-order-orders/?action=add'); ?>" href="<?php echo home_url('/aerp-order-orders/?action=add'); ?>">
+                <span class="ms-4"><i class="fas fa-plus me-2"></i> <span class="menu-text">Thêm mới</span></span>
+            </a>
+            <a class="nav-link <?php echo aerp_menu_active('aerp-order-statuses'); ?>" href="<?php echo home_url('/aerp-order-statuses'); ?>">
+                <span class="ms-4"><i class="fas fa-tags me-2"></i> <span class="menu-text">Trạng thái đơn hàng</span></span>
+            </a>
+        </div>
+        <div class="px-3 py-2 collapsible-menu-header">
+            <i class="fas fa-warehouse me-2"></i> <span class="menu-text">Quản lý kho</span> <i class="fas fa-chevron-down float-end"></i>
+        </div>
+        <div class="collapsible-menu-content">
             <a class="nav-link <?php echo aerp_menu_active('aerp-warehouses'); ?>" href="<?php echo home_url('/aerp-warehouses'); ?>">
-                <i class="fas fa-warehouse me-2"></i> <span class="menu-text">Quản lý kho</span>
+                <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Danh sách</span></span>
+            </a>
+            <a class="nav-link <?php echo aerp_menu_active('aerp-warehouses/?action=add'); ?>" href="<?php echo home_url('/aerp-warehouses/?action=add'); ?>">
+                <span class="ms-4"><i class="fas fa-plus me-2"></i> <span class="menu-text">Thêm mới</span></span>
+            </a>
+            <a class="nav-link <?php echo aerp_menu_active('aerp-warehouses/?action=stock'); ?>" href="<?php echo home_url('/aerp-warehouses/?action=stock'); ?>">
+                <span class="ms-4"><i class="fas fa-boxes me-2"></i> <span class="menu-text">Tồn kho</span></span>
+            </a>
+            <a class="nav-link <?php echo aerp_menu_active('aerp-inventory-transfers'); ?>" href="<?php echo home_url('/aerp-inventory-transfers'); ?>">
+                <span class="ms-4"><i class="fas fa-exchange-alt me-2"></i> <span class="menu-text">Chuyển kho</span></span>
             </a>
         </div>
     <?php endif; ?>
     <!-- Setting Menu -->
-    <!-- <div class="px-3 py-2 text-white-50 text-uppercase collapsible-menu-header">
-        <i class="fas fa-cogs me-2"></i> Cài đặt <i class="fas fa-chevron-down float-end"></i>
-    </div> -->
-    <div class="collapsible-menu-content">
+    <div class="">
         <a class="nav-link <?php echo aerp_menu_active('aerp-setting'); ?>" href="<?php echo home_url('/aerp-setting'); ?>">
             <i class="fas fa-cog me-2"></i> <span class="menu-text">Cài đặt</span>
         </a>
