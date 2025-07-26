@@ -3,10 +3,27 @@ if (!isset($employee_id)) {
     $employee_id = absint($_POST['id'] ?? $_GET['id'] ?? 0);
 }
 $employee = AERP_Frontend_Employee_Manager::get_by_id($employee_id);
-$current_user = wp_get_current_user();
 if (!$employee) {
     echo '<div class="notice notice-error"><p>Không tìm thấy nhân viên.</p></div>';
     return;
+}
+// Get current user
+$current_user = wp_get_current_user();
+$user_id = $current_user->ID;
+
+if (!is_user_logged_in()) {
+    wp_die(__('You must be logged in to access this page.'));
+}
+
+// Danh sách điều kiện, chỉ cần 1 cái đúng là qua
+$access_conditions = [
+    aerp_user_has_role($user_id, 'admin'),
+    aerp_user_has_role($user_id, 'department_lead'),
+    aerp_user_has_role($user_id, 'accountant'),
+    aerp_user_has_permission($user_id, 'employee_view'),
+];
+if (!in_array(true, $access_conditions, true)) {
+    wp_die(__('You do not have sufficient permissions to access this page.'));
 }
 
 $deps = apply_filters('aerp_get_departments', []);

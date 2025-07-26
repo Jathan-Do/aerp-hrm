@@ -1,7 +1,23 @@
 <?php
 if (!defined('ABSPATH')) exit;
 global $wpdb;
+// Get current user
+$current_user = wp_get_current_user();
+$user_id = $current_user->ID;
 
+if (!is_user_logged_in()) {
+    wp_die(__('You must be logged in to access this page.'));
+}
+
+// Danh sách điều kiện, chỉ cần 1 cái đúng là qua
+$access_conditions = [
+    aerp_user_has_role($user_id, 'admin'),
+    aerp_user_has_role($user_id, 'department_lead'),
+    aerp_user_has_permission($user_id, 'reward_add'),
+];
+if (!in_array(true, $access_conditions, true)) {
+    wp_die(__('You do not have sufficient permissions to access this page.'));
+}
 $employee_reward_id = absint($_GET['employee_reward_id'] ?? 0);
 $row = AERP_Frontend_Employee_Reward_Manager::get_by_id($employee_reward_id);
 
@@ -13,7 +29,6 @@ $employee = AERP_Frontend_Employee_Manager::get_by_id($row->employee_id);
 $rewards = AERP_Frontend_Reward_Manager::get_all();
 $employee_id = $row->employee_id; 
 $month = $row->month ? date('Y-m', strtotime($row->month)) : date('Y-m');
-$current_user = wp_get_current_user();
 
 ob_start();
 ?>

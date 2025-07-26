@@ -7,7 +7,24 @@ if (!$employee_id) {
     echo '<div class="alert alert-danger">Không tìm thấy nhân viên.</div>';
     return;
 }
+// Get current user
+$current_user = wp_get_current_user();
+$user_id = $current_user->ID;
 
+if (!is_user_logged_in()) {
+    wp_die(__('You must be logged in to access this page.'));
+}
+
+// Danh sách điều kiện, chỉ cần 1 cái đúng là qua
+$access_conditions = [
+    aerp_user_has_role($user_id, 'admin'),
+    aerp_user_has_role($user_id, 'department_lead'),
+    aerp_user_has_role($user_id, 'accountant'),
+    aerp_user_has_permission($user_id, 'salary_view'),
+];
+if (!in_array(true, $access_conditions, true)) {
+    wp_die(__('You do not have sufficient permissions to access this page.'));
+}
 $selected_month = $_POST['salary_month'] ?? null;
 
 // Nếu bấm nút tính lương thì tính lương cho tháng đó
@@ -33,7 +50,7 @@ if (!empty($selected_month) && isset($_POST['aerp_generate_salary'])) {
 $table = new AERP_Frontend_Salary_Table([
     'employee_id' => $employee_id,
 ]);
-$table->set_filters($filters); 
+$table->set_filters($filters);
 $table->process_bulk_action();
 
 ?>
@@ -48,7 +65,9 @@ $table->process_bulk_action();
         <form method="post" class="mb-3 d-flex gap-2 flex-md-row flex-column">
             <?php wp_nonce_field('aerp_salary_action', 'aerp_salary_nonce'); ?>
             <input class="form-control w-auto" type="month" name="salary_month" value="<?= esc_attr($selected_month ?: date('Y-m')) ?>" required>
-            <button type="submit" name="aerp_generate_salary" class="btn btn-success">Tính lương tháng này</button>
+            <?php if (aerp_user_has_permission($user_id, 'salary_calculate')): ?>
+                <button type="submit" name="aerp_generate_salary" class="btn btn-success">Tính lương tháng này</button>
+            <?php endif; ?>
         </form>
         <div id="aerp-salary-table-wrapper" data-employee-id="<?= esc_attr($employee_id) ?>">
             <?php $table->render(); ?>

@@ -6,7 +6,7 @@ class AERP_Frontend_Employee_Table extends AERP_Frontend_Table
     public function __construct($args = [])
     {
         $columns = [
-            'id'            => 'ID',
+            // 'id'            => 'ID',
             'employee_code' => 'Mã NV',
             'full_name'     => 'Họ tên',
             'phone_number'  => 'Số ĐT',
@@ -19,7 +19,7 @@ class AERP_Frontend_Employee_Table extends AERP_Frontend_Table
             'created_at'    => 'Ngày tạo',
         ];
         $sortable = [
-            'id',
+            // 'id',
             'full_name',
             'created_at',
             'status',
@@ -52,6 +52,7 @@ class AERP_Frontend_Employee_Table extends AERP_Frontend_Table
 
     protected function get_extra_filters()
     {
+        global $wpdb;
         $filters = [];
         $params = [];
         if (!empty($this->filters['department_id'])) {
@@ -89,6 +90,26 @@ class AERP_Frontend_Employee_Table extends AERP_Frontend_Table
         if (!empty($this->filters['off_date_to'])) {
             $filters[] = "(off_date IS NOT NULL AND off_date <= %s)";
             $params[] = $this->filters['off_date_to'];
+        }
+        // Filter theo chi nhánh của user hiện tại
+        $current_user_id = get_current_user_id();
+        $current_user_branch = $wpdb->get_var($wpdb->prepare(
+            "SELECT work_location_id FROM {$wpdb->prefix}aerp_hrm_employees WHERE user_id = %d",
+            $current_user_id
+        ));
+        
+        if ($current_user_branch) {
+            // Lấy tất cả employee_id thuộc chi nhánh này
+            $branch_employee_ids = $wpdb->get_col($wpdb->prepare(
+                "SELECT id FROM {$wpdb->prefix}aerp_hrm_employees WHERE work_location_id = %d",
+                $current_user_branch
+            ));
+            
+            if (!empty($branch_employee_ids)) {
+                $placeholders = implode(',', array_fill(0, count($branch_employee_ids), '%d'));
+                $filters[] = "id IN ($placeholders)";
+                $params = array_merge($params, $branch_employee_ids);
+            }
         }
         return [$filters, $params];
     }

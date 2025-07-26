@@ -13,6 +13,7 @@ $access_conditions = [
     aerp_user_has_role($user_id, 'admin'),
     aerp_user_has_role($user_id, 'department_lead'),
     aerp_user_has_role($user_id, 'accountant'),
+    aerp_user_has_permission($user_id, 'employee_view'),
 ];
 if (!in_array(true, $access_conditions, true)) {
     wp_die(__('You do not have sufficient permissions to access this page.'));
@@ -130,7 +131,6 @@ ob_start();
         </div>
     </div>
 </div>
-
 <?php
 $content = ob_get_clean();
 $title = 'Quản lý nhân viên';
