@@ -68,7 +68,7 @@ class AERP_Frontend_Salary_Config_Table extends AERP_Frontend_Table
 
     protected function column_actions($item)
     {
-        $edit_url = home_url("/aerp-hrm-employees/?action=view&id={$this->employee_id}&section=advance&sub_action=edit&advance_id={$item->id}");
+        $edit_url = home_url("/aerp-hrm-employees/?action=view&id={$this->employee_id}&section=salary_config&sub_action=edit&config_id={$item->id}");
 
         $delete_url = wp_nonce_url(
             home_url("/aerp-hrm-employees/?action=view&id={$this->employee_id}&section=salary_config&sub_action=delete&config_id={$item->id}&employee_id={$this->employee_id}"),

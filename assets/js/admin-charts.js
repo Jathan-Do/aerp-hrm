@@ -35,6 +35,7 @@ jQuery(document).ready(function($) {
             labels: tenureData.map(item => `${item.years} năm`),
             datasets: [{
                 data: tenureData.map(item => item.count),
+                label: 'Số nhân viên',
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.5)',
                     'rgba(54, 162, 235, 0.5)',
@@ -58,9 +59,10 @@ jQuery(document).ready(function($) {
     new Chart(document.getElementById('departmentChart'), {
         type: 'doughnut',
         data: {
-            labels: departmentData.map(item => `Phòng ${item.department_id}`),
+            labels: departmentData.map(item => `${item.department_name}`),
             datasets: [{
                 data: departmentData.map(item => item.employee_count),
+                label: 'Số nhân viên',
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.5)',
                     'rgba(54, 162, 235, 0.5)',
@@ -84,7 +86,7 @@ jQuery(document).ready(function($) {
     new Chart(document.getElementById('salaryChart'), {
         type: 'bar',
         data: {
-            labels: salaryData.map(item => `Phòng ${item.department_id}`),
+            labels: salaryData.map(item => `${item.department_name}`),
             datasets: [{
                 label: 'Tổng Chi Phí',
                 data: salaryData.map(item => item.total_cost),

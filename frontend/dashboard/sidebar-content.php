@@ -81,6 +81,9 @@
             <a class="nav-link <?php echo aerp_menu_active('aerp-inventory-transfers'); ?>" href="<?php echo home_url('/aerp-inventory-transfers'); ?>">
                 <span class="ms-4"><i class="fas fa-exchange-alt me-2"></i> <span class="menu-text">Chuyển kho</span></span>
             </a>
+            <a class="nav-link <?php echo aerp_menu_active('aerp-inventory-logs'); ?>" href="<?php echo home_url('/aerp-inventory-logs'); ?>">
+                <span class="ms-4"><i class="fas fa-dolly me-2"></i> <span class="menu-text">Nhập/ Xuất kho</span></span>
+            </a>
         </div>
     <?php endif; ?>
     <!-- Setting Menu -->

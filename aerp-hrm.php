@@ -337,6 +337,10 @@ function aerp_handle_common_export_excel()
         'employee_list_export'      => 'export-list-employee.php',
         'salary_employee_export'    => 'export-salary-employee.php',
         'salary_summary_export' => 'export-salary-summary.php',
+        'low_stock_alert_export' => 'export-low-stock-alert.php',
+        'stock_timeline_export' => 'export-stock-timeline.php',
+        'movement_report_export' => 'export-movement-report.php',
+        'aerp_dashboard_export' => 'export-dashboard.php',
         // thêm các callback khác tại đây
     ];
 

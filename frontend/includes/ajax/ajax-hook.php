@@ -471,7 +471,7 @@ add_action('wp_ajax_aerp_order_search_employees', function() {
             $display_name .= ' - ' . $employee->work_location_name;
         }
         $results[] = [
-            'id' => $employee->user_id,
+            'id' => $employee->id,
             'text' => $display_name,
         ];
         if (!$q && ++$count >= 20) break;

@@ -118,10 +118,10 @@ function aerp_get_employees_with_location_select2($q = '')
         );
     }
     return $wpdb->get_results(
-        "SELECT e.user_id, e.full_name, wl.name AS work_location_name
+        "SELECT e.id, e.full_name, wl.name AS work_location_name
          FROM {$wpdb->prefix}aerp_hrm_employees e
          LEFT JOIN {$wpdb->prefix}aerp_hrm_work_locations wl ON e.work_location_id = wl.id
-         WHERE 1=1 $where
+         WHERE 1=1 AND e.status = 'active' $where
          ORDER BY e.full_name ASC"
     );
 }

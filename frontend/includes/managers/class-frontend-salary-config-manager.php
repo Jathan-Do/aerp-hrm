@@ -18,8 +18,8 @@ class AERP_Frontend_Salary_Config_Manager {
         $base_salary = floatval($_POST['base_salary']);
         $allowance   = floatval($_POST['allowance']);
 
-        if (isset($_POST['aerp_edit_salary_config'])) {
-            $edit_id = absint($_POST['edit_id']);
+        $edit_id = absint($_POST['config_id'] ?? 0);
+        if ($edit_id) {
             $wpdb->update(
                 $wpdb->prefix . 'aerp_hrm_salary_config',
                 [
