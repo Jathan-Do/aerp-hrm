@@ -218,8 +218,8 @@ ob_start();
                     <input type="date" class="form-control bg-body" id="join_date" name="join_date" value="<?php echo esc_attr($employee->join_date); ?>">
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label for="off_date" class="form-label bg-body">Ngày nghỉ việc</label>
-                    <input type="date" class="form-control" id="off_date" name="off_date" value="<?php echo esc_attr($employee->off_date); ?>">
+                    <label for="off_date" class="form-label">Ngày nghỉ việc</label>
+                    <input type="date" class="form-control bg-body" id="off_date" name="off_date" value="<?php echo esc_attr($employee->off_date); ?>">
                 </div>
 
                 <div class="col-md-3 mb-3">

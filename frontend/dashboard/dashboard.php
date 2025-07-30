@@ -42,6 +42,15 @@ $user_warehouse_ids = array_map(function ($w) {
 }, $warehouses);
 ob_start();
 ?>
+<div class="d-flex flex-column-reverse flex-md-row justify-content-between align-items-md-center mb-4">
+    <h2>Báo cáo Tổng</h2>
+    <div class="user-info text-end">
+        Welcome, <?php echo esc_html($current_user->display_name); ?>
+        <a href="<?php echo wp_logout_url(site_url('/aerp-dang-nhap')); ?>" class="btn btn-sm btn-outline-danger ms-2">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
 <div class="dashboard-wrapper">
     <div class="mb-3">
         <div class="d-flex align-items-center gap-2">
