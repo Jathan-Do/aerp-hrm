@@ -52,6 +52,15 @@ function aerp_get_employee_by_user_id($user_id)
         $user_id
     ));
 }
+// Lấy nhân viên theo id
+function aerp_get_employee_by_id($id)
+{
+    global $wpdb;
+    return $wpdb->get_row($wpdb->prepare(
+        "SELECT * FROM {$wpdb->prefix}aerp_hrm_employees WHERE id = %d",
+        $id
+    ));
+}
 // Lấy tên chi nhánh theo ID
 function aerp_get_work_location_name($id)
 {

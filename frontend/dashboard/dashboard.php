@@ -97,27 +97,27 @@ ob_start();
                 </div>
                 <div class="col-md-4">
                     <div class="summary-card card">Nghỉ việc<br><span><?= number_format($summary['resigned']) ?></span></div>
-                </div>
-            </div>
+        </div>
+    </div>
             <div class="row mb-4">
                 <div class="col-md-4">
                     <div class="chart-container card">
                         <h5>Hiệu suất theo phòng ban</h5>
                         <canvas id="performanceChart"></canvas>
-                    </div>
-                </div>
+        </div>
+    </div>
                 <div class="col-md-4">
                     <div class="chart-container card">
                         <h5>Phân bố thâm niên</h5>
                         <canvas id="tenureChart"></canvas>
-                    </div>
+        </div>
                 </div>
                 <div class="col-md-4">
                     <div class="chart-container card">
                         <h5>Phân bố phòng ban</h5>
                         <canvas id="departmentChart"></canvas>
-                    </div>
-                </div>
+    </div>
+</div>
             </div>
             <div class="row mb-4">
                 <div class="col-md-12">
@@ -284,9 +284,9 @@ ob_start();
                         <div class="chart-container card">
                             <h5>Phân bố tồn kho theo kho</h5>
                             <canvas id="warehouseStockChart"></canvas>
-                        </div>
-                    </div>
-                </div>
+            </div>
+        </div>
+    </div>
             </section>
             <script>
                 var warehouseStockData = {
@@ -338,9 +338,9 @@ ob_start();
         <section class="dashboard-section mb-5">
             <h2><i class="fas fa-user-friends"></i> Báo cáo khách hàng</h2>
             <div class="row mb-4">
-                <div class="col-md-6">
+    <div class="col-md-6">
                     <div class="summary-card card">Tổng khách hàng<br><span><?= number_format($total_customers) ?></span></div>
-                </div>
+            </div>
                 <div class="col-md-6">
                     <div class="summary-card card">Khách hàng mới 30 ngày<br><span><?= number_format($new_customers) ?></span></div>
                 </div>
@@ -350,9 +350,9 @@ ob_start();
                     <div class="chart-container card">
                         <h5>Khách hàng mới theo tháng</h5>
                         <canvas id="customerChart"></canvas>
-                    </div>
-                </div>
-            </div>
+        </div>
+    </div>
+</div>
         </section>
         <script>
             var customerChartData = {

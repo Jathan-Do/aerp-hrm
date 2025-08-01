@@ -409,6 +409,7 @@ function aerp_hrm_seed_data()
         ['name' => 'order_add', 'description' => 'Thêm đơn hàng'],
         ['name' => 'order_edit', 'description' => 'Chỉnh sửa đơn hàng'],
         ['name' => 'order_view', 'description' => 'Xem đơn hàng'],
+        ['name' => 'order_view_full', 'description' => 'Xem tất cả đơn hàng'],
 
         // Order Status
         ['name' => 'order_status_add', 'description' => 'Thêm trạng thái đơn hàng'],
@@ -484,6 +485,7 @@ function aerp_hrm_seed_data()
             'order_add',
             'order_edit',
             'order_view',
+            'order_view_full',
             'order_status_add',
             'order_status_edit', 
             'order_status_view', 
@@ -530,6 +532,7 @@ function aerp_hrm_seed_data()
             'order_add',
             'order_edit',
             'order_view', 
+            'order_view_full',
             'order_status_add', 
             'order_status_edit', 
             'order_status_view', 
@@ -555,7 +558,9 @@ function aerp_hrm_seed_data()
             'salary_advance_add', 
             'salary_advance_edit', 
             'employee_view',
-            'attendance_view'
+            'attendance_view',
+            'order_edit',
+            'order_view_full'
         ],
         'employee' => [
             'salary_view',

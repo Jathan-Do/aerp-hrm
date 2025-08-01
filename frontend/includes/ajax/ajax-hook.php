@@ -478,3 +478,60 @@ add_action('wp_ajax_aerp_order_search_employees', function() {
     }
     wp_send_json($results);
 });
+
+add_action('wp_ajax_aerp_get_users_by_work_location', function() {
+    global $wpdb;
+    $work_location_id = isset($_GET['work_location_id']) ? intval($_GET['work_location_id']) : 0;
+    $q = isset($_GET['q']) ? sanitize_text_field($_GET['q']) : '';
+    $current_user_id = get_current_user_id();
+    $employee_id = $wpdb->get_var($wpdb->prepare(
+        "SELECT id FROM {$wpdb->prefix}aerp_hrm_employees WHERE user_id = %d",
+        $current_user_id
+    ));
+    $results = [];
+    
+    // Lấy branch của user hiện tại
+    $current_user_branch = $wpdb->get_var($wpdb->prepare(
+        "SELECT work_location_id FROM {$wpdb->prefix}aerp_hrm_employees WHERE id = %d",
+        $employee_id
+    ));
+    
+    $sql = "SELECT e.id, e.full_name, wl.name AS work_location_name 
+            FROM {$wpdb->prefix}aerp_hrm_employees e
+            LEFT JOIN {$wpdb->prefix}aerp_hrm_work_locations wl ON e.work_location_id = wl.id
+            WHERE 1=1 AND e.status = 'active'";
+    $params = [];
+    
+    // Filter theo branch của user hiện tại (nếu có)
+    if ($current_user_branch) {
+        $sql .= " AND e.work_location_id = %d";
+        $params[] = $current_user_branch;
+    }
+    
+    // Filter theo work_location_id được truyền (nếu có)
+    if ($work_location_id) {
+        $sql .= " AND e.work_location_id = %d";
+        $params[] = $work_location_id;
+    }
+    
+    if ($q !== '') {
+        $sql .= " AND (e.full_name LIKE %s OR wl.name LIKE %s)";
+        $params[] = '%' . $wpdb->esc_like($q) . '%';
+        $params[] = '%' . $wpdb->esc_like($q) . '%';
+    }
+    
+    $sql .= " ORDER BY e.full_name ASC LIMIT 30";
+    $users = $wpdb->get_results($params ? $wpdb->prepare($sql, ...$params) : $sql);
+    
+    foreach ($users as $user) {
+        $display_name = $user->full_name;
+        if (!empty($user->work_location_name)) {
+            $display_name .= ' - ' . $user->work_location_name;
+        }
+        $results[] = [
+            'id' => $user->id,
+            'text' => $display_name,
+        ];
+    }
+    wp_send_json($results);
+});
