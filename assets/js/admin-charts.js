@@ -1,6 +1,7 @@
 jQuery(document).ready(function($) {
     // Performance Chart
-    new Chart(document.getElementById('performanceChart'), {
+    if (typeof performanceData !== 'undefined' && performanceData.length > 0) {
+        new Chart(document.getElementById('performanceChart'), {
         type: 'bar',
         data: {
             labels: performanceData.map(item => `Phòng ${item.department_id}`),
@@ -27,9 +28,11 @@ jQuery(document).ready(function($) {
             }
         }
     });
+    }
 
     // Tenure Chart
-    new Chart(document.getElementById('tenureChart'), {
+    if (typeof tenureData !== 'undefined' && tenureData.length > 0) {
+        new Chart(document.getElementById('tenureChart'), {
         type: 'pie',
         data: {
             labels: tenureData.map(item => `${item.years} năm`),
@@ -54,9 +57,11 @@ jQuery(document).ready(function($) {
             }
         }
     });
+    }
 
     // Department Distribution Chart
-    new Chart(document.getElementById('departmentChart'), {
+    if (typeof departmentData !== 'undefined' && departmentData.length > 0) {
+        new Chart(document.getElementById('departmentChart'), {
         type: 'doughnut',
         data: {
             labels: departmentData.map(item => `${item.department_name}`),
@@ -81,9 +86,11 @@ jQuery(document).ready(function($) {
             }
         }
     });
+    }
 
     // Salary Costs Chart
-    new Chart(document.getElementById('salaryChart'), {
+    if (typeof salaryData !== 'undefined' && salaryData.length > 0) {
+        new Chart(document.getElementById('salaryChart'), {
         type: 'bar',
         data: {
             labels: salaryData.map(item => `${item.department_name}`),
@@ -118,4 +125,5 @@ jQuery(document).ready(function($) {
             }
         }
     });
+    }
 }); 

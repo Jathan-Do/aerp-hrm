@@ -40,6 +40,7 @@ function aerp_dashboard_export()
         $rows[] = ['Tổng nhân sự', intval($summary['total'])];
         $rows[] = ['Đang làm', intval($summary['joined'])];
         $rows[] = ['Nghỉ việc', intval($summary['resigned'])];
+        $rows[] = ['Tỷ lệ nghỉ việc', round(($summary['resigned'] / $summary['total']) * 100, 1) . '%'];
         $rows[] = [];
 
         // Hiệu suất theo phòng ban
@@ -117,9 +118,33 @@ function aerp_dashboard_export()
                 GROUP BY ym ORDER BY ym DESC
             ", $work_location_id, $start, $end), ARRAY_A);
 
+            $total_cost = $wpdb->get_var($wpdb->prepare("
+                SELECT SUM(o.cost) FROM {$wpdb->prefix}aerp_order_orders o
+                LEFT JOIN {$wpdb->prefix}aerp_hrm_employees e ON o.employee_id = e.id
+                WHERE e.work_location_id = %d
+                  AND o.order_date BETWEEN %s AND %s
+            ", $work_location_id, $start, $end));
+            // Tổng lợi nhuận
+            $total_profit = ($total_revenue ?? 0) - ($total_cost ?? 0);
+            // Đơn hàng theo trạng thái
+            $orders_by_status = $wpdb->get_results($wpdb->prepare("
+                SELECT o.status, COUNT(*) as count
+                FROM {$wpdb->prefix}aerp_order_orders o
+                LEFT JOIN {$wpdb->prefix}aerp_hrm_employees e ON o.employee_id = e.id
+                WHERE e.work_location_id = %d
+                AND o.order_date BETWEEN %s AND %s
+                GROUP BY o.status
+                ", $work_location_id, $start, $end), ARRAY_A);
             $rows[] = ['🛒 BÁO CÁO ĐƠN HÀNG'];
             $rows[] = ['Tổng đơn hàng', intval($total_orders)];
             $rows[] = ['Tổng doanh thu', number_format($total_revenue, 0, ',', '.') . ' VNĐ'];
+            $rows[] = ['Tổng chi phí', number_format($total_cost, 0, ',', '.') . ' VNĐ'];
+            $rows[] = ['Tổng lợi nhuận', number_format($total_profit, 0, ',', '.') . ' VNĐ'];
+            $rows[] = ['Đơn hàng theo trạng thái'];
+            $rows[] = ['Trạng thái', 'Số đơn'];
+            foreach ($orders_by_status as $status) {
+                $rows[] = [$status['status'], intval($status['count'])];
+            }
             $rows[] = [];
 
             if (!empty($orders_by_month)) {
@@ -149,11 +174,29 @@ function aerp_dashboard_export()
             $low_stock = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}aerp_product_stocks WHERE quantity <= %d AND warehouse_id IN ($warehouse_ids_sql)", $low_stock_threshold));
 
             $stock_by_warehouse = $wpdb->get_results("SELECT w.name, SUM(ps.quantity) as total FROM {$wpdb->prefix}aerp_product_stocks ps JOIN {$wpdb->prefix}aerp_warehouses w ON ps.warehouse_id = w.id WHERE ps.warehouse_id IN ($warehouse_ids_sql) GROUP BY w.id, w.name", ARRAY_A);
+            // Sản phẩm hết hàng
+            $out_of_stock = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}aerp_product_stocks WHERE quantity = 0 AND warehouse_id IN ($warehouse_ids_sql)");
+            // Top sản phẩm tồn kho thấp
+            $low_stock_products = $wpdb->get_results($wpdb->prepare("
+            SELECT p.name, ps.quantity, w.name as warehouse_name
+            FROM {$wpdb->prefix}aerp_product_stocks ps 
+            JOIN {$wpdb->prefix}aerp_products p ON ps.product_id = p.id
+            JOIN {$wpdb->prefix}aerp_warehouses w ON ps.warehouse_id = w.id
+            WHERE ps.quantity <= %d AND ps.warehouse_id IN ($warehouse_ids_sql)
+            ORDER BY ps.quantity ASC
+            LIMIT 10
+        ", $low_stock_threshold), ARRAY_A);
 
             $rows[] = ['🏭 BÁO CÁO KHO'];
             $rows[] = ['Tổng kho', intval($total_warehouses)];
             $rows[] = ['Tổng sản phẩm', intval($total_products)];
             $rows[] = ['Sản phẩm tồn kho thấp (≤' . $low_stock_threshold . ')', intval($low_stock)];
+            $rows[] = ['Sản phẩm hết hàng', intval($out_of_stock)];
+            $rows[] = ['Top sản phẩm tồn kho thấp'];
+            $rows[] = ['Tên sản phẩm', 'Tồn kho', 'Kho'];
+            foreach ($low_stock_products as $product) {
+                $rows[] = [$product['name'], intval($product['quantity']), $product['warehouse_name']];
+            }
             $rows[] = [];
 
             if (!empty($stock_by_warehouse)) {
@@ -172,25 +215,102 @@ function aerp_dashboard_export()
 
     // === BÁO CÁO KHÁCH HÀNG ===
     if (function_exists('aerp_crm_init') || is_plugin_active('aerp-crm/aerp-crm.php')) {
-        $total_customers = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}aerp_crm_customers");
-        $new_customers = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}aerp_crm_customers WHERE DATE(created_at) >= CURDATE() - INTERVAL 30 DAY");
-        $customers_by_month = $wpdb->get_results("SELECT DATE_FORMAT(created_at, '%Y-%m') as ym, COUNT(*) as total FROM {$wpdb->prefix}aerp_crm_customers GROUP BY ym ORDER BY ym DESC LIMIT 12", ARRAY_A);
+        // Lấy danh sách nhân viên thuộc chi nhánh hiện tại
+        $employee_ids = $wpdb->get_col($wpdb->prepare(
+            "SELECT id FROM {$wpdb->prefix}aerp_hrm_employees WHERE work_location_id = %d",
+            $work_location_id
+        ));
+
+        if (!empty($employee_ids)) {
+            $employee_ids_sql = implode(',', array_map('intval', $employee_ids));
+
+            $total_customers = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}aerp_crm_customers WHERE assigned_to IN ($employee_ids_sql)");
+            $new_customers = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}aerp_crm_customers WHERE assigned_to IN ($employee_ids_sql) AND created_at BETWEEN %s AND %s", $start, $end));
+            $active_customers = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}aerp_crm_customers WHERE assigned_to IN ($employee_ids_sql) AND status = 'active'");
+            $customers_by_month = $wpdb->get_results($wpdb->prepare("SELECT DATE(created_at) as day, COUNT(*) as total FROM {$wpdb->prefix}aerp_crm_customers WHERE assigned_to IN ($employee_ids_sql) AND created_at BETWEEN %s AND %s GROUP BY day ORDER BY day ASC", $start, $end), ARRAY_A);
+        } else {
+            $total_customers = $new_customers = $active_customers = 0;
+            $customers_by_month = [];
+        }
+
+        // Thống kê khách hàng quay lại trong tháng
+        if (!empty($employee_ids)) {
+            $returning_customers = $wpdb->get_var($wpdb->prepare("
+                  SELECT COUNT(DISTINCT o.customer_id) 
+                  FROM {$wpdb->prefix}aerp_order_orders o
+                  LEFT JOIN {$wpdb->prefix}aerp_hrm_employees e ON o.employee_id = e.id
+                  WHERE e.work_location_id = %d
+                    AND o.order_date BETWEEN %s AND %s
+                    AND o.customer_id IN (
+                      SELECT o2.customer_id 
+                      FROM {$wpdb->prefix}aerp_order_orders o2
+                      LEFT JOIN {$wpdb->prefix}aerp_hrm_employees e2 ON o2.employee_id = e2.id
+                      WHERE e2.work_location_id = %d
+                        AND o2.order_date BETWEEN %s AND %s
+                      GROUP BY o2.customer_id 
+                      HAVING COUNT(*) > 1
+                  )
+              ", $work_location_id, $start, $end, $work_location_id, $start, $end));
+
+            $new_customers_with_orders = $wpdb->get_var($wpdb->prepare("
+                  SELECT COUNT(DISTINCT o.customer_id) 
+                  FROM {$wpdb->prefix}aerp_order_orders o
+                  LEFT JOIN {$wpdb->prefix}aerp_hrm_employees e ON o.employee_id = e.id
+                  WHERE e.work_location_id = %d
+                    AND o.order_date BETWEEN %s AND %s
+                    AND o.customer_id IN (
+                      SELECT o2.customer_id 
+                      FROM {$wpdb->prefix}aerp_order_orders o2
+                      LEFT JOIN {$wpdb->prefix}aerp_hrm_employees e2 ON o2.employee_id = e2.id
+                      WHERE e2.work_location_id = %d
+                        AND o2.order_date BETWEEN %s AND %s
+                      GROUP BY o2.customer_id 
+                      HAVING COUNT(*) = 1
+                  )
+              ", $work_location_id, $start, $end, $work_location_id, $start, $end));
+
+            // Doanh thu trung bình mỗi đơn hàng trong tháng
+            $avg_order_revenue = $wpdb->get_var($wpdb->prepare("
+                  SELECT AVG(o.total_amount) 
+                  FROM {$wpdb->prefix}aerp_order_orders o
+                  LEFT JOIN {$wpdb->prefix}aerp_hrm_employees e ON o.employee_id = e.id
+                  WHERE e.work_location_id = %d
+                    AND o.total_amount > 0 AND o.order_date BETWEEN %s AND %s
+              ", $work_location_id, $start, $end));
+
+            // Số đơn hàng 0đ trong tháng
+            $zero_amount_orders = $wpdb->get_var($wpdb->prepare("
+                  SELECT COUNT(*) 
+                  FROM {$wpdb->prefix}aerp_order_orders o
+                  LEFT JOIN {$wpdb->prefix}aerp_hrm_employees e ON o.employee_id = e.id
+                  WHERE e.work_location_id = %d
+                    AND (o.total_amount = 0 OR o.total_amount IS NULL) 
+                    AND o.order_date BETWEEN %s AND %s
+              ", $work_location_id, $start, $end));
+
+            // Số đơn hàng có lợi nhuận trong tháng
+            $profitable_orders = $wpdb->get_var($wpdb->prepare("
+                  SELECT COUNT(*) 
+                  FROM {$wpdb->prefix}aerp_order_orders o
+                  LEFT JOIN {$wpdb->prefix}aerp_hrm_employees e ON o.employee_id = e.id
+                  WHERE e.work_location_id = %d
+                    AND (o.total_amount - COALESCE(o.cost, 0)) > 0 
+                    AND o.order_date BETWEEN %s AND %s
+              ", $work_location_id, $start, $end));
+        } else {
+            $returning_customers = $new_customers_with_orders = $avg_order_revenue = $zero_amount_orders = $profitable_orders = 0;
+        }
 
         $rows[] = ['👥 BÁO CÁO KHÁCH HÀNG'];
         $rows[] = ['Tổng khách hàng', intval($total_customers)];
-        $rows[] = ['Khách hàng mới 30 ngày', intval($new_customers)];
+        $rows[] = ['Khách hàng mới trong thasng', intval($new_customers)];
+        $rows[] = ['Khách hàng hoạt động', intval($active_customers)];
+        $rows[] = ['Khách hàng quay lại (≥2 đơn)', intval($returning_customers)];
+        $rows[] = ['Khách hàng mới (1 đơn)', intval($new_customers_with_orders)];
+        $rows[] = ['Doanh thu TB/đơn', number_format($avg_order_revenue, 0) . ' VNĐ'];
+        $rows[] = ['Đơn hàng 0đ', intval($zero_amount_orders)];
+        $rows[] = ['Đơn hàng có lãi', intval($profitable_orders)];
         $rows[] = [];
-
-        if (!empty($customers_by_month)) {
-            $rows[] = ['Khách hàng mới theo tháng'];
-            $rows[] = ['Tháng', 'Số khách hàng mới'];
-            foreach ($customers_by_month as $customer) {
-                $rows[] = [
-                    $customer['ym'],
-                    intval($customer['total'])
-                ];
-            }
-        }
     }
 
     // Gọi export
