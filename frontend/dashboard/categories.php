@@ -189,6 +189,14 @@ $all_order_menu = [
         'color' => 'danger',
         'permission' => 'supplier_view',
     ],
+    [
+        'icon' => 'fa-laptop',
+        'title' => 'Thiết bị',
+        'desc' => 'Quản lý thiết bị',
+        'url' => home_url('/aerp-devices'),
+        'color' => 'success',
+        'permission' => 'product_view',
+    ],
 ];
 
 $management_order_menu = [];

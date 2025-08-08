@@ -102,7 +102,7 @@ ob_start();
             <?php endif; ?>
 
             <div class="row mb-4">
-                <div class="col-md-3">
+    <div class="col-md-3">
                     <div class="summary-card card">
                         <div class="summary-icon">
                             <i class="fas fa-users"></i>
@@ -111,9 +111,9 @@ ob_start();
                             <div class="summary-label">Tổng nhân sự</div>
                             <div class="summary-value"><?= number_format($summary['total']) ?></div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
+        </div>
+    </div>
+    <div class="col-md-3">
                     <div class="summary-card card">
                         <div class="summary-icon active">
                             <i class="fas fa-user-check"></i>
@@ -122,9 +122,9 @@ ob_start();
                             <div class="summary-label">Đang làm</div>
                             <div class="summary-value"><?= number_format($summary['joined']) ?></div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
+        </div>
+    </div>
+    <div class="col-md-3">
                     <div class="summary-card card">
                         <div class="summary-icon resigned">
                             <i class="fas fa-user-times"></i>
@@ -133,9 +133,9 @@ ob_start();
                             <div class="summary-label">Nghỉ việc</div>
                             <div class="summary-value"><?= number_format($summary['resigned']) ?></div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
+        </div>
+    </div>
+    <div class="col-md-3">
                     <div class="summary-card card">
                         <div class="summary-icon turnover">
                             <i class="fas fa-percentage"></i>
@@ -145,9 +145,9 @@ ob_start();
                             <div class="summary-value">
                                 <?= $summary['total'] > 0 ? round(($summary['resigned'] / $summary['total']) * 100, 1) : 0 ?>%
                             </div>
-                        </div>
-                    </div>
-                </div>
+        </div>
+    </div>
+</div>
             </div>
 
             <div class="row mb-4">
@@ -182,9 +182,9 @@ ob_start();
                         <?php else: ?>
                             <canvas id="departmentChart"></canvas>
                         <?php endif; ?>
-                    </div>
-                </div>
-                <div class="col-md-6">
+        </div>
+    </div>
+    <div class="col-md-6">
                     <div class="chart-container card">
                         <h5><i class="fas fa-money-bill-wave"></i> Chi phí lương</h5>
                         <?php if (empty($salary)): ?>
@@ -192,7 +192,7 @@ ob_start();
                         <?php else: ?>
                             <canvas id="salaryChart"></canvas>
                         <?php endif; ?>
-                    </div>
+            </div>
                 </div>
             </div>
         </section>
@@ -956,11 +956,11 @@ ob_start();
                                             <div class="metric-value text-info"><?= number_format($avg_order_revenue, 0) ?>đ</div>
                                             <div class="metric-label">Dthu TB/đơn</div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                 </section>
             <?php endif; ?>
 
