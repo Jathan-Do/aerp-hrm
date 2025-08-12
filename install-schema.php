@@ -398,11 +398,18 @@ function aerp_hrm_seed_data()
         ['name' => 'customer_add', 'description' => 'Thêm khách hàng'],
         ['name' => 'customer_edit', 'description' => 'Chỉnh sửa khách hàng'],
         ['name' => 'customer_view', 'description' => 'Xem khách hàng'],
+        ['name' => 'customer_view_full', 'description' => 'Xem tất cả khách hàng'],
+
 
         // Customer Type
         ['name' => 'customer_type_add', 'description' => 'Thêm loại khách hàng'],
         ['name' => 'customer_type_edit', 'description' => 'Chỉnh sửa loại khách hàng'],
         ['name' => 'customer_type_view', 'description' => 'Xem loại khách hàng'],
+
+        // Customer Source
+        ['name' => 'customer_source_add', 'description' => 'Thêm nguồn khách hàng'],
+        ['name' => 'customer_source_edit', 'description' => 'Chỉnh sửa nguồn khách hàng'],
+        ['name' => 'customer_source_view', 'description' => 'Xem nguồn khách hàng'],
 
         // Plugin Order
         // Order
@@ -479,6 +486,7 @@ function aerp_hrm_seed_data()
             'customer_add',
             'customer_edit',
             'customer_view',
+            'customer_view_full',
             'customer_type_add', 
             'customer_type_edit', 
             'customer_type_view',
@@ -526,6 +534,7 @@ function aerp_hrm_seed_data()
             'customer_add', 
             'customer_edit', 
             'customer_view',
+            'customer_view_full',
             'customer_type_add', 
             'customer_type_edit', 
             'customer_type_view',

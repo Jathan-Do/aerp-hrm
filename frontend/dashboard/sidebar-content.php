@@ -31,14 +31,14 @@
 
     <?php if ($crm_active): ?>
         <!-- CRM Menu -->
-        <!-- <a class="nav-link <?php echo aerp_menu_active('aerp-crm-dashboard'); ?>" href="<?php echo home_url('/aerp-crm-dashboard'); ?>">
-                <i class="fas fa-tachometer-alt me-2"></i> CRM Dashboard
-            </a> -->
 
         <div class="px-3 py-2 collapsible-menu-header">
             <i class="fas fa-address-book me-2"></i> <span class="menu-text">Khách Hàng</span> <i class="fas fa-chevron-down float-end"></i>
         </div>
         <div class="collapsible-menu-content">
+            <a class="nav-link <?php echo aerp_menu_active('aerp-crm-dashboard'); ?>" href="<?php echo home_url('/aerp-crm-dashboard'); ?>">
+                <span class="ms-4"><i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span></span>
+            </a>
             <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customers'); ?>" href="<?php echo home_url('/aerp-crm-customers'); ?>">
                 <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Danh sách</span></span>
             </a>
@@ -47,6 +47,9 @@
             </a>
             <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customer-types'); ?>" href="<?php echo home_url('/aerp-crm-customer-types'); ?>">
                 <span class="ms-4"><i class="fas fa-tags me-2"></i> <span class="menu-text">Loại khách hàng</span></span>
+            </a>
+            <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customer-sources'); ?>" href="<?php echo home_url('/aerp-crm-customer-sources'); ?>">
+                <span class="ms-4"><i class="fas fa-globe me-2"></i> <span class="menu-text">Nguồn khách hàng</span></span>
             </a>
         </div>
     <?php endif; ?>

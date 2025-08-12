@@ -104,6 +104,7 @@ if (!defined('ABSPATH')) exit;
 
 
         }
+
         @media (max-width: 768px) {
             .dashboard-sidebar {
                 height: 100vh;
@@ -163,6 +164,8 @@ if (!defined('ABSPATH')) exit;
     </div>
     <?php wp_footer(); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
     <script>
         jQuery(function($) {
             var $sidebar = $('.dashboard-sidebar.d-none.d-md-block');

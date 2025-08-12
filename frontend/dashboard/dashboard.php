@@ -102,7 +102,7 @@ ob_start();
             <?php endif; ?>
 
             <div class="row mb-4">
-    <div class="col-md-3">
+                <div class="col-md-3">
                     <div class="summary-card card">
                         <div class="summary-icon">
                             <i class="fas fa-users"></i>
@@ -111,9 +111,9 @@ ob_start();
                             <div class="summary-label">Tổng nhân sự</div>
                             <div class="summary-value"><?= number_format($summary['total']) ?></div>
                         </div>
-        </div>
-    </div>
-    <div class="col-md-3">
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="summary-card card">
                         <div class="summary-icon active">
                             <i class="fas fa-user-check"></i>
@@ -122,9 +122,9 @@ ob_start();
                             <div class="summary-label">Đang làm</div>
                             <div class="summary-value"><?= number_format($summary['joined']) ?></div>
                         </div>
-        </div>
-    </div>
-    <div class="col-md-3">
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="summary-card card">
                         <div class="summary-icon resigned">
                             <i class="fas fa-user-times"></i>
@@ -133,9 +133,9 @@ ob_start();
                             <div class="summary-label">Nghỉ việc</div>
                             <div class="summary-value"><?= number_format($summary['resigned']) ?></div>
                         </div>
-        </div>
-    </div>
-    <div class="col-md-3">
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="summary-card card">
                         <div class="summary-icon turnover">
                             <i class="fas fa-percentage"></i>
@@ -145,9 +145,9 @@ ob_start();
                             <div class="summary-value">
                                 <?= $summary['total'] > 0 ? round(($summary['resigned'] / $summary['total']) * 100, 1) : 0 ?>%
                             </div>
-        </div>
-    </div>
-</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="row mb-4">
@@ -182,9 +182,9 @@ ob_start();
                         <?php else: ?>
                             <canvas id="departmentChart"></canvas>
                         <?php endif; ?>
-        </div>
-    </div>
-    <div class="col-md-6">
+                    </div>
+                </div>
+                <div class="col-md-6">
                     <div class="chart-container card">
                         <h5><i class="fas fa-money-bill-wave"></i> Chi phí lương</h5>
                         <?php if (empty($salary)): ?>
@@ -192,7 +192,7 @@ ob_start();
                         <?php else: ?>
                             <canvas id="salaryChart"></canvas>
                         <?php endif; ?>
-            </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -655,13 +655,14 @@ ob_start();
                 // Khách hàng theo nguồn trong tháng được chọn
                 if (!empty($employee_ids)) {
                     $customers_by_source = $wpdb->get_results($wpdb->prepare("
-                        SELECT customer_source, COUNT(*) as count 
+                        SELECT cs.name as source_name, cs.color as source_color, o.customer_source_id, COUNT(*) as count
                         FROM {$wpdb->prefix}aerp_order_orders o
                         LEFT JOIN {$wpdb->prefix}aerp_hrm_employees e ON o.employee_id = e.id
+                        LEFT JOIN {$wpdb->prefix}aerp_crm_customer_sources cs ON o.customer_source_id = cs.id
                         WHERE e.work_location_id = %d
-                          AND customer_source IS NOT NULL AND customer_source != ''
-                          AND o.order_date BETWEEN %s AND %s
-                        GROUP BY customer_source 
+                        AND o.customer_source_id IS NOT NULL AND o.customer_source_id != 0
+                        AND o.order_date BETWEEN %s AND %s
+                        GROUP BY o.customer_source_id
                         ORDER BY count DESC
                     ", $work_location_id, $start_date, $end_date), ARRAY_A);
                 } else {
@@ -835,8 +836,9 @@ ob_start();
                         };
 
                         var customerSourceData = {
-                            labels: <?= json_encode(array_column($customers_by_source, 'customer_source')) ?>,
-                            data: <?= json_encode(array_column($customers_by_source, 'count')) ?>
+                            labels: <?= json_encode(array_column($customers_by_source, 'source_name')) ?>,
+                            data: <?= json_encode(array_column($customers_by_source, 'count')) ?>,
+                            colors: <?= json_encode(array_column($customers_by_source, 'source_color')) ?>
                         };
 
                         jQuery(function($) {
@@ -873,22 +875,19 @@ ob_start();
                                     data: {
                                         labels: customerSourceData.labels.map(function(source) {
                                             var sourceMap = {
-                                                'fb': 'Facebook',
-                                                'zalo': 'Zalo',
-                                                'tiktok': 'Tiktok',
-                                                'youtube': 'Youtube',
-                                                'web': 'Website',
-                                                'referral': 'KH cũ giới thiệu',
-                                                'other': 'Khác'
+                                                // 'fb': 'Facebook',
+                                                // 'zalo': 'Zalo',
+                                                // 'tiktok': 'Tiktok',
+                                                // 'youtube': 'Youtube',
+                                                // 'web': 'Website',
+                                                // 'referral': 'KH cũ giới thiệu',
+                                                // 'other': 'Khác'
                                             };
                                             return sourceMap[source] || source;
                                         }),
                                         datasets: [{
                                             data: customerSourceData.data,
-                                            backgroundColor: [
-                                                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                                                '#9966FF', '#FF9F40', '#C9CBCF', '#28a745'
-                                            ]
+                                            backgroundColor: customerSourceData.colors
                                         }]
                                     },
                                     options: {
@@ -956,11 +955,11 @@ ob_start();
                                             <div class="metric-value text-info"><?= number_format($avg_order_revenue, 0) ?>đ</div>
                                             <div class="metric-label">Dthu TB/đơn</div>
                                         </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
             <?php endif; ?>
 
