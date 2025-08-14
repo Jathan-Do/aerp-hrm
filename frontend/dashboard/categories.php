@@ -165,6 +165,14 @@ $all_order_menu = [
         'color' => 'warning',
         'show_for' => ['admin', 'department_lead'],
     ],
+    [
+        'icon' => 'fa-file-alt',
+        'title' => 'Template nội dung triển khai',
+        'desc' => 'Quản lý template nội dung triển khai',
+        'url' => home_url('/aerp-implementation-templates'),
+        'color' => 'success',
+        'show_for' => ['admin'],
+    ],
     // [
     //     'icon' => 'fa-warehouse',
     //     'title' => 'Kho',

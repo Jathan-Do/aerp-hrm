@@ -58,6 +58,9 @@
             <i class="fas fa-file-invoice me-2"></i> <span class="menu-text">Đơn hàng</span> <i class="fas fa-chevron-down float-end"></i>
         </div>
         <div class="collapsible-menu-content">
+            <a class="nav-link <?php echo aerp_menu_active('aerp-report-order'); ?>" href="<?php echo home_url('/aerp-report-order'); ?>">
+                <span class="ms-4"><i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span></span>
+            </a>
             <a class="nav-link <?php echo aerp_menu_active('aerp-order-orders'); ?>" href="<?php echo home_url('/aerp-order-orders'); ?>">
                 <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Danh sách</span></span>
             </a>
