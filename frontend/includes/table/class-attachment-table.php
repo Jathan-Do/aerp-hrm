@@ -11,7 +11,7 @@ class AERP_Frontend_Attachment_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_attachments',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'file_name'       => 'Tên file',
                 'attachment_type' => 'Loại hồ sơ',
                 'file_type'       => 'Định dạng',
@@ -19,7 +19,7 @@ class AERP_Frontend_Attachment_Table extends AERP_Frontend_Table
                 'uploaded_at'     => 'Ngày tải',
                 'actions'         => 'Thao tác',
             ],
-            'sortable_columns' => ['file_name', 'attachment_type', 'file_type', 'storage_type', 'uploaded_at'],
+            'sortable_columns' => ['id', 'file_name', 'attachment_type', 'file_type', 'storage_type', 'uploaded_at'],
             'searchable_columns' => ['file_name', 'attachment_type', 'file_type', 'storage_type', 'uploaded_at'],
             'primary_key' => 'id',
             'per_page' => 10,
@@ -42,8 +42,8 @@ class AERP_Frontend_Attachment_Table extends AERP_Frontend_Table
             'delete_attachment_' . $item->id
         );
         return sprintf(
-            '<a href="%s" class="btn btn-sm btn-success mb-2 mb-md-0"><i class="fas fa-edit"></i></a> 
-         <a href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
+            '<a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Chỉnh sửa" href="%s" class="btn btn-sm btn-success mb-2 mb-md-0"><i class="fas fa-edit"></i></a> 
+         <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Xóa" href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
             esc_url($edit_url),
             esc_url($delete_url)
         );

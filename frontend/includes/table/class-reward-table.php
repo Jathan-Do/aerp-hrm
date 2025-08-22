@@ -7,7 +7,7 @@ class AERP_Frontend_Reward_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_reward_definitions',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'name' => 'Tên thưởng',
                 'amount' => 'Số tiền',
                 'trigger_type' => 'Loại kích hoạt',

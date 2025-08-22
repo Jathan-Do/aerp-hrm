@@ -10,14 +10,14 @@ class AERP_Frontend_Discipline_Log_Table extends AERP_Frontend_Table
         $this->employee_id = absint($args['employee_id'] ?? 0);
 
         $columns = [
-            'id' => 'ID',
+            // 'id' => 'ID',
             'date_violation' => 'Ngày vi phạm',
             'rule_name'      => 'Lý do',
             'penalty_point'  => 'Điểm trừ',
             'fine_amount'    => 'Tiền phạt (VNĐ)',
         ];
 
-        $sortable = ['date_violation', 'penalty_point', 'fine_amount'];
+        $sortable = ['id', 'date_violation', 'penalty_point', 'fine_amount'];
         $searchable = ['rule_name'];
 
         parent::__construct(array_merge([

@@ -32,7 +32,14 @@ ob_start();
             <i class="fas fa-sign-out-alt"></i> Đăng xuất
         </a>
     </div>
-</div>
+</div><?php
+if (function_exists('aerp_render_breadcrumb')) {
+    aerp_render_breadcrumb([
+        ['label' => 'Trang chủ', 'url' => home_url('/aerp-dashboard'), 'icon' => 'fas fa-home'],
+        ['label' => 'Quản lý nhân viên']
+    ]);
+}
+?>
 
 <div class="card">
     <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">

@@ -7,7 +7,7 @@ class AERP_Frontend_Company_Table extends AERP_Frontend_Table {
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_company_info',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'company_name' => 'Tên công ty',
                 'tax_code' => 'Mã số thuế',
                 'phone' => 'Số điện thoại',

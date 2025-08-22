@@ -12,8 +12,32 @@ if (!defined('ABSPATH')) exit;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        body {
+            /* font-size: 0.875rem; */
+            /* font-family: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; */
+        }
+
+        .card label {
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            font-weight: 500;
+            color: #182433;
+        }
+
+        .breadcrumb-item>a {
+            text-decoration: none;
+            color: rgb(100, 104, 107);
+        }
+
+        .breadcrumb-item>a:hover {
+            text-decoration: revert;
+        }
+
         .collapsible-menu-content {
             display: none;
+            border-left: 4px solid rgb(52, 152, 219);
         }
 
         .dashboard-sidebar {
@@ -39,7 +63,7 @@ if (!defined('ABSPATH')) exit;
         }
 
         .nav-link.active {
-            background: #3498db;
+            background: rgb(61, 85, 109);
         }
 
         .menu-text {
@@ -163,6 +187,7 @@ if (!defined('ABSPATH')) exit;
         </div>
     </div>
     <?php wp_footer(); ?>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
@@ -182,6 +207,14 @@ if (!defined('ABSPATH')) exit;
                         $icon.removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
                         $menu_content.addClass('ms-4');
                     }
+                });
+            }
+
+            // Enable Bootstrap 5 tooltips globally for elements with data-bs-toggle="tooltip"
+            if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(function(el) {
+                    new bootstrap.Tooltip(el);
                 });
             }
         });

@@ -277,6 +277,16 @@ ob_start();
         </a>
     </div>
 </div>
+<?php
+if (function_exists('aerp_render_breadcrumb')) {
+    aerp_render_breadcrumb([
+        ['label' => 'Trang chủ', 'url' => home_url('/aerp-dashboard'), 'icon' => 'fas fa-home'],
+        ['label' => 'Danh mục', 'url' => home_url('/aerp-categories')],
+        ['label' => 'Bảng lương tổng hợp', 'url' => home_url('/aerp-salary-summary')],
+        ['label' => 'Bảng lương chi tiết']
+    ]);
+}
+?>
 <div class="aerp-print-hide">
     <button onclick="window.print()" class="btn btn-primary"><span class="dashicons dashicons-printer"></span> In PDF</button>
     <a href="<?= home_url('/aerp-salary-summary') ?>" class="btn btn-outline-primary">← Quay lại bảng lương</a>

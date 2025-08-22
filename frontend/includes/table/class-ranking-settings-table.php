@@ -7,7 +7,7 @@ class AERP_Frontend_Ranking_Settings_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_ranking_settings',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'rank_code' => 'Xếp loại',
                 'min_point' => 'Từ điểm',
                 'note' => 'Ghi chú',

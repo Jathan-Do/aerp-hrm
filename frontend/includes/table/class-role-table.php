@@ -9,7 +9,7 @@ class AERP_Frontend_Role_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_roles',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'name' => 'Tên nhóm quyền',
                 'description' => 'Mô tả'
             ],

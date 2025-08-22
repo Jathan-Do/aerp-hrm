@@ -216,6 +216,59 @@ function aerp_js_redirect($url)
     exit;
 }
 
+//Breadcrumb
+function aerp_render_breadcrumb($items = [])
+{
+    if (empty($items) || !is_array($items)) {
+        return;
+    }
+
+    // Normalize: allow [ 'Title' => 'url', 'Current' => '' ] style
+    $normalized = [];
+    $isAssocSimple = array_values($items) !== $items; // associative (simple map)
+    if ($isAssocSimple) {
+        foreach ($items as $label => $url) {
+            $normalized[] = [
+                'label' => $label,
+                'url' => $url,
+            ];
+        }
+    } else {
+        $normalized = $items;
+    }
+
+    echo '<nav aria-label="breadcrumb" class="mb-3">';
+    echo '<div class="card">';
+    echo '<div class="card-body">';
+    echo '<ol class="breadcrumb mb-0">';
+    $lastIndex = count($normalized) - 1;
+    foreach ($normalized as $index => $item) {
+        $label = isset($item['label']) ? $item['label'] : '';
+        $url = isset($item['url']) ? $item['url'] : '';
+        $icon = isset($item['icon']) ? $item['icon'] : '';
+        $isActive = empty($url) || $index === $lastIndex;
+
+        if ($isActive) {
+            echo '<li class="breadcrumb-item active" aria-current="page">';
+            if (!empty($icon)) {
+                echo '<i class="' . esc_attr($icon) . ' me-1"></i>';
+            }
+            echo esc_html($label) . '</li>';
+        } else {
+            echo '<li class="breadcrumb-item">';
+            echo '<a href="' . esc_url($url) . '">';
+            if (!empty($icon)) {
+                echo '<i class="' . esc_attr($icon) . ' me-1"></i>';
+            }
+            echo esc_html($label) . '</a></li>';
+        }
+    }
+    echo '</ol>';
+    echo '</div>';
+    echo '</div>';
+    echo '</nav>';
+}
+
 /**
  * Kiểm tra user có quyền (permission) không (từ role hoặc quyền đặc biệt)
  * @param int $user_id

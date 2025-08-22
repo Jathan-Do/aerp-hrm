@@ -62,7 +62,18 @@
                 <span class="ms-4"><i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span></span>
             </a>
             <a class="nav-link <?php echo aerp_menu_active('aerp-order-orders'); ?>" href="<?php echo home_url('/aerp-order-orders'); ?>">
-                <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Danh sách</span></span>
+                <span class="ms-4">
+                    <i class="fas fa-list me-2"></i>
+                    <span class="menu-text">Danh sách</span>
+                    <?php
+                        // Đếm số lượng đơn hàng có status là 'new'
+                        global $wpdb;
+                        $order_new_count = (int) $wpdb->get_var(
+                            "SELECT COUNT(*) FROM {$wpdb->prefix}aerp_order_orders WHERE status = 'new'"
+                        );
+                    ?>
+                    <span class="badge text-bg-secondary ms-2 rounded-pill bg-danger"><?php echo $order_new_count; ?></span>
+                </span>
             </a>
             <a class="nav-link <?php echo aerp_menu_active('aerp-order-orders/?action=add'); ?>" href="<?php echo home_url('/aerp-order-orders/?action=add'); ?>">
                 <span class="ms-4"><i class="fas fa-plus me-2"></i> <span class="menu-text">Thêm mới</span></span>
@@ -75,6 +86,9 @@
             <i class="fas fa-warehouse me-2"></i> <span class="menu-text">Quản lý kho</span> <i class="fas fa-chevron-down float-end"></i>
         </div>
         <div class="collapsible-menu-content">
+            <a class="nav-link <?php echo aerp_menu_active('aerp-stock-timeline'); ?>" href="<?php echo home_url('/aerp-stock-timeline'); ?>">
+                <span class="ms-4"><i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span></span>
+            </a>
             <a class="nav-link <?php echo aerp_menu_active('aerp-warehouses'); ?>" href="<?php echo home_url('/aerp-warehouses'); ?>">
                 <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Danh sách</span></span>
             </a>

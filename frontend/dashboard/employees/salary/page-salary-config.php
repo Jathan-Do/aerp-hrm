@@ -40,6 +40,16 @@ ob_start();
         </a>
     </div>
 </div>
+<?php
+if (function_exists('aerp_render_breadcrumb')) {
+    aerp_render_breadcrumb([
+        ['label' => 'Trang chủ', 'url' => home_url('/aerp-dashboard'), 'icon' => 'fas fa-home'],
+        ['label' => 'Quản lý nhân viên', 'url' => home_url('/aerp-hrm-employees')],
+        ['label' => 'Chi tiết nhân viên', 'url' => home_url('/aerp-hrm-employees/?action=view&id=' . $employee_id . '&section=salary')],
+        ['label' => 'Cấu hình lương'],
+    ]);
+}
+?>
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Danh sách cấu hình lương</h5>

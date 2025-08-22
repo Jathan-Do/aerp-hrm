@@ -27,6 +27,7 @@ class AERP_Frontend_Salary_Table extends AERP_Frontend_Table
             'created_at'       => 'Ngày tạo',
         ];
         $sortable = [
+            'id',
             'salary_month',
             'final_salary',
             'base_salary',

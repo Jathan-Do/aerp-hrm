@@ -9,7 +9,7 @@ class AERP_Frontend_Work_Location_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_work_locations',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'name' => 'Tên chi nhánh',
                 'description' => 'Mô tả',
                 'created_at' => 'Ngày tạo'

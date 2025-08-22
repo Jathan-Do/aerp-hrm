@@ -7,7 +7,7 @@ class AERP_Frontend_KPI_Settings_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_kpi_settings',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'min_score' => 'Từ điểm',
                 'reward_amount' => 'Tiền thưởng',
                 'note' => 'Ghi chú',

@@ -30,7 +30,15 @@ ob_start();
         </a>
     </div>
 </div>
-
+<?php
+if (function_exists('aerp_render_breadcrumb')) {
+    aerp_render_breadcrumb([
+        ['label' => 'Trang chủ', 'url' => home_url('/aerp-dashboard'), 'icon' => 'fas fa-home'],
+        ['label' => 'Danh mục', 'url' => home_url('/aerp-categories')],
+        ['label' => 'Quản lý thưởng động']
+    ]);
+}
+?>
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Danh sách thưởng động</h5>

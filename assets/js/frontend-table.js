@@ -20,13 +20,16 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    // Handle column preferences form submission
-    $(document).on("submit", "#aerp-column-options-form", function (e) {
-        e.preventDefault();
-        var $form = $(this);
-        var formData = $form.serializeArray();
+    // Handle column preferences checkbox change - save immediately via AJAX
+    $(document).on("change", "#aerp-column-options-form input[name='aerp_visible_columns[]']", function () {
+        var $checkbox = $(this);
+        var $form = $checkbox.closest("#aerp-column-options-form");
         var allColumns = [];
         var checkedColumns = [];
+
+        // Show loading state on checkbox
+        var $originalCheckbox = $checkbox.clone();
+        // $checkbox.prop('disabled', true).addClass('opacity-50');
 
         // Get all available columns
         $form.find('input[name="aerp_visible_columns[]"]').each(function () {
@@ -34,10 +37,8 @@ jQuery(document).ready(function ($) {
         });
 
         // Get checked columns
-        $.each(formData, function (i, field) {
-            if (field.name === "aerp_visible_columns[]") {
-                checkedColumns.push(field.value);
-            }
+        $form.find('input[name="aerp_visible_columns[]"]:checked').each(function () {
+            checkedColumns.push($(this).val());
         });
 
         // Calculate hidden columns
@@ -45,7 +46,8 @@ jQuery(document).ready(function ($) {
             return $.inArray(col, checkedColumns) === -1;
         });
 
-        // Save preferences via AJAX
+        // Lưu ngay preferences qua AJAX và giữ dropdown mở
+        keepColumnDropdownOpen = true;
         $.ajax({
             url: aerp_table_ajax.ajax_url,
             type: "POST",
@@ -57,14 +59,30 @@ jQuery(document).ready(function ($) {
             },
             success: function (response) {
                 if (response.success) {
-                    $form.closest("#aerp-column-options-dropdown").hide();
-                    location.reload();
+                    // Reload table to reflect changes immediately
+                    var $tableWrapper = $checkbox.closest('.aerp-table-wrapper');
+                    if ($tableWrapper.length > 0) {
+                        var $searchForm = $tableWrapper.find('form.aerp-table-search-form, form.aerp-table-ajax-form').first();
+                        if ($searchForm.length > 0) {
+                            reloadTable($searchForm);
+                        } else {
+                            // Fallback: reload page if no search form found
+                            location.reload();
+                        }
+                    } else {
+                        // Fallback: reload page if no table wrapper found
+                        location.reload();
+                    }
                 } else {
                     console.error("Error saving column preferences:", response.data);
+                    // Revert checkbox state if save failed
+                    $checkbox.prop('checked', !$checkbox.prop('checked'));
                 }
             },
             error: function () {
                 console.error("Failed to save column preferences");
+                // Revert checkbox state if save failed
+                $checkbox.prop('checked', !$checkbox.prop('checked'));
             },
         });
     });
@@ -77,15 +95,19 @@ jQuery(document).ready(function ($) {
         reloadTable($(this));
     });
 
-    // Live search with debouncing
-    var searchTimeout;
+    // Live search with debouncing và sau 1s
+    var aerpTableSearchTimeout;
     $(document).on("input", ".aerp-table-search-input", function (e) {
         e.preventDefault();
-        clearTimeout(searchTimeout);
-        var $form = $(this).closest("form");
-        searchTimeout = setTimeout(function () {
-            reloadTable($form);
-        }, 400);
+        var $input = $(this);
+        var $form = $input.closest("form");
+        var val = $input.val() || "";
+        clearTimeout(aerpTableSearchTimeout);
+        if (val.length >= 10) {
+            aerpTableSearchTimeout = setTimeout(function () {
+                reloadTable($form);
+            }, 1000); // 1s delay
+        }
     });
 
     // Handle pagination
@@ -114,6 +136,9 @@ jQuery(document).ready(function ($) {
 
     // --- CORE AJAX FUNCTION ---
     var isLoading = false;
+    // Ghi nhớ trạng thái dropdown để giữ mở sau khi reload AJAX
+    var keepColumnDropdownOpen = false;
+    var columnDropdownScrollTop = 0;
 
     function reloadTable($form, additionalData) {
         if (isLoading) {
@@ -154,6 +179,13 @@ jQuery(document).ready(function ($) {
             });
         }
         
+        // Trước khi reload: nếu dropdown đang mở thì ghi nhớ để mở lại
+        var $dropdown = $("#aerp-column-options-dropdown");
+        keepColumnDropdownOpen = $dropdown.is(":visible");
+        if (keepColumnDropdownOpen) {
+            columnDropdownScrollTop = $dropdown.scrollTop();
+        }
+
         // Execute AJAX request
         $.ajax({
             url: aerp_table_ajax.ajax_url,
@@ -165,6 +197,21 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                 if (response.success) {
                     $tableWrapper.html(response.data.html);
+                    // Sau khi reload: nếu cần giữ mở dropdown thì mở lại
+                    if (keepColumnDropdownOpen) {
+                        var $btn = $("#aerp-column-options-button");
+                        var $newDropdown = $("#aerp-column-options-dropdown");
+                        if ($newDropdown.length) {
+                            $newDropdown.show();
+                            // Khôi phục scroll
+                            $newDropdown.scrollTop(columnDropdownScrollTop || 0);
+                        } else if ($btn.length) {
+                            // Fallback: toggle để đảm bảo mở
+                            $btn.next("#aerp-column-options-dropdown").show();
+                        }
+                    }
+                    // Phát sự kiện tuỳ chỉnh để các handler khác có thể hook vào sau reload
+                    $(document).trigger('aerp:tableReloaded', [$tableWrapper]);
                 } else {
                     console.error("Table reload failed:", response.data);
                 }
@@ -196,12 +243,37 @@ jQuery(document).ready(function ($) {
 
     // Mở menu con nếu có nav-link active bên trong
     $(".collapsible-menu-content").each(function () {
-        if ($(this).find('.nav-link.active').length > 0) {
-            $(this).show();
+        var $content = $(this);
+        if ($content.find('.nav-link.active').length > 0) {
+            $content.show();
+            // Đổi icon thành fa-chevron-up cho menu đang mở
+            var $header = $content.prev(".collapsible-menu-header");
+            $header.find(".fa-chevron-down, .fa-chevron-left").removeClass("fa-chevron-down fa-chevron-left").addClass("fa-chevron-up");
         }
     });
-    $(".collapsible-menu-header").on("click", function () {
-        $(this).next(".collapsible-menu-content").slideToggle(200);
-        $(this).find(".fa-chevron-down, .fa-chevron-up").toggleClass("fa-chevron-down fa-chevron-up");
+    $(".collapsible-menu-header").off("click.aerpMenuToggle").on("click.aerpMenuToggle", function () {
+        var $header = $(this);
+        var $content = $header.next(".collapsible-menu-content");
+        $content.stop(true, true).slideToggle(200, function() {
+            // Optionally, you can do something after toggle
+        });
+        $header.find(".fa-chevron-down, .fa-chevron-left, .fa-chevron-up").each(function() {
+            if ($(this).hasClass("fa-chevron-down") || $(this).hasClass("fa-chevron-left")) {
+                $(this).removeClass("fa-chevron-down fa-chevron-left").addClass("fa-chevron-up");
+            } else if ($(this).hasClass("fa-chevron-up")) {
+                $(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
+            }
+        });
     });
+
+    //Auto close alert noti
+    if ($(".alert.alert-success").length) {
+        setTimeout(
+            () =>
+                $(".alert.alert-success").fadeOut(300, function () {
+                    $(this).remove();
+                }),
+            5000
+        );
+    }
 });

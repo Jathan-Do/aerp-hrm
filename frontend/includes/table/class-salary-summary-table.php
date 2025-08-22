@@ -21,6 +21,7 @@ class AERP_Frontend_Salary_Summary_Table extends AERP_Frontend_Table
                 'points_total'  => 'Điểm',
             ],
             'sortable_columns' => [
+                'id',
                 'full_name',
                 'employee_code',
                 'bank_account',

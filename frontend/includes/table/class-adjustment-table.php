@@ -11,15 +11,15 @@ class AERP_Frontend_Adjustment_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_adjustments',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'reason'         => 'Lý do',
                 'date_effective' => 'Ngày áp dụng',
                 'type'           => 'Loại',
                 'amount'         => 'Số tiền',
                 'description'    => 'Ghi chú',
-                'actions'    => 'Thao tác',
+                'actions'        => 'Thao tác',
             ],
-            'sortable_columns' => ['date_effective', 'type', 'amount'],
+            'sortable_columns' => ['id', 'date_effective', 'type', 'amount'],
             'searchable_columns' => ['reason', 'amount', 'description'],
             'primary_key' => 'id',
             'per_page' => 10,
@@ -42,8 +42,8 @@ class AERP_Frontend_Adjustment_Table extends AERP_Frontend_Table
             'delete_adjustment_' . $item->id
         );
         return sprintf(
-            '<a href="%s" class="btn btn-sm btn-success mb-2 mb-md-0"><i class="fas fa-edit"></i></a> 
-         <a href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
+            '<a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Chỉnh sửa" href="%s" class="btn btn-sm btn-success mb-2 mb-md-0"><i class="fas fa-edit"></i></a> 
+         <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Xóa" href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
             esc_url($edit_url),
             esc_url($delete_url)
         );

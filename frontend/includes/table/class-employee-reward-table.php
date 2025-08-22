@@ -11,14 +11,14 @@ class AERP_Frontend_Employee_Reward_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_employee_rewards',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'month'     => 'Ngày thưởng',
                 'reward'    => 'Tên thưởng',
                 'amount'    => 'Số tiền',
                 'note'      => 'Ghi chú',
                 'actions'    => 'Thao tác',
             ],
-            'sortable_columns' => ['month', 'reward', 'amount'],
+            'sortable_columns' => ['id', 'month', 'reward', 'amount'],
             'searchable_columns' => ['reward', 'amount', 'note'],
             'primary_key' => 'id',
             'per_page' => 10,
@@ -41,8 +41,8 @@ class AERP_Frontend_Employee_Reward_Table extends AERP_Frontend_Table
             'delete_employee_reward_' . $item->id
         );
         return sprintf(
-            '<a href="%s" class="btn btn-sm btn-success mb-2 mb-md-0"><i class="fas fa-edit"></i></a> 
-         <a href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
+            '<a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Chỉnh sửa" href="%s" class="btn btn-sm btn-success mb-2 mb-md-0"><i class="fas fa-edit"></i></a> 
+         <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Xóa" href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
             esc_url($edit_url),
             esc_url($delete_url)
         );

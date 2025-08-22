@@ -33,6 +33,15 @@ ob_start();
         </a>
     </div>
 </div>
+<?php
+if (function_exists('aerp_render_breadcrumb')) {
+    aerp_render_breadcrumb([
+        ['label' => 'Trang chủ', 'url' => home_url('/aerp-dashboard'), 'icon' => 'fas fa-home'],
+        ['label' => 'Danh mục', 'url' => home_url('/aerp-categories')],
+        ['label' => 'Bảng lương tổng hợp']
+    ]);
+}
+?>
 <div class="card">
     <div class="card-body">
         <form id="aerp-customer-filter-form" class="row g-2 mb-3 aerp-table-ajax-form" data-table-wrapper="#aerp-salary-summary-table-wrapper" data-ajax-action="aerp_hrm_filter_salary_summary">

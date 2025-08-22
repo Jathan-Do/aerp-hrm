@@ -9,7 +9,7 @@ class AERP_Frontend_Discipline_Rule_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_disciplinary_rules',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'rule_name' => 'Lý do vi phạm',
                 'penalty_point' => 'Điểm trừ',
                 'fine_amount' => 'Tiền phạt',

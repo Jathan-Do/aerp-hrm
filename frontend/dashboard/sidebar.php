@@ -61,5 +61,4 @@ if (!function_exists('aerp_menu_active')) {
             <i class="fas fa-angle-double-left"></i>
         </button>  
     </div>
-
 </div>

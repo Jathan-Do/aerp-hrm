@@ -428,6 +428,11 @@ function aerp_hrm_seed_data()
         ['name' => 'product_edit', 'description' => 'Chỉnh sửa sản phẩm'],
         ['name' => 'product_view', 'description' => 'Xem sản phẩm'],
 
+        // Device
+        // ['name' => 'device_add', 'description' => 'Thêm thiết bị'],
+        ['name' => 'device_edit', 'description' => 'Chỉnh sửa thiết bị'],
+        ['name' => 'device_view', 'description' => 'Xem thiết bị'],
+
         // Warehouse
         ['name' => 'warehouse_add', 'description' => 'Thêm kho'],
         ['name' => 'warehouse_view', 'description' => 'Xem kho'],
@@ -500,6 +505,9 @@ function aerp_hrm_seed_data()
             'product_add',
             'product_edit',
             'product_view',
+            // 'device_add',
+            'device_edit',
+            'device_view',
             'warehouse_add',
             'warehouse_edit',
             'warehouse_view',
@@ -548,6 +556,9 @@ function aerp_hrm_seed_data()
             'product_add',
             'product_edit',
             'product_view',
+            // 'device_add',
+            'device_edit',
+            'device_view',
             'warehouse_add',
             'warehouse_view',
             'warehouse_edit', 

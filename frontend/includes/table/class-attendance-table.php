@@ -11,14 +11,14 @@ class AERP_Frontend_Attendance_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_attendance',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'work_date'   => 'Ngày chấm công',
                 'shift'       => 'Loại chấm công',
                 'work_ratio'  => 'Hệ số',
                 'note'        => 'Ghi chú',
-                'actions'     => 'Hành động',
+                'actions'     => 'Thao tác',
             ],
-            'sortable_columns' => ['work_date', 'work_ratio'],
+            'sortable_columns' => ['id', 'work_date', 'work_ratio'],
             'searchable_columns' => ['note', 'shift'],
             'primary_key' => 'id',
             'per_page' => 10,
@@ -41,8 +41,8 @@ class AERP_Frontend_Attendance_Table extends AERP_Frontend_Table
             'delete_attendance_' . $item->id
         );
         return sprintf(
-            '<a href="%s" class="btn btn-sm btn-success mb-2 mb-md-0"><i class="fas fa-edit"></i></a> 
-         <a href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
+            '<a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Chỉnh sửa" href="%s" class="btn btn-sm btn-success mb-2 mb-md-0"><i class="fas fa-edit"></i></a> 
+         <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Xóa" href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
             esc_url($edit_url),
             esc_url($delete_url)
         );

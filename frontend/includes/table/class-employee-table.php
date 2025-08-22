@@ -19,7 +19,7 @@ class AERP_Frontend_Employee_Table extends AERP_Frontend_Table
             'created_at'    => 'Ngày tạo',
         ];
         $sortable = [
-            // 'id',
+            'id',
             'full_name',
             'created_at',
             'status',
@@ -91,24 +91,29 @@ class AERP_Frontend_Employee_Table extends AERP_Frontend_Table
             $filters[] = "(off_date IS NOT NULL AND off_date <= %s)";
             $params[] = $this->filters['off_date_to'];
         }
-        // Filter theo chi nhánh của user hiện tại
+        // Nếu là admin thì không filter theo chi nhánh, được xem hết
         $current_user_id = get_current_user_id();
-        $current_user_branch = $wpdb->get_var($wpdb->prepare(
-            "SELECT work_location_id FROM {$wpdb->prefix}aerp_hrm_employees WHERE user_id = %d",
-            $current_user_id
-        ));
-        
-        if ($current_user_branch) {
-            // Lấy tất cả employee_id thuộc chi nhánh này
-            $branch_employee_ids = $wpdb->get_col($wpdb->prepare(
-                "SELECT id FROM {$wpdb->prefix}aerp_hrm_employees WHERE work_location_id = %d",
-                $current_user_branch
+        $is_admin = function_exists('aerp_user_has_role') && aerp_user_has_role($current_user_id, 'admin');
+
+        if (!$is_admin) {
+            // Filter theo chi nhánh của user hiện tại
+            $current_user_branch = $wpdb->get_var($wpdb->prepare(
+                "SELECT work_location_id FROM {$wpdb->prefix}aerp_hrm_employees WHERE user_id = %d",
+                $current_user_id
             ));
-            
-            if (!empty($branch_employee_ids)) {
-                $placeholders = implode(',', array_fill(0, count($branch_employee_ids), '%d'));
-                $filters[] = "id IN ($placeholders)";
-                $params = array_merge($params, $branch_employee_ids);
+
+            if ($current_user_branch) {
+                // Lấy tất cả employee_id thuộc chi nhánh này
+                $branch_employee_ids = $wpdb->get_col($wpdb->prepare(
+                    "SELECT id FROM {$wpdb->prefix}aerp_hrm_employees WHERE work_location_id = %d",
+                    $current_user_branch
+                ));
+
+                if (!empty($branch_employee_ids)) {
+                    $placeholders = implode(',', array_fill(0, count($branch_employee_ids), '%d'));
+                    $filters[] = "id IN ($placeholders)";
+                    $params = array_merge($params, $branch_employee_ids);
+                }
             }
         }
         return [$filters, $params];

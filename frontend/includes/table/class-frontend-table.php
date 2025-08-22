@@ -30,6 +30,9 @@ class AERP_Frontend_Table
     protected $ajax_action = '';
     protected $table_wrapper = '';
     protected $filters = [];
+    protected $per_page_option_key = '';
+    protected $min_per_page = 1;
+    protected $max_per_page = 1000;
 
     public function __construct($args = [])
     {
@@ -54,6 +57,9 @@ class AERP_Frontend_Table
             'show_cb' => true,
             'ajax_action' => '',
             'table_wrapper' => '',
+            'per_page_option_key' => '',
+            'min_per_page' => 1,
+            'max_per_page' => 1000,
         ];
 
         $args = wp_parse_args($args, $defaults);
@@ -70,8 +76,35 @@ class AERP_Frontend_Table
         // Set default sort column to first sortable column if available
         $default_sort_column = !empty($this->sortable_columns) ? $this->sortable_columns[0] : 'id';
         $this->sort_column = isset($_GET['orderby']) ? sanitize_text_field($_GET['orderby']) : $default_sort_column;
-        $this->sort_order = isset($_GET['order']) ? sanitize_text_field($_GET['order']) : 'asc';
+        $this->sort_order = isset($_GET['order']) ? sanitize_text_field($_GET['order']) : 'desc';
         $this->search_term = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+
+        // Resolve per-page preference (GET -> saved option -> default)
+        $user_id = get_current_user_id();
+        if (empty($this->per_page_option_key)) {
+            $key_base = !empty($this->table_name) ? sanitize_key($this->table_name) : 'aerp_table';
+            $this->per_page_option_key = 'aerp_per_page_' . $key_base;
+        }
+        $min_pp = intval($this->min_per_page);
+        $max_pp = intval($this->max_per_page);
+        if ($min_pp <= 0) {
+            $min_pp = 1;
+        }
+        if ($max_pp < $min_pp) {
+            $max_pp = $min_pp;
+        }
+        $requested_per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : (isset($_POST['per_page']) ? intval($_POST['per_page']) : 0);
+        if ($requested_per_page > 0) {
+            $this->per_page = max($min_pp, min($max_pp, $requested_per_page));
+            if ($user_id) {
+                update_user_option($user_id, $this->per_page_option_key, $this->per_page);
+            }
+        } else {
+            $saved_per_page = $user_id ? intval(get_user_option($this->per_page_option_key, $user_id)) : 0;
+            if ($saved_per_page > 0) {
+                $this->per_page = max($min_pp, min($max_pp, $saved_per_page));
+            }
+        }
     }
 
     /**
@@ -153,6 +186,25 @@ class AERP_Frontend_Table
         if (!empty($filters['paged'])) $this->current_page = $filters['paged'];
         if (!empty($filters['orderby'])) $this->sort_column = $filters['orderby'];
         if (!empty($filters['order'])) $this->sort_order = $filters['order'];
+        // Allow per_page override via filters (e.g., AJAX POST)
+        if (!empty($filters['per_page'])) {
+            $requested = intval($filters['per_page']);
+            $min_pp = intval($this->min_per_page);
+            $max_pp = intval($this->max_per_page);
+            if ($min_pp <= 0) {
+                $min_pp = 1;
+            }
+            if ($max_pp < $min_pp) {
+                $max_pp = $min_pp;
+            }
+            if ($requested > 0) {
+                $this->per_page = max($min_pp, min($max_pp, $requested));
+                $user_id = get_current_user_id();
+                if ($user_id) {
+                    update_user_option($user_id, $this->per_page_option_key, $this->per_page);
+                }
+            }
+        }
     }
 
     /**
@@ -280,25 +332,33 @@ class AERP_Frontend_Table
                 </form>
             <?php endif; ?>
 
-            <div class="d-flex justify-content-end position-relative mb-3">
-                <a href="#" id="aerp-column-options-button" class="btn btn-secondary action">Tùy chọn cột</a>
-                <div id="aerp-column-options-dropdown" class="dropdown-menu position-absolute bg-white border-1 border-secondary-subtle card-body" style="display:none; top: 50px">
-                    <form id="aerp-column-options-form">
-                        <?php wp_nonce_field('aerp_save_column_preferences', 'aerp_column_prefs_nonce'); ?>
-                        <input type="hidden" name="option_key" value="<?php echo esc_attr($this->hidden_columns_option_key); ?>" />
-                        <?php foreach ($this->columns as $key => $label): ?>
-                            <p>
-                                <label>
-                                    <input class="form-check-input border-secondary" type="checkbox" name="aerp_visible_columns[]" value="<?php echo esc_attr($key); ?>" <?php checked(in_array($key, $this->visible_columns)); ?> />
-                                    <?php echo esc_html($label); ?>
-                                </label>
-                            </p>
-                        <?php endforeach; ?>
-                        <p class="text-end mb-0">
-                            <button type="submit" class="btn btn-primary w-100">Lưu thay đổi</button>
-                        </p>
-                    </form>
+            <div class="d-flex justify-content-md-between justify-content-end mb-3 flex-wrap gap-2">
+                <form method="get" class="p-2 d-flex justify-content-end gap-2 aerp-table-search-form aerp-table-ajax-form align-items-center"
+                    data-table-wrapper="<?php echo esc_attr($this->table_wrapper); ?>"
+                    data-ajax-action="<?php echo esc_attr($this->ajax_action); ?>"
+                    onsubmit="return false;" style="border: 1px solid rgb(212, 216, 219); border-radius: 0.375rem;">
+                    <label for="per_page">Số lượng bản ghi:</label>
+                    <input type="number" name="per_page" class="form-control" style="width: 80px;" min="<?php echo esc_attr(intval($this->min_per_page)); ?>" max="<?php echo esc_attr(intval($this->max_per_page)); ?>" step="1" value="<?php echo esc_attr(intval($this->per_page)); ?>" title="Số lượng bản ghi/trang">
+                    <button type="submit" class="btn btn-primary">Áp dụng</button>
+                </form>
+                <div class="position-relative">
+                    <a href="#" id="aerp-column-options-button" class="btn btn-secondary action">Tùy chọn cột</a>
+                    <div id="aerp-column-options-dropdown" class="dropdown-menu position-absolute bg-white border-1 border-secondary-subtle card-body" style="display:none; top: 48px; right:0; max-height: 400px; width: 200px; overflow-y: auto">
+                        <div id="aerp-column-options-form">
+                            <?php wp_nonce_field('aerp_save_column_preferences', 'aerp_column_prefs_nonce'); ?>
+                            <input type="hidden" name="option_key" value="<?php echo esc_attr($this->hidden_columns_option_key); ?>" />
+                            <?php foreach ($this->columns as $key => $label): ?>
+                                <p>
+                                    <label style="cursor: pointer;">
+                                        <input class="form-check-input border-secondary" type="checkbox" name="aerp_visible_columns[]" value="<?php echo esc_attr($key); ?>" <?php checked(in_array($key, $this->visible_columns)); ?> />
+                                        <?php echo esc_html($label); ?>
+                                    </label>
+                                </p>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                 </div>
+
             </div>
 
             <!-- Bulk actions form and Table -->
@@ -327,7 +387,7 @@ class AERP_Frontend_Table
                                     <?php endif; ?>
                                     <?php foreach ($this->columns as $key => $label): ?>
                                         <?php if (in_array($key, $this->visible_columns)): ?>
-                                            <th scope="col" class="<?php echo in_array($key, $this->sortable_columns) ? 'sortable' : ''; ?>">
+                                            <th scope="col" class="<?php echo in_array($key, $this->sortable_columns) ? 'sortable' : ''; ?>" style="font-size: 14px;">
                                                 <?php if (in_array($key, $this->sortable_columns)): ?>
                                                     <a href="<?php echo esc_url($this->get_base_url(['orderby' => $key, 'order' => ($this->sort_column === $key && strtolower($this->sort_order) === 'asc') ? 'desc' : 'asc'])); ?>"
                                                         class="text-decoration-none aerp-table-sort"
@@ -484,14 +544,14 @@ class AERP_Frontend_Table
 
         if (in_array('edit', $this->actions)) {
             $actions['edit'] = sprintf(
-                '<a href="%s" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a>',
+                '<a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Chỉnh sửa" href="%s" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a>',
                 esc_url($this->get_base_url(['action' => 'edit', 'id' => $item->{$this->primary_key}]))
             );
         }
 
         if (in_array('delete', $this->actions)) {
             $actions['delete'] = sprintf(
-                '<a href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
+                '<a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Xóa" href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
                 esc_url($this->get_base_url(['action' => 'delete', 'id' => $item->{$this->primary_key}, '_wpnonce' => wp_create_nonce($this->nonce_action_prefix . $item->{$this->primary_key})]))
             );
         }
@@ -520,16 +580,29 @@ class AERP_Frontend_Table
 
         echo '<div class="tablenav-pages d-flex align-items-center justify-content-md-end justify-content-center">';
 
-        // Display total items
+        // Display current page info and total items
         if ($total_items > 0) {
-            echo '<span class="displaying-num">' . sprintf(_n('%s mục', '%s mục', $total_items, 'aerp-hrm'), number_format_i18n($total_items)) . '</span>';
+            $start_item = ($current_page - 1) * $this->per_page + 1;
+            $end_item = min($current_page * $this->per_page, $total_items);
+            echo '<span class="displaying-num">' . sprintf('Hiển thị %s-%s trên tổng %s mục', number_format_i18n($start_item), number_format_i18n($end_item), number_format_i18n($total_items)) . '</span>';
         }
-        // if ($total_pages > 10) {
+
         echo '<span class="pagination-links aerp-pagination">';
-        // }
 
+        // First page button
+        if ($current_page > 1) {
+            $first_page_url = $this->get_base_url(['paged' => 1]);
+            echo '<a href="' . esc_url($first_page_url) . '" class="page-numbers first-page" title="Trang đầu"><i class="fas fa-angle-double-left"></i></a>';
+        }
+
+        // Previous page button
+        if ($current_page > 1) {
+            $prev_page_url = $this->get_base_url(['paged' => $current_page - 1]);
+            echo '<a href="' . esc_url($prev_page_url) . '" class="page-numbers prev-page" title="Trang trước"><i class="fas fa-angle-left"></i></a>';
+        }
+
+        // Page numbers
         $big = 999999999; // need a large number to represent the page number placeholder
-
         $base_url_for_pagination = $this->get_base_url(['paged' => $big]);
 
         $pagination_args = array(
@@ -537,14 +610,51 @@ class AERP_Frontend_Table
             'format'    => '?paged=%#%',
             'current'   => $current_page,
             'total'     => $total_pages,
-            'prev_text' => '<i class="dashicons dashicons-arrow-left-alt2"></i>',
-            'next_text' => '<i class="dashicons dashicons-arrow-right-alt2"></i>',
+            'prev_text' => '',
+            'next_text' => '',
+            'show_all'  => false,
+            'end_size'  => 1,
+            'mid_size'  => 2,
+            'type'      => 'array', // Trả về array thay vì HTML
         );
 
-        echo paginate_links($pagination_args);
+        $page_links = paginate_links($pagination_args);
+
+        // Lọc bỏ các nút trống và chỉ hiển thị số trang
+        if (is_array($page_links)) {
+            foreach ($page_links as $link) {
+                // Chỉ hiển thị các link có nội dung (số trang)
+                if (strip_tags($link) !== '') {
+                    echo $link;
+                }
+            }
+        }
+
+        // Next page button
+        if ($current_page < $total_pages) {
+            $next_page_url = $this->get_base_url(['paged' => $current_page + 1]);
+            echo '<a href="' . esc_url($next_page_url) . '" class="page-numbers next-page" title="Trang sau"><i class="fas fa-angle-right"></i></a>';
+        }
+
+        // Last page button
+        if ($current_page < $total_pages) {
+            $last_page_url = $this->get_base_url(['paged' => $total_pages]);
+            echo '<a href="' . esc_url($last_page_url) . '" class="page-numbers last-page" title="Trang cuối"><i class="fas fa-angle-double-right"></i></a>';
+        }
 
         echo '</span>'; // .pagination-links
         echo '</div>'; // .tablenav-pages
+
+        // Thêm CSS để ẩn các nút trống và cải thiện giao diện
+        echo '<style>
+        .aerp-pagination .page-numbers:empty,
+        .aerp-pagination .page-numbers:blank,
+        .aerp-pagination a.page-numbers:not([href]) {
+            display: none !important;
+        }
+            #aerp-column-options-form >p:last-child{
+            margin-bottom:0;
+        </style>';
     }
 
     public function process_bulk_action()

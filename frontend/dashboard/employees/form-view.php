@@ -108,6 +108,15 @@ ob_start();
         </a>
     </div>
 </div>
+<?php
+if (function_exists('aerp_render_breadcrumb')) {
+    aerp_render_breadcrumb([
+        ['label' => 'Trang chủ', 'url' => home_url('/aerp-dashboard'), 'icon' => 'fas fa-home'],
+        ['label' => 'Quản lý nhân viên', 'url' => home_url('/aerp-hrm-employees')],
+        ['label' => 'Chi tiết nhân viên', 'url' => home_url('/aerp-hrm-employees/?action=view&id=' . $employee_id . '&section=adjustment')]
+    ]);
+}
+?>
 <div class="aerp-tabs" id="aerp-tabs">
     <a href="<?= home_url("/aerp-hrm-employees/?action=view&id=$employee_id&section=detail-view") ?>" class="aerp-tab<?= $section === 'detail-view' ? ' active' : '' ?>" data-section="detail-view">Chi tiết nhân viên</a>
     <a href="<?= home_url("/aerp-hrm-employees/?action=view&id=$employee_id&section=salary") ?>" class="aerp-tab<?= $section === 'salary' ? ' active' : '' ?>" data-section="salary">Lương</a>

@@ -8,7 +8,7 @@ class AERP_Frontend_Permission_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_permissions',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'name' => 'Tên quyền',
                 'description' => 'Mô tả'
             ],

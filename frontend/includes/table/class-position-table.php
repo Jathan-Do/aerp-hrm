@@ -9,7 +9,7 @@ class AERP_Frontend_Position_Table extends AERP_Frontend_Table
         parent::__construct([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_positions',
             'columns' => [
-                'id' => 'ID',
+                // 'id' => 'ID',
                 'name' => 'Tên chức vụ',
                 'description' => 'Mô tả',
                 'created_at' => 'Ngày tạo'

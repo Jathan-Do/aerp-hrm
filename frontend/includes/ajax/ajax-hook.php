@@ -474,7 +474,7 @@ add_action('wp_ajax_aerp_order_search_employees', function() {
             'id' => $employee->id,
             'text' => $display_name,
         ];
-        if (!$q && ++$count >= 20) break;
+        // if (!$q && ++$count >= 20) break;
     }
     wp_send_json($results);
 });

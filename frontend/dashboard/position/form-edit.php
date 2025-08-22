@@ -38,7 +38,16 @@ ob_start();
         </a>
     </div>
 </div>
-
+<?php
+if (function_exists('aerp_render_breadcrumb')) {
+    aerp_render_breadcrumb([
+        ['label' => 'Trang chủ', 'url' => home_url('/aerp-dashboard'), 'icon' => 'fas fa-home'],
+        ['label' => 'Danh mục', 'url' => home_url('/aerp-categories')],
+        ['label' => 'Quản lý chức vụ', 'url' => home_url('/aerp-position')],
+        ['label' => 'Cập nhật chức vụ']
+    ]);
+}
+?>
 <div class="card">
     <div class="card-body">
         <form method="post">

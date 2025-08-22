@@ -17,7 +17,7 @@ class AERP_Frontend_Advance_Table extends AERP_Frontend_Table
             'actions'      => 'Thao tác',
         ];
 
-        $sortable = ['advance_date', 'amount', 'created_at'];
+        $sortable = ['id', 'advance_date', 'amount', 'created_at'];
         $searchable = ['amount'];
 
         parent::__construct(array_merge([
@@ -48,8 +48,8 @@ class AERP_Frontend_Advance_Table extends AERP_Frontend_Table
         );
 
         return sprintf(
-            '<a href="%s" class="btn btn-sm btn-success mb-2 mb-md-0"><i class="fas fa-edit"></i></a> 
-         <a href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
+            '<a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Chỉnh sửa" href="%s" class="btn btn-sm btn-success mb-2 mb-md-0"><i class="fas fa-edit"></i></a> 
+         <a data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Xóa" href="%s" class="btn btn-sm btn-danger" onclick="return confirm(\'Bạn có chắc muốn xóa?\')"><i class="fas fa-trash"></i></a>',
             esc_url($edit_url),
             esc_url($delete_url)
         );
