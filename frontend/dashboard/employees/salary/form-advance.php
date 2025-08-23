@@ -62,15 +62,15 @@ if (function_exists('aerp_render_breadcrumb')) {
 
             <div class="mb-3">
                 <label class="form-label">Nhân viên</label>
-                <input type="text" class="form-control" value="<?= esc_html($employee->full_name) ?>" disabled>
+                <input type="text" class="form-control shadow-sm" value="<?= esc_html($employee->full_name) ?>" disabled>
             </div>
             <div class="mb-3">
                 <label class="form-label">Số tiền tạm ứng (VND)</label>
-                <input type="number" class="form-control" name="amount" value="<?= esc_attr($advance->amount ?? '') ?>" required>
+                <input type="number" class="form-control shadow-sm" name="amount" value="<?= esc_attr($advance->amount ?? '') ?>" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Ngày ứng</label>
-                <input type="date" class="form-control bg-body" name="advance_date" value="<?= esc_attr($advance->advance_date ?? date('Y-m-d')) ?>" required>
+                <input type="date" class="form-control shadow-sm bg-body" name="advance_date" value="<?= esc_attr($advance->advance_date ?? date('Y-m-d')) ?>" required>
             </div>
 
             <div class="d-flex gap-2">

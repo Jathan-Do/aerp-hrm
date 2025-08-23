@@ -45,15 +45,15 @@ if (function_exists('aerp_render_breadcrumb')) {
             <?php wp_nonce_field('aerp_save_discipline_rule_action', 'aerp_save_discipline_rule_nonce'); ?>
             <div class="mb-3">
                 <label for="rule_name" class="form-label">Tên quy tắc</label>
-                <input type="text" class="form-control" id="rule_name" name="rule_name" required>
+                <input type="text" class="form-control shadow-sm" id="rule_name" name="rule_name" required>
             </div>
             <div class="mb-3">
                 <label for="penalty_point" class="form-label">Điểm phạt</label>
-                <input type="number" class="form-control" id="penalty_point" name="penalty_point" min="0" value="0">
+                <input type="number" class="form-control shadow-sm" id="penalty_point" name="penalty_point" min="0" value="0">
             </div>
             <div class="mb-3">
                 <label for="fine_amount" class="form-label">Tiền phạt</label>
-                <input type="number" class="form-control" id="fine_amount" name="fine_amount" min="0" value="0">
+                <input type="number" class="form-control shadow-sm" id="fine_amount" name="fine_amount" min="0" value="0">
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_discipline_rule" class="btn btn-primary">Thêm mới</button>

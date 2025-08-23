@@ -54,20 +54,20 @@ if (function_exists('aerp_render_breadcrumb')) {
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Tiêu đề công việc</label>
-                    <input type="text" name="task_title" required class="form-control">
+                    <input type="text" name="task_title" required class="form-control shadow-sm">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Hạn chót</label>
-                    <input type="datetime-local" name="deadline" required class="form-control">
+                    <input type="datetime-local" name="deadline" required class="form-control shadow-sm">
                 </div>
                 
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Điểm KPI</label>
-                    <input type="number" name="score" min="0" max="10" class="form-control">
+                    <input type="number" name="score" min="0" max="10" class="form-control shadow-sm">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Trạng thái</label>
-                    <select name="status" class="form-select">
+                    <select name="status" class="form-select shadow-sm">
                         <option value="assigned">Đã giao</option>
                         <option value="done">Hoàn thành</option>
                         <option value="failed">Thất bại</option>
@@ -75,7 +75,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 </div>
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Mô tả</label>
-                    <textarea name="task_desc" class="form-control" rows="3"></textarea>
+                    <textarea name="task_desc" class="form-control shadow-sm" rows="3"></textarea>
                 </div>
             </div>
             <input type="hidden" name="employee_id" value="<?= esc_attr($employee_id) ?>">

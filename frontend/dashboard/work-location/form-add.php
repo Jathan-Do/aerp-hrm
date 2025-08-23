@@ -38,11 +38,11 @@ if (function_exists('aerp_render_breadcrumb')) {
             <?php wp_nonce_field('aerp_save_work_location_action', 'aerp_save_work_location_nonce'); ?>
             <div class="mb-3">
                 <label for="work_location_name" class="form-label">Tên chi nhánh</label>
-                <input type="text" class="form-control" id="work_location_name" name="work_location_name" required>
+                <input type="text" class="form-control shadow-sm" id="work_location_name" name="work_location_name" required>
             </div>
             <div class="mb-3">
                 <label for="work_location_desc" class="form-label">Mô tả</label>
-                <textarea class="form-control" id="work_location_desc" name="work_location_desc" rows="3"></textarea>
+                <textarea class="form-control shadow-sm" id="work_location_desc" name="work_location_desc" rows="3"></textarea>
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_work_location" class="btn btn-primary">Thêm mới</button>

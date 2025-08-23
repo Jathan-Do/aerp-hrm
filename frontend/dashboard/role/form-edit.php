@@ -59,14 +59,14 @@ ob_start();
 
             <div class="mb-3">
                 <label for="role_name" class="form-label">Tên nhóm quyền</label>
-                <input type="text" class="form-control" id="role_name" name="role_name"
+                <input type="text" class="form-control shadow-sm" id="role_name" name="role_name"
                        value="<?php echo esc_attr($editing->name); ?>"
                        required <?php echo $is_system_role ? 'readonly' : ''; ?>>
             </div>
 
             <div class="mb-3">
                 <label for="role_desc" class="form-label">Mô tả</label>
-                <textarea class="form-control" id="role_desc" name="role_desc" rows="3"
+                <textarea class="form-control shadow-sm" id="role_desc" name="role_desc" rows="3"
                           <?php echo $is_system_role ? 'readonly' : ''; ?>><?php echo esc_textarea($editing->description); ?></textarea>
             </div>
 

@@ -48,7 +48,7 @@ if (function_exists('aerp_render_breadcrumb')) {
             <div class="col-12 col-md-2 mb-2">
                 <input type="hidden" name="aerp_salary_summary" value="1">
                 <label class="orm-label mb-1" for="salary_month">Tháng:</label>
-                <input class="form-control" type="month" name="salary_month" value="<?= esc_attr($month) ?>">
+                <input class="form-control shadow-sm" type="month" name="salary_month" value="<?= esc_attr($month) ?>">
             </div>
             <div class="col-12 col-md-1 d-flex align-items-end mb-2">
                 <button type="submit" class="btn btn-primary w-100">Lọc</button>

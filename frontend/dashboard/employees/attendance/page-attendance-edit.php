@@ -56,27 +56,27 @@ if (function_exists('aerp_render_breadcrumb')) {
             <div class="row">
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Ngày áp dụng</label>
-                    <input type="date" name="work_date" required class="form-control bg-body" value="<?= esc_attr(date('Y-m-d', strtotime($attendance->work_date))) ?>">
+                    <input type="date" name="work_date" required class="form-control shadow-sm bg-body" value="<?= esc_attr(date('Y-m-d', strtotime($attendance->work_date))) ?>">
                 </div>
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Loại chấm công</label>
-                    <select class="form-select" name="shift_type" id="shift_type" onchange="onShiftTypeChange()" required>
+                    <select class="form-select shadow-sm" name="shift_type" id="shift_type" onchange="onShiftTypeChange()" required>
                         <option value="off" <?= $attendance->shift === 'off' ? 'selected' : '' ?>>Nghỉ (OFF)</option>
                         <option value="ot" <?= $attendance->shift === 'ot' ? 'selected' : '' ?>>Tăng ca (OT)</option>
                     </select>
                 </div>
                 <div class="col-md-12 mb-3" id="work_ratio_row">
                     <label class="form-label">Hệ số công</label>
-                    <select class="form-select" name="work_ratio_select" id="work_ratio_select" onchange="onWorkRatioSelectChange()">
+                    <select class="form-select shadow-sm" name="work_ratio_select" id="work_ratio_select" onchange="onWorkRatioSelectChange()">
                         <option value="1" <?= ($attendance->work_ratio == 1) ? 'selected' : '' ?>>1.0</option>
                         <option value="1.5" <?= ($attendance->work_ratio == 1.5) ? 'selected' : '' ?>>1.5</option>
                         <option value="custom" <?= ($attendance->work_ratio != 1 && $attendance->work_ratio != 1.5 && $attendance->work_ratio != 0) ? 'selected' : '' ?>>Tự nhập</option>
                     </select>
-                    <input type="number" step="0.1" min="0" class="form-control mt-2" name="work_ratio" id="work_ratio" value="<?= esc_attr($attendance->work_ratio) ?>" style="width:80px;display:none;">
+                    <input type="number" step="0.1" min="0" class="form-control shadow-sm mt-2" name="work_ratio" id="work_ratio" value="<?= esc_attr($attendance->work_ratio) ?>" style="width:80px;display:none;">
                 </div>
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Ghi chú</label>
-                    <input class="form-control" type="text" name="note" value="<?= esc_attr($attendance->note) ?>" placeholder="(Tùy chọn)">
+                    <input class="form-control shadow-sm" type="text" name="note" value="<?= esc_attr($attendance->note) ?>" placeholder="(Tùy chọn)">
                 </div>
                 <div class="d-flex gap-2">
                     <button type="submit" name="aerp_save_attendance" class="btn btn-primary">Cập nhật chấm công</button>

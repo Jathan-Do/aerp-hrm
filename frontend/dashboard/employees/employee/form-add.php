@@ -82,15 +82,15 @@ if (function_exists('aerp_render_breadcrumb')) {
                 <h5>1. Thông tin cá nhân</h5>
                 <div class="col-md-3 mb-3">
                     <label for="employee_code" class="form-label">Mã nhân viên</label>
-                    <input type="text" class="form-control" id="employee_code" name="employee_code">
+                    <input type="text" class="form-control shadow-sm" id="employee_code" name="employee_code">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="full_name" class="form-label">Họ và tên</label>
-                    <input type="text" class="form-control" id="full_name" name="full_name" required>
+                    <input type="text" class="form-control shadow-sm" id="full_name" name="full_name" required>
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="gender" class="form-label">Giới tính</label>
-                    <select class="form-select" id="gender" name="gender">
+                    <select class="form-select shadow-sm" id="gender" name="gender">
                         <option value="male">Nam</option>
                         <option value="female">Nữ</option>
                         <option value="other">Khác</option>
@@ -98,59 +98,59 @@ if (function_exists('aerp_render_breadcrumb')) {
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="birthday" class="form-label">Ngày sinh</label>
-                    <input type="date" class="form-control bg-body" id="birthday" name="birthday">
+                    <input type="date" class="form-control shadow-sm bg-body" id="birthday" name="birthday">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="cccd_number" class="form-label">Số CCCD</label>
-                    <input type="text" class="form-control" id="cccd_number" name="cccd_number">
+                    <input type="text" class="form-control shadow-sm" id="cccd_number" name="cccd_number">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="cccd_issued_date" class="form-label">Ngày cấp CCCD</label>
-                    <input type="date" class="form-control bg-body" id="cccd_issued_date" name="cccd_issued_date">
+                    <input type="date" class="form-control shadow-sm bg-body" id="cccd_issued_date" name="cccd_issued_date">
                 </div>
 
                 <div class="col-md-3 mb-3">
                     <label for="bank_account" class="form-label">Số tài khoản</label>
-                    <input type="text" class="form-control" id="bank_account" name="bank_account">
+                    <input type="text" class="form-control shadow-sm" id="bank_account" name="bank_account">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="bank_name" class="form-label">Tên ngân hàng</label>
-                    <input type="text" class="form-control" id="bank_name" name="bank_name">
+                    <input type="text" class="form-control shadow-sm" id="bank_name" name="bank_name">
                 </div>
 
                 <div class="col-md-3 mb-3">
                     <label for="phone_number" class="form-label">Số điện thoại</label>
-                    <input type="text" class="form-control" id="phone_number" name="phone_number">
+                    <input type="text" class="form-control shadow-sm" id="phone_number" name="phone_number">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email">
+                    <input type="email" class="form-control shadow-sm" id="email" name="email">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="address_permanent" class="form-label">Địa chỉ thường trú</label>
-                    <textarea rows="1" class="form-control" id="address_permanent" name="address_permanent"></textarea>
+                    <textarea rows="1" class="form-control shadow-sm" id="address_permanent" name="address_permanent"></textarea>
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="address_current" class="form-label">Địa chỉ hiện tại</label>
-                    <textarea rows="1" class="form-control" id="address_current" name="address_current"></textarea>
+                    <textarea rows="1" class="form-control shadow-sm" id="address_current" name="address_current"></textarea>
                 </div>
                 <h5>2. Thân nhân</h5>
                 <div class="col-md-3 mb-3">
                     <label for="relative_name" class="form-label">Họ tên người thân</label>
-                    <input type="text" class="form-control" id="relative_name" name="relative_name">
+                    <input type="text" class="form-control shadow-sm" id="relative_name" name="relative_name">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="relative_phone" class="form-label">Số điện thoại người thân</label>
-                    <input type="text" class="form-control" id="relative_phone" name="relative_phone">
+                    <input type="text" class="form-control shadow-sm" id="relative_phone" name="relative_phone">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="relative_relationship" class="form-label">Quan hệ</label>
-                    <input type="text" class="form-control" id="relative_relationship" name="relative_relationship">
+                    <input type="text" class="form-control shadow-sm" id="relative_relationship" name="relative_relationship">
                 </div>
                 <h5>3. Công việc</h5>
                 <div class="col-md-3 mb-3">
                     <label for="department_id" class="form-label">Phòng ban</label>
-                    <select class="form-select" id="department_id" name="department_id">
+                    <select class="form-select shadow-sm" id="department_id" name="department_id">
                         <?php
                         $departments = apply_filters('aerp_get_departments', []);
                         aerp_safe_select_options($departments, '', 'id', 'name', true);
@@ -159,7 +159,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="position_id" class="form-label">Chức vụ</label>
-                    <select class="form-select" id="position_id" name="position_id">
+                    <select class="form-select shadow-sm" id="position_id" name="position_id">
                         <?php
                         $positions = apply_filters('aerp_get_positions', []);
                         aerp_safe_select_options($positions, '', 'id', 'name', true);
@@ -168,7 +168,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="work_location_id" class="form-label">Chi nhánh</label>
-                    <select class="form-select" id="work_location_id" name="work_location_id">
+                    <select class="form-select shadow-sm" id="work_location_id" name="work_location_id">
                         <?php
                         $work_locations = apply_filters('aerp_get_work_locations', []);
                         aerp_safe_select_options($work_locations, '', 'id', 'name', true);
@@ -177,7 +177,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="status" class="form-label">Trạng thái</label>
-                    <select class="form-select" id="status" name="status">
+                    <select class="form-select shadow-sm" id="status" name="status">
                         <option value="active">Đang làm</option>
                         <option value="inactive">Tạm nghỉ</option>
                         <option value="resigned">Đã nghỉ</option>
@@ -185,15 +185,15 @@ if (function_exists('aerp_render_breadcrumb')) {
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="join_date" class="form-label">Ngày vào làm</label>
-                    <input type="date" class="form-control bg-body" id="join_date" name="join_date">
+                    <input type="date" class="form-control shadow-sm bg-body" id="join_date" name="join_date">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="off_date" class="form-label">Ngày nghỉ việc</label>
-                    <input type="date" class="form-control bg-body" id="off_date" name="off_date">
+                    <input type="date" class="form-control shadow-sm bg-body" id="off_date" name="off_date">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="user_id" class="form-label">User WordPress</label>
-                    <select class="form-select" id="user_id" name="user_id">
+                    <select class="form-select shadow-sm" id="user_id" name="user_id">
                         <option value="0">Không liên kết</option>
                         <?php
                         $users = get_users();
@@ -286,7 +286,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 </div>
                 <div class="col-12 mb-3">
                     <label for="note" class="form-label">Ghi chú</label>
-                    <textarea class="form-control" id="note" name="note" rows="2"></textarea>
+                    <textarea class="form-control shadow-sm" id="note" name="note" rows="2"></textarea>
                 </div>
             </div>
             <div class="d-flex gap-2">

@@ -68,7 +68,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Loại hồ sơ</label>
-                        <select name="attachment_type" required class="form-select">
+                        <select name="attachment_type" required class="form-select shadow-sm">
                             <option value="contract" <?= selected($record->attachment_type, 'contract') ?>>Hợp đồng</option>
                             <option value="cccd" <?= selected($record->attachment_type, 'cccd') ?>>CCCD</option>
                             <option value="degree" <?= selected($record->attachment_type, 'degree') ?>>Bằng cấp</option>
@@ -82,7 +82,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                     </div> -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Chọn file mới</label>
-                        <input class="form-control" type="file" name="attachment_file">
+                        <input class="form-control shadow-sm" type="file" name="attachment_file">
                         <p class="description">
                             File hiện tại:
                             <a href="<?= esc_url($record->file_url) ?>" target="_blank"><?= esc_html($record->file_name) ?></a>
@@ -106,7 +106,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Loại hồ sơ</label>
-                        <select name="attachment_type" required class="form-select">
+                        <select name="attachment_type" required class="form-select shadow-sm">
                             <option value="contract" <?= selected($record->attachment_type, 'contract') ?>>Hợp đồng</option>
                             <option value="cccd" <?= selected($record->attachment_type, 'cccd') ?>>CCCD</option>
                             <option value="degree" <?= selected($record->attachment_type, 'degree') ?>>Bằng cấp</option>
@@ -115,16 +115,16 @@ if (function_exists('aerp_render_breadcrumb')) {
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Tên file</label>
-                        <input id="file_name" type="text" name="file_name" class="form-control" value="<?= esc_attr($record->file_name) ?>" required>
+                        <input id="file_name" type="text" name="file_name" class="form-control shadow-sm" value="<?= esc_attr($record->file_name) ?>" required>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">URL file</label>
-                        <input id="file_url" type="url" name="file_url" class="form-control" value="<?= esc_url($record->file_url) ?>" required>
+                        <input id="file_url" type="url" name="file_url" class="form-control shadow-sm" value="<?= esc_url($record->file_url) ?>" required>
                         <button type="button" class="mt-2 btn btn-outline-primary" id="select_file">Chọn từ thư viện</button>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Định dạng</label>
-                        <input id="file_type" type="text" name="file_type" class="form-control" value="<?= esc_attr($record->file_type) ?>">
+                        <input id="file_type" type="text" name="file_type" class="form-control shadow-sm" value="<?= esc_attr($record->file_type) ?>">
                     </div>
                 </div>
                 <div class="d-flex gap-2">

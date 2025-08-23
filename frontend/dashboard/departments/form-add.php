@@ -45,11 +45,11 @@ if (function_exists('aerp_render_breadcrumb')) {
             <?php wp_nonce_field('aerp_save_department_action', 'aerp_save_department_nonce'); ?>
             <div class="mb-3">
                 <label for="department_name" class="form-label">Tên phòng ban</label>
-                <input type="text" class="form-control" id="department_name" name="department_name" required>
+                <input type="text" class="form-control shadow-sm" id="department_name" name="department_name" required>
             </div>
             <div class="mb-3">
                 <label for="department_desc" class="form-label">Mô tả</label>
-                <textarea class="form-control" id="department_desc" name="department_desc" rows="3"></textarea>
+                <textarea class="form-control shadow-sm" id="department_desc" name="department_desc" rows="3"></textarea>
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_department" class="btn btn-primary">Thêm mới</button>

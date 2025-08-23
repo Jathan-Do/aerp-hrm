@@ -53,42 +53,42 @@ if (function_exists('aerp_render_breadcrumb')) {
             <input type="hidden" name="company_id" value="<?php echo esc_attr($edit_id); ?>">
             <div class="mb-3">
                 <label for="company_name" class="form-label">Tên công ty</label>
-                <input type="text" class="form-control" id="company_name" name="company_name"
+                <input type="text" class="form-control shadow-sm" id="company_name" name="company_name"
                     value="<?php echo esc_attr($editing->company_name); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="tax_code" class="form-label">Mã số thuế</label>
-                <input type="text" class="form-control" id="tax_code" name="tax_code"
+                <input type="text" class="form-control shadow-sm" id="tax_code" name="tax_code"
                     value="<?php echo esc_attr($editing->tax_code); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="phone" class="form-label">Số điện thoại</label>
-                <input type="text" class="form-control" id="phone" name="phone"
+                <input type="text" class="form-control shadow-sm" id="phone" name="phone"
                     value="<?php echo esc_attr($editing->phone); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email"
+                <input type="email" class="form-control shadow-sm" id="email" name="email"
                     value="<?php echo esc_attr($editing->email); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="website" class="form-label">Website</label>
-                <input type="url" class="form-control" id="website" name="website"
+                <input type="url" class="form-control shadow-sm" id="website" name="website"
                     value="<?php echo esc_attr($editing->website); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="address" class="form-label">Địa chỉ</label>
-                <input type="text" class="form-control" id="address" name="address"
+                <input type="text" class="form-control shadow-sm" id="address" name="address"
                     value="<?php echo esc_attr($editing->address); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="logo_url" class="form-label">Logo URL</label>
-                <input type="url" class="form-control" id="logo_url" name="logo_url"
+                <input type="url" class="form-control shadow-sm" id="logo_url" name="logo_url"
                     value="<?php echo esc_attr($editing->logo_url); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="work_saturday" class="form-label">Làm việc thứ 7</label>
-                <select class="form-select" name="work_saturday" id="work_saturday">
+                <select class="form-select shadow-sm" name="work_saturday" id="work_saturday">
                     <option value="off" <?= ($editing->work_saturday ?? 'off') === 'off' ? 'selected' : '' ?>>Nghỉ thứ 7</option>
                     <option value="full" <?= ($editing->work_saturday ?? 'off') === 'full' ? 'selected' : '' ?>>Làm cả ngày thứ 7</option>
                     <option value="half" <?= ($editing->work_saturday ?? 'off') === 'half' ? 'selected' : '' ?>>Làm nửa ngày thứ 7</option>

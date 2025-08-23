@@ -64,7 +64,7 @@ $table->process_bulk_action();
         </div>
         <form method="post" class="mb-3 d-flex gap-2 flex-md-row flex-column">
             <?php wp_nonce_field('aerp_salary_action', 'aerp_salary_nonce'); ?>
-            <input class="form-control w-auto" type="month" name="salary_month" value="<?= esc_attr($selected_month ?: date('Y-m')) ?>" required>
+            <input class="form-control shadow-sm w-auto" type="month" name="salary_month" value="<?= esc_attr($selected_month ?: date('Y-m')) ?>" required>
             <?php if (aerp_user_has_permission($user_id, 'salary_calculate')): ?>
                 <button type="submit" name="aerp_generate_salary" class="btn btn-success">Tính lương tháng này</button>
             <?php endif; ?>
@@ -75,7 +75,7 @@ $table->process_bulk_action();
         <form method="post" action="<?= home_url('/aerp-salary/export') ?>" class="mt-3 d-flex gap-2">
             <?php wp_nonce_field('aerp_export_excel', 'aerp_export_nonce'); ?>
             <input type="hidden" name="employee_id" value="<?= esc_attr($employee_id) ?>">
-            <input class="form-control w-auto" type="month" name="salary_month" value="<?= esc_attr($selected_month ?: date('Y-m')) ?>">
+            <input class="form-control shadow-sm w-auto" type="month" name="salary_month" value="<?= esc_attr($selected_month ?: date('Y-m')) ?>">
             <button type="submit" name="aerp_export_excel" class="btn btn-outline-primary">📥 Xuất Excel</button>
         </form>
     </div>

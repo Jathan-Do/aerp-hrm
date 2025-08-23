@@ -47,7 +47,7 @@ $table->process_bulk_action();
         <form id="aerp-discipline-log-filter-form" class="row g-2 mb-3 aerp-table-ajax-form" data-table-wrapper="#aerp-discipline-log-table-wrapper" data-ajax-action="aerp_hrm_filter_discipline_log">
             <div class="col-12 col-md-2 mb-2">
                 <label for="filter-month" class="form-label mb-1">Tháng</label>
-                <input class="form-control" id="filter-month" type="month" name="violation_month" value="<?= esc_attr($month) ?>">
+                <input class="form-control shadow-sm" id="filter-month" type="month" name="violation_month" value="<?= esc_attr($month) ?>">
             </div>
             <div class="col-12 col-md-1 d-flex align-items-end mb-2">
                 <button type="submit" class="btn btn-primary w-100">Lọc</button>

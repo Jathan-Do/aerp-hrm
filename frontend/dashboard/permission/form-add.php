@@ -26,11 +26,11 @@ ob_start();
             <?php wp_nonce_field('aerp_save_permission_action', 'aerp_save_permission_nonce'); ?>
             <div class="mb-3">
                 <label for="permission_name" class="form-label">Tên quyền</label>
-                <input type="text" class="form-control" id="permission_name" name="permission_name" required>
+                <input type="text" class="form-control shadow-sm" id="permission_name" name="permission_name" required>
             </div>
             <div class="mb-3">
                 <label for="permission_desc" class="form-label">Mô tả</label>
-                <textarea class="form-control" id="permission_desc" name="permission_desc" rows="3"></textarea>
+                <textarea class="form-control shadow-sm" id="permission_desc" name="permission_desc" rows="3"></textarea>
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_permission" class="btn btn-primary">Thêm mới</button>

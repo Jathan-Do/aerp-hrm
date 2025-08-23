@@ -327,7 +327,7 @@ class AERP_Frontend_Table
                     }
                     ?>
                     <div class="input-group" style="justify-self: end;">
-                        <input type="search" name="s" class="form-control aerp-table-search-input" placeholder="Tìm kiếm..." value="<?php echo esc_attr($this->search_term); ?>">
+                        <input type="search" name="s" class="form-control shadow-sm aerp-table-search-input" placeholder="Tìm kiếm..." value="<?php echo esc_attr($this->search_term); ?>">
                     </div>
                 </form>
             <?php endif; ?>
@@ -338,7 +338,7 @@ class AERP_Frontend_Table
                     data-ajax-action="<?php echo esc_attr($this->ajax_action); ?>"
                     onsubmit="return false;" style="border: 1px solid rgb(212, 216, 219); border-radius: 0.375rem;">
                     <label for="per_page">Số lượng bản ghi:</label>
-                    <input type="number" name="per_page" class="form-control" style="width: 80px;" min="<?php echo esc_attr(intval($this->min_per_page)); ?>" max="<?php echo esc_attr(intval($this->max_per_page)); ?>" step="1" value="<?php echo esc_attr(intval($this->per_page)); ?>" title="Số lượng bản ghi/trang">
+                    <input type="number" name="per_page" class="form-control shadow-sm" style="width: 80px;" min="<?php echo esc_attr(intval($this->min_per_page)); ?>" max="<?php echo esc_attr(intval($this->max_per_page)); ?>" step="1" value="<?php echo esc_attr(intval($this->per_page)); ?>" title="Số lượng bản ghi/trang">
                     <button type="submit" class="btn btn-primary">Áp dụng</button>
                 </form>
                 <div class="position-relative">
@@ -366,7 +366,7 @@ class AERP_Frontend_Table
                 <form method="post" class="mb-3">
                     <?php wp_nonce_field($this->bulk_action_nonce_key, 'aerp_bulk_nonce'); ?>
                     <div class="d-flex gap-2 align-items-center mb-3 justify-content-md-start justify-content-between">
-                        <select name="bulk_action" class="form-select" style="width: auto;">
+                        <select name="bulk_action" class="form-select shadow-sm" style="width: auto;">
                             <option value="">Hành động hàng loạt</option>
                             <?php foreach ($this->bulk_actions as $action): ?>
                                 <option value="<?php echo esc_attr($action); ?>"><?php echo esc_html(ucfirst($action)); ?></option>
@@ -407,7 +407,7 @@ class AERP_Frontend_Table
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                     <?php if (!empty($this->actions)): ?>
-                                        <th class="text-center" style="width: 100px;">Thao tác</th>
+                                        <th class="text-center" style="width: 100px; font-size: 14px;">Thao tác</th>
                                     <?php endif; ?>
                                 </tr>
                             </thead>
@@ -465,7 +465,7 @@ class AERP_Frontend_Table
                             <tr>
                                 <?php foreach ($this->columns as $key => $label): ?>
                                     <?php if (in_array($key, $this->visible_columns)): ?>
-                                        <th scope="col" class="<?php echo in_array($key, $this->sortable_columns) ? 'sortable' : ''; ?>">
+                                        <th scope="col" class="<?php echo in_array($key, $this->sortable_columns) ? 'sortable' : ''; ?>"  style="font-size: 14px;">
                                             <?php if (in_array($key, $this->sortable_columns)): ?>
                                                 <a href="<?php echo esc_url($this->get_base_url(['orderby' => $key, 'order' => ($this->sort_column === $key && strtolower($this->sort_order) === 'asc') ? 'desc' : 'asc'])); ?>"
                                                     class="text-decoration-none aerp-table-sort"
@@ -485,7 +485,7 @@ class AERP_Frontend_Table
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                                 <?php if (!empty($this->actions)): ?>
-                                    <th class="text-center" style="width: 100px;">Thao tác</th>
+                                    <th class="text-center" style="width: 100px; font-size: 14px;">Thao tác</th>
                                 <?php endif; ?>
                             </tr>
                         </thead>

@@ -51,11 +51,11 @@ $table->process_bulk_action();
         <form id="aerp-adjustment-filter-form" class="row g-2 mb-3 aerp-table-ajax-form" data-table-wrapper="#aerp-adjustment-table-wrapper" data-ajax-action="aerp_hrm_filter_adjustment">
             <div class="col-12 col-md-2 mb-2">
                 <label for="filter-month" class="form-label mb-1">Tháng</label>
-                <input class="form-control" id="filter-month" type="month" name="month" value="<?= esc_attr($month) ?>">
+                <input class="form-control shadow-sm" id="filter-month" type="month" name="month" value="<?= esc_attr($month) ?>">
             </div>
             <div class="col-12 col-md-2 mb-2">
                 <label for="filter-type" class="form-label mb-1">Loại</label>
-                <select class="form-select" id="filter-type" name="type">
+                <select class="form-select shadow-sm" id="filter-type" name="type">
                     <option value="">-- Tất cả --</option>
                     <option value="reward" <?= $type === 'reward' ? 'selected' : '' ?>>Thưởng</option>
                     <option value="fine" <?= $type === 'fine' ? 'selected' : '' ?>>Phạt</option>

@@ -44,11 +44,11 @@ $table->process_bulk_action();
         <form id="aerp-attendance-filter-form" class="row g-2 mb-3 aerp-table-ajax-form" data-table-wrapper="#aerp-attendance-table-wrapper" data-ajax-action="aerp_hrm_filter_attendance">
             <div class="col-12 col-md-2 mb-2">
                 <label for="filter-work-date" class="form-label mb-1">Tháng</label>
-                <input class="form-control" id="filter-work-date" type="month" name="work_date" value="<?= esc_attr($work_date) ?>">
+                <input class="form-control shadow-sm" id="filter-work-date" type="month" name="work_date" value="<?= esc_attr($work_date) ?>">
             </div>
             <div class="col-12 col-md-2 mb-2">
                 <label for="filter-shift-type" class="form-label mb-1">Loại chấm công</label>
-                <select class="form-select" id="filter-shift-type" name="shift">
+                <select class="form-select shadow-sm" id="filter-shift-type" name="shift">
                     <option value="">Tất cả</option>
                     <option value="off">Nghỉ (OFF)</option>
                     <option value="ot">Tăng ca (OT)</option>

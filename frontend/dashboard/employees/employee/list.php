@@ -57,7 +57,7 @@ if (function_exists('aerp_render_breadcrumb')) {
             <div class="row">
                 <div class="col-12 col-md-2 mb-2">
                     <label for="filter-department" class="form-label mb-1">Phòng ban</label>
-                    <select id="filter-department" name="department_id" class="form-select">
+                    <select id="filter-department" name="department_id" class="form-select shadow-sm">
                         <?php
                         $departments = apply_filters('aerp_get_departments', []);
                         aerp_safe_select_options($departments, '', 'id', 'name', true);
@@ -66,7 +66,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 </div>
                 <div class="col-12 col-md-2 mb-2">
                     <label for="filter-position" class="form-label mb-1">Chức vụ</label>
-                    <select id="filter-position" name="position_id" class="form-select">
+                    <select id="filter-position" name="position_id" class="form-select shadow-sm">
                         <?php
                         $positions = apply_filters('aerp_get_positions', []);
                         aerp_safe_select_options($positions, '', 'id', 'name', true);
@@ -75,7 +75,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 </div>
                 <div class="col-12 col-md-2 mb-2">
                     <label for="filter-work-location" class="form-label mb-1">Chi nhánh</label>
-                    <select id="filter-work-location" name="work_location_id" class="form-select">
+                    <select id="filter-work-location" name="work_location_id" class="form-select shadow-sm">
                         <?php
                         $work_locations = apply_filters('aerp_get_work_locations', []);
                         aerp_safe_select_options($work_locations, '', 'id', 'name', true);
@@ -84,7 +84,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 </div>
                 <div class="col-12 col-md-2 mb-2">
                     <label for="filter-birthday-month" class="form-label mb-1">Sinh nhật</label>
-                    <select id="filter-birthday-month" name="birthday_month" class="form-select">
+                    <select id="filter-birthday-month" name="birthday_month" class="form-select shadow-sm">
                         <option value="">Tất cả</option>
                         <?php for ($i = 1; $i <= 12; $i++): ?>
                             <option value="<?= $i ?>">Tháng <?= $i ?></option>
@@ -96,20 +96,20 @@ if (function_exists('aerp_render_breadcrumb')) {
                 <div class="col-12 col-md-3 mb-2">
                     <label class="form-label mb-1">Ngày vào làm</label>
                     <div class="d-flex gap-1">
-                        <input type="date" name="join_date_from" class="form-control bg-body" placeholder="Từ">
-                        <input type="date" name="join_date_to" class="form-control bg-body" placeholder="Đến">
+                        <input type="date" name="join_date_from" class="form-control shadow-sm bg-body" placeholder="Từ">
+                        <input type="date" name="join_date_to" class="form-control shadow-sm bg-body" placeholder="Đến">
                     </div>
                 </div>
                 <div class="col-12 col-md-3 mb-2">
                     <label class="form-label mb-1">Ngày nghỉ</label>
                     <div class="d-flex gap-1">
-                        <input type="date" name="off_date_from" class="form-control bg-body" placeholder="Từ">
-                        <input type="date" name="off_date_to" class="form-control bg-body" placeholder="Đến">
+                        <input type="date" name="off_date_from" class="form-control shadow-sm bg-body" placeholder="Từ">
+                        <input type="date" name="off_date_to" class="form-control shadow-sm bg-body" placeholder="Đến">
                     </div>
                 </div>
                 <div class="col-12 col-md-2 mb-2">
                     <label for="filter-status" class="form-label mb-1">Trạng thái</label>
-                    <select id="filter-status" name="status" class="form-select">
+                    <select id="filter-status" name="status" class="form-select shadow-sm">
                         <option value="">Tất cả</option>
                         <option value="active">Đang làm</option>
                         <option value="inactive">Tạm nghỉ</option>

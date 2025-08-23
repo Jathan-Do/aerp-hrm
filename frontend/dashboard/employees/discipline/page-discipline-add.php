@@ -52,11 +52,11 @@ if (function_exists('aerp_render_breadcrumb')) {
             <input name="employee_id" value="<?= esc_attr($employee_id) ?>" hidden>
             <div class="mb-3">
                 <label class="form-label">Nhân viên</label>
-                <input type="text" class="form-control" value="<?= esc_html($employee->full_name) ?>" disabled>
+                <input type="text" class="form-control shadow-sm" value="<?= esc_html($employee->full_name) ?>" disabled>
             </div>
             <div class="mb-3">
                 <label class="form-label">Lý do vi phạm</label>
-                <select class="form-select" name="rule_id" required>
+                <select class="form-select shadow-sm" name="rule_id" required>
                     <option value="">-- Chọn lý do --</option>
                     <?php foreach ($rules as $r): ?>
                         <option value="<?= esc_attr($r->id) ?>">
@@ -67,7 +67,7 @@ if (function_exists('aerp_render_breadcrumb')) {
             </div>
             <div class="mb-3">
                 <label class="form-label">Ngày vi phạm</label>
-                <input type="date" class="form-control bg-body" name="date_violation" value="<?= esc_attr($today) ?>" required>
+                <input type="date" class="form-control shadow-sm bg-body" name="date_violation" value="<?= esc_attr($today) ?>" required>
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_discipline_log" class="btn btn-primary">

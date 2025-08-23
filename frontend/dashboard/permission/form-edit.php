@@ -33,11 +33,11 @@ ob_start();
             <input type="hidden" name="permission_id" value="<?php echo esc_attr($editing->id); ?>">
             <div class="mb-3">
                 <label for="permission_name" class="form-label">Tên quyền</label>
-                <input type="text" class="form-control" id="permission_name" name="permission_name" value="<?php echo esc_attr($editing->name); ?>" required>
+                <input type="text" class="form-control shadow-sm" id="permission_name" name="permission_name" value="<?php echo esc_attr($editing->name); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="permission_desc" class="form-label">Mô tả</label>
-                <textarea class="form-control" id="permission_desc" name="permission_desc" rows="3"><?php echo esc_textarea($editing->description); ?></textarea>
+                <textarea class="form-control shadow-sm" id="permission_desc" name="permission_desc" rows="3"><?php echo esc_textarea($editing->description); ?></textarea>
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_permission" class="btn btn-primary">Cập nhật quyền</button>

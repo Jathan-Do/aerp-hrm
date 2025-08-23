@@ -36,11 +36,11 @@ ob_start();
             <?php wp_nonce_field('aerp_save_role_action', 'aerp_save_role_nonce'); ?>
             <div class="mb-3">
                 <label for="role_name" class="form-label">Tên nhóm quyền</label>
-                <input type="text" class="form-control" id="role_name" name="role_name" required>
+                <input type="text" class="form-control shadow-sm" id="role_name" name="role_name" required>
             </div>
             <div class="mb-3">
                 <label for="role_desc" class="form-label">Mô tả</label>
-                <textarea class="form-control" id="role_desc" name="role_desc" rows="3"></textarea>
+                <textarea class="form-control shadow-sm" id="role_desc" name="role_desc" rows="3"></textarea>
             </div>
             <div class="mb-3">
                 <label class="form-label">Quyền</label>

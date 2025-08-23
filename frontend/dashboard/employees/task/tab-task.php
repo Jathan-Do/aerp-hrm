@@ -74,7 +74,7 @@ $table->process_bulk_action();
             <input type="hidden" name="section" value="task">
             <div class="col-12 col-md-2 mb-2">
                 <label for="filter-status" class="form-label mb-1">Trạng thái</label>
-                <select id="filter-status" name="status" class="form-select">
+                <select id="filter-status" name="status" class="form-select shadow-sm">
                     <option value="">-- Tất cả trạng thái --</option>
                     <option value="assigned" <?= selected($_GET['status'] ?? '', 'assigned') ?>>Đã giao</option>
                     <option value="done" <?= selected($_GET['status'] ?? '', 'done') ?>>Hoàn thành</option>
@@ -83,7 +83,7 @@ $table->process_bulk_action();
             </div>
             <div class="col-12 col-md-2 mb-2">
                 <label for="filter-month" class="form-label mb-1">Tháng</label>
-                <select id="filter-month" name="month" class="form-select">
+                <select id="filter-month" name="month" class="form-select shadow-sm">
                     <?php foreach ($vietnamese_months as $num => $name): ?>
                         <option value="<?= $num ?>" <?= selected($current_month, $num) ?>><?= $name ?></option>
                     <?php endforeach; ?>
@@ -91,7 +91,7 @@ $table->process_bulk_action();
             </div>
             <div class="col-12 col-md-2 mb-2">
                 <label for="filter-year" class="form-label mb-1">Năm</label>
-                <select id="filter-year" name="year" class="form-select">
+                <select id="filter-year" name="year" class="form-select shadow-sm">
                     <?php for ($y = date('Y') - 2; $y <= date('Y') + 1; $y++): ?>
                         <option value="<?= $y ?>" <?= selected($current_year, $y) ?>><?= $y ?></option>
                     <?php endfor; ?>

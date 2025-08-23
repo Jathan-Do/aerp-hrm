@@ -45,39 +45,39 @@ if (function_exists('aerp_render_breadcrumb')) {
             <?php wp_nonce_field('aerp_save_company_action', 'aerp_save_company_nonce'); ?>
             <div class="mb-3">
                 <label for="company_name" class="form-label">Tên công ty</label>
-                <input type="text" class="form-control" id="company_name" name="company_name" required>
+                <input type="text" class="form-control shadow-sm" id="company_name" name="company_name" required>
             </div>
             <div class="mb-3">
                 <label for="tax_code" class="form-label">Mã số thuế</label>
-                <input type="text" class="form-control" id="tax_code" name="tax_code" required>
+                <input type="text" class="form-control shadow-sm" id="tax_code" name="tax_code" required>
             </div>
             <div class="mb-3">
                 <label for="phone" class="form-label">Số điện thoại</label>
-                <input type="text" class="form-control" id="phone" name="phone" required>
+                <input type="text" class="form-control shadow-sm" id="phone" name="phone" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email"
+                <input type="email" class="form-control shadow-sm" id="email" name="email"
                     required>
             </div>
             <div class="mb-3">
                 <label for="website" class="form-label">Website</label>
-                <input type="url" class="form-control" id="website" name="website"
+                <input type="url" class="form-control shadow-sm" id="website" name="website"
                     required>
             </div>
             <div class="mb-3">
                 <label for="address" class="form-label">Địa chỉ</label>
-                <input type="text" class="form-control" id="address" name="address"
+                <input type="text" class="form-control shadow-sm" id="address" name="address"
                     required>
             </div>
             <div class="mb-3">
                 <label for="logo_url" class="form-label">Logo URL</label>
-                <input type="url" class="form-control" id="logo_url" name="logo_url"
+                <input type="url" class="form-control shadow-sm" id="logo_url" name="logo_url"
                     required>
             </div>
             <div class="mb-3">
                 <label for="work_saturday" class="form-label">Làm việc thứ 7</label>
-                <select class="form-select" name="work_saturday" id="work_saturday">
+                <select class="form-select shadow-sm" name="work_saturday" id="work_saturday">
                     <option value="off">Nghỉ thứ 7</option>
                     <option value="full">Làm cả ngày thứ 7</option>
                     <option value="half">Làm nửa ngày thứ 7</option>

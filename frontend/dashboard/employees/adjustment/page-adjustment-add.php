@@ -55,26 +55,26 @@ if (function_exists('aerp_render_breadcrumb')) {
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Lí do</label>
-                    <input type="text" name="reason" required class="form-control">
+                    <input type="text" name="reason" required class="form-control shadow-sm">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ngày áp dụng</label>
-                    <input type="date" name="date_effective" value="<?= esc_attr($today) ?>" required class="form-control bg-body">
+                    <input type="date" name="date_effective" value="<?= esc_attr($today) ?>" required class="form-control shadow-sm bg-body">
                 </div>
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Loại</label>
-                    <select name="type" required class="form-control">
+                    <select name="type" required class="form-control shadow-sm">
                         <option value="reward">🎁 Thưởng</option>
                         <option value="fine">⚠️ Phạt</option>
                     </select>
                 </div>
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Số tiền</label>
-                    <input type="number" name="amount" required class="form-control">
+                    <input type="number" name="amount" required class="form-control shadow-sm">
                 </div>
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Ghi chú</label>
-                    <textarea name="description" class="form-control" rows="3"></textarea>
+                    <textarea name="description" class="form-control shadow-sm" rows="3"></textarea>
                 </div>
                 <div class="d-flex gap-2">
                     <button type="submit" name="aerp_save_adjustment" class="btn btn-primary">Lưu</button>

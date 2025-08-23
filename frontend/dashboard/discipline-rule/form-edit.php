@@ -54,15 +54,15 @@ if (function_exists('aerp_render_breadcrumb')) {
             <input type="hidden" name="rule_id" value="<?php echo esc_attr($edit_id); ?>">
             <div class="mb-3">
                 <label for="rule_name" class="form-label">Tên quy tắc</label>
-                <input type="text" class="form-control" id="rule_name" name="rule_name" value="<?php echo esc_attr($editing->rule_name); ?>" required>
+                <input type="text" class="form-control shadow-sm" id="rule_name" name="rule_name" value="<?php echo esc_attr($editing->rule_name); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="penalty_point" class="form-label">Điểm phạt</label>
-                <input type="number" class="form-control" id="penalty_point" name="penalty_point" min="0" value="<?php echo esc_attr($editing->penalty_point); ?>">
+                <input type="number" class="form-control shadow-sm" id="penalty_point" name="penalty_point" min="0" value="<?php echo esc_attr($editing->penalty_point); ?>">
             </div>
             <div class="mb-3">
                 <label for="fine_amount" class="form-label">Tiền phạt</label>
-                <input type="number" class="form-control" id="fine_amount" name="fine_amount" min="0" value="<?php echo esc_attr($editing->fine_amount); ?>">
+                <input type="number" class="form-control shadow-sm" id="fine_amount" name="fine_amount" min="0" value="<?php echo esc_attr($editing->fine_amount); ?>">
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_discipline_rule" class="btn btn-primary">Cập nhật</button>

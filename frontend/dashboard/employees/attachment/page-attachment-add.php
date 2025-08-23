@@ -60,7 +60,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Loại hồ sơ</label>
-                        <select name="attachment_type" required class="form-select">
+                        <select name="attachment_type" required class="form-select shadow-sm">
                             <option value="">-- Chọn loại --</option>
                             <option value="contract">Hợp đồng</option>
                             <option value="cccd">CCCD</option>
@@ -70,7 +70,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Chọn file</label>
-                        <input class="form-control" type="file" name="attachment_file" required>
+                        <input class="form-control shadow-sm" type="file" name="attachment_file" required>
                     </div>
                 </div>
                 <!-- <div class="col-md-6 mb-3">
@@ -93,7 +93,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Loại hồ sơ</label>
-                        <select name="attachment_type" required class="form-select">
+                        <select name="attachment_type" required class="form-select shadow-sm">
                             <option value="">-- Chọn loại --</option>
                             <option value="contract">Hợp đồng</option>
                             <option value="cccd">CCCD</option>
@@ -103,15 +103,15 @@ if (function_exists('aerp_render_breadcrumb')) {
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Tên file</label>
-                        <input id="file_name" type="text" name="file_name" class="form-control" required>
+                        <input id="file_name" type="text" name="file_name" class="form-control shadow-sm" required>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">URL file</label>
-                        <input id="file_url" type="url" name="file_url" class="form-control" required><button type="button" class="mt-2 btn btn-outline-primary" id="select_file">Chọn từ thư viện</button>
+                        <input id="file_url" type="url" name="file_url" class="form-control shadow-sm" required><button type="button" class="mt-2 btn btn-outline-primary" id="select_file">Chọn từ thư viện</button>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Định dạng</label>
-                        <input id="file_type" type="text" name="file_type" class="form-control" required>
+                        <input id="file_type" type="text" name="file_type" class="form-control shadow-sm" required>
                     </div>
                 </div>
                 <div class="d-flex gap-2">

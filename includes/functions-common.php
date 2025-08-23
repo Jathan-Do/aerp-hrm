@@ -238,7 +238,7 @@ function aerp_render_breadcrumb($items = [])
     }
 
     echo '<nav aria-label="breadcrumb" class="mb-3">';
-    echo '<div class="card">';
+    echo '<div class="card shadow-sm">';
     echo '<div class="card-body">';
     echo '<ol class="breadcrumb mb-0">';
     $lastIndex = count($normalized) - 1;

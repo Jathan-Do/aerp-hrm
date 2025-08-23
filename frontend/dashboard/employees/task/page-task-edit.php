@@ -58,19 +58,19 @@ if (function_exists('aerp_render_breadcrumb')) {
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Tiêu đề công việc</label>
-                    <input type="text" name="task_title" value="<?= esc_attr($task->task_title) ?>" required class="form-control">
+                    <input type="text" name="task_title" value="<?= esc_attr($task->task_title) ?>" required class="form-control shadow-sm">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Hạn chót</label>
-                    <input type="datetime-local" name="deadline" value="<?= esc_attr($task->deadline) ?>" required class="form-control">
+                    <input type="datetime-local" name="deadline" value="<?= esc_attr($task->deadline) ?>" required class="form-control shadow-sm">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Điểm KPI</label>
-                    <input type="number" name="score" value="<?= esc_attr($task->score) ?>" min="0" max="10" class="form-control">
+                    <input type="number" name="score" value="<?= esc_attr($task->score) ?>" min="0" max="10" class="form-control shadow-sm">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Trạng thái</label>
-                    <select name="status" class="form-select">
+                    <select name="status" class="form-select shadow-sm">
                         <option value="assigned" <?= selected($task->status, 'assigned', false) ?>>Đã giao</option>
                         <option value="done" <?= selected($task->status, 'done', false) ?>>Hoàn thành</option>
                         <option value="failed" <?= selected($task->status, 'failed', false) ?>>Thất bại</option>
@@ -79,7 +79,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Mô tả</label>
-                    <textarea name="task_desc" class="form-control" rows="3"><?= esc_textarea($task->task_desc) ?></textarea>
+                    <textarea name="task_desc" class="form-control shadow-sm" rows="3"><?= esc_textarea($task->task_desc) ?></textarea>
                 </div>
             </div>
             <input type="hidden" name="edit_id" value="<?= esc_attr($task_id) ?>">
@@ -96,7 +96,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 <p class="mb-3"><em>Chưa có phản hồi.</em></p>
             <?php endif; ?>
             <div class="mb-3">
-                <textarea name="comment" rows="3" class="form-control" placeholder="Phản hồi..."></textarea>
+                <textarea name="comment" rows="3" class="form-control shadow-sm" placeholder="Phản hồi..."></textarea>
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_edit_task" class="btn btn-primary">Cập nhật công việc & Gửi phản hồi (nếu có)</button>

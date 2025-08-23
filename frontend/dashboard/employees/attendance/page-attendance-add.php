@@ -53,27 +53,27 @@ if (function_exists('aerp_render_breadcrumb')) {
             <div class="row">
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Ngày áp dụng</label>
-                    <input type="date" name="work_date" required class="form-control bg-body" value="<?= esc_attr($today) ?>">
+                    <input type="date" name="work_date" required class="form-control shadow-sm bg-body" value="<?= esc_attr($today) ?>">
                 </div>
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Loại chấm công</label>
-                    <select class="form-select" name="shift_type" id="shift_type" onchange="onShiftTypeChange()" required>
+                    <select class="form-select shadow-sm" name="shift_type" id="shift_type" onchange="onShiftTypeChange()" required>
                         <option value="off">Nghỉ (OFF)</option>
                         <option value="ot">Tăng ca (OT)</option>
                     </select>
                 </div>
                 <div class="col-md-12 mb-3" id="work_ratio_row">
                     <label class="form-label">Hệ số công</label>
-                    <select class="form-select" name="work_ratio_select" id="work_ratio_select" onchange="onWorkRatioSelectChange()">
+                    <select class="form-select shadow-sm" name="work_ratio_select" id="work_ratio_select" onchange="onWorkRatioSelectChange()">
                         <option value="1">1.0</option>
                         <option value="1.5">1.5</option>
                         <option value="custom">Tự nhập</option>
                     </select>
-                    <input type="number" step="0.1" min="0" class="form-control mt-2" name="work_ratio" id="work_ratio" value="1" style="width:80px;display:none;">
+                    <input type="number" step="0.1" min="0" class="form-control shadow-sm mt-2" name="work_ratio" id="work_ratio" value="1" style="width:80px;display:none;">
                 </div>
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Ghi chú</label>
-                    <input class="form-control" type="text" name="note" placeholder="(Tùy chọn)">
+                    <input class="form-control shadow-sm" type="text" name="note" placeholder="(Tùy chọn)">
                 </div>
                 <div class="d-flex gap-2">
                     <button type="submit" name="aerp_save_attendance" class="btn btn-primary">Lưu chấm công</button>

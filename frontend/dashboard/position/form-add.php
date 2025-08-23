@@ -47,11 +47,11 @@ if (function_exists('aerp_render_breadcrumb')) {
             <?php wp_nonce_field('aerp_save_position_action', 'aerp_save_position_nonce'); ?>
             <div class="mb-3">
                 <label for="position_name" class="form-label">Tên chức vụ</label>
-                <input type="text" class="form-control" id="position_name" name="position_name" required>
+                <input type="text" class="form-control shadow-sm" id="position_name" name="position_name" required>
             </div>
             <div class="mb-3">
                 <label for="position_desc" class="form-label">Mô tả</label>
-                <textarea class="form-control" id="position_desc" name="position_desc" rows="3"></textarea>
+                <textarea class="form-control shadow-sm" id="position_desc" name="position_desc" rows="3"></textarea>
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_position" class="btn btn-primary">Thêm mới</button>

@@ -62,23 +62,23 @@ if (function_exists('aerp_render_breadcrumb')) {
             <?php endif; ?>
             <div class="mb-3">
                 <label class="form-label">Nhân viên</label>
-                <input type="text" class="form-control" value="<?= esc_html($employee->full_name) ?>" disabled>
+                <input type="text" class="form-control shadow-sm" value="<?= esc_html($employee->full_name) ?>" disabled>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="start_date">Từ ngày</label>
-                <input type="date" class="form-control bg-body" name="start_date" id="start_date" value="<?= esc_attr($config->start_date ?? '') ?>" required>
+                <input type="date" class="form-control shadow-sm bg-body" name="start_date" id="start_date" value="<?= esc_attr($config->start_date ?? '') ?>" required>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="end_date">Đến ngày</label>
-                <input type="date" class="form-control bg-body" name="end_date" id="end_date" value="<?= esc_attr($config->end_date ?? '') ?>" required>
+                <input type="date" class="form-control shadow-sm bg-body" name="end_date" id="end_date" value="<?= esc_attr($config->end_date ?? '') ?>" required>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="base_salary">Lương cơ bản</label>
-                <input type="number" class="form-control" name="base_salary" step="1000" required value="<?= esc_attr($config->base_salary ?? '') ?>">
+                <input type="number" class="form-control shadow-sm" name="base_salary" step="1000" required value="<?= esc_attr($config->base_salary ?? '') ?>">
             </div>
             <div class="mb-3">
                 <label class="form-label" for="allowance">Phụ cấp</label>
-                <input type="number" class="form-control" name="allowance" step="1000" required value="<?= esc_attr($config->allowance ?? '') ?>">
+                <input type="number" class="form-control shadow-sm" name="allowance" step="1000" required value="<?= esc_attr($config->allowance ?? '') ?>">
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_salary_config" class="btn btn-primary">

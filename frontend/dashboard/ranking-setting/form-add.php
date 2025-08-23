@@ -47,19 +47,19 @@ if (function_exists('aerp_render_breadcrumb')) {
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="rank_code" class="form-label">Xếp loại</label>
-                    <input type="text" class="form-control" id="rank_code" name="rank_code" required>
+                    <input type="text" class="form-control shadow-sm" id="rank_code" name="rank_code" required>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="min_point" class="form-label">Từ điểm</label>
-                    <input type="number" class="form-control" id="min_point" name="min_point" min="0" required>
+                    <input type="number" class="form-control shadow-sm" id="min_point" name="min_point" min="0" required>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="sort_order" class="form-label">Thứ tự</label>
-                    <input type="number" class="form-control" id="sort_order" name="sort_order" value="0">
+                    <input type="number" class="form-control shadow-sm" id="sort_order" name="sort_order" value="0">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="note" class="form-label">Ghi chú</label>
-                    <input type="text" class="form-control" id="note" name="note">
+                    <input type="text" class="form-control shadow-sm" id="note" name="note">
                 </div>
             </div>
             <div class="d-flex gap-2">

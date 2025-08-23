@@ -60,11 +60,11 @@ if (function_exists('aerp_render_breadcrumb')) {
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ngày thưởng</label>
-                    <input type="date" name="month" value="<?= esc_attr($month) ?>" required class="form-control bg-body">
+                    <input type="date" name="month" value="<?= esc_attr($month) ?>" required class="form-control shadow-sm bg-body">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ngày thưởng</label>
-                    <select class="form-select" name="reward_id" required>
+                    <select class="form-select shadow-sm" name="reward_id" required>
                         <?php foreach ($rewards as $r): ?>
                             <option value="<?= esc_attr($r->id) ?>" <?= selected($r->id, $row->reward_id) ?>>
                                 <?= esc_html($r->name) ?> – <?= number_format($r->amount, 0, ',', '.') ?> đ
@@ -74,7 +74,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                 </div>
                 <div class="col-md-12 mb-3">
                     <label class="form-label">Ghi chú</label>
-                    <textarea name="note" class="form-control" rows="3"><?= esc_textarea($row->note) ?></textarea>
+                    <textarea name="note" class="form-control shadow-sm" rows="3"><?= esc_textarea($row->note) ?></textarea>
                 </div>
                 <div class="d-flex gap-2">
                     <button type="submit" name="aerp_save_employee_reward" class="btn btn-primary">Lưu thay đổi</button>

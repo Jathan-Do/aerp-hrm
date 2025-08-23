@@ -58,15 +58,15 @@ if (function_exists('aerp_render_breadcrumb')) {
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="name" class="form-label">Tên thưởng</label>
-                    <input type="text" class="form-control" id="name" name="name" value="<?php echo esc_attr($editing->name); ?>" required>
+                    <input type="text" class="form-control shadow-sm" id="name" name="name" value="<?php echo esc_attr($editing->name); ?>" required>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="amount" class="form-label">Số tiền (VNĐ)</label>
-                    <input type="number" class="form-control" id="amount" name="amount" value="<?php echo esc_attr($editing->amount); ?>" required>
+                    <input type="number" class="form-control shadow-sm" id="amount" name="amount" value="<?php echo esc_attr($editing->amount); ?>" required>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="trigger_type" class="form-label">Loại kích hoạt</label>
-                    <select name="trigger_type" id="trigger_type" class="form-select" onchange="toggleCustomTrigger(this.value)">
+                    <select name="trigger_type" id="trigger_type" class="form-select shadow-sm" onchange="toggleCustomTrigger(this.value)">
                         <option value="">-- Chọn loại --</option>
                         <option value="birthday" <?php selected($editing->trigger_type, 'birthday'); ?>>🎂 Sinh nhật</option>
                         <option value="holiday" <?php selected($editing->trigger_type, 'holiday'); ?>>🎉 Lễ/Tết</option>
@@ -74,12 +74,12 @@ if (function_exists('aerp_render_breadcrumb')) {
                         <option value="manual" <?php echo $is_custom ? 'selected' : ''; ?>>✍️ Khác...</option>
                     </select>
                     <div id="custom_trigger_wrapper" style="margin-top:8px; <?php echo $is_custom ? '' : 'display:none;'; ?>">
-                        <input type="text" name="custom_trigger_type" class="form-control" value="<?php echo $is_custom ? esc_attr($editing->trigger_type) : ''; ?>" placeholder="Nhập loại tùy chỉnh">
+                        <input type="text" name="custom_trigger_type" class="form-control shadow-sm" value="<?php echo $is_custom ? esc_attr($editing->trigger_type) : ''; ?>" placeholder="Nhập loại tùy chỉnh">
                     </div>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="day_trigger" class="form-label">Ngày áp dụng (nếu có)</label>
-                    <input type="date" class="form-control" id="day_trigger" name="day_trigger" value="<?php echo esc_attr($editing->day_trigger); ?>">
+                    <input type="date" class="form-control shadow-sm" id="day_trigger" name="day_trigger" value="<?php echo esc_attr($editing->day_trigger); ?>">
                 </div>
             </div>
             <div class="d-flex gap-2">

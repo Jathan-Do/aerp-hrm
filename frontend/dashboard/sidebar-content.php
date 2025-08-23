@@ -40,7 +40,18 @@
                 <span class="ms-4"><i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span></span>
             </a>
             <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customers'); ?>" href="<?php echo home_url('/aerp-crm-customers'); ?>">
-                <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Danh sách</span></span>
+                <span class="ms-4">
+                    <i class="fas fa-list me-2"></i>
+                    <span class="menu-text">Danh sách</span>
+                    <?php
+                        // Đếm số lượng đơn hàng có status là 'new'
+                        global $wpdb;
+                        $customer_new_count = (int) $wpdb->get_var(
+                            "SELECT COUNT(*) FROM {$wpdb->prefix}aerp_crm_customers WHERE assigned_to = 0 AND status = 'active'"
+                        );
+                    ?>
+                    <span class="badge text-bg-secondary ms-2 rounded-pill bg-danger"><?php echo $customer_new_count; ?></span>
+                </span>
             </a>
             <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customers/?action=add'); ?>" href="<?php echo home_url('/aerp-crm-customers/?action=add'); ?>">
                 <span class="ms-4"><i class="fas fa-plus me-2"></i> <span class="menu-text">Thêm mới</span></span>

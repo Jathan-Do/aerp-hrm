@@ -15,8 +15,8 @@ if (!is_user_logged_in()) {
 $access_conditions = [
     aerp_user_has_role($user_id, 'admin'),
     aerp_user_has_role($user_id, 'department_lead'),
-    aerp_user_has_permission($user_id,'salary_view'),
-    aerp_user_has_permission($user_id,'stock_adjustment'),
+    aerp_user_has_permission($user_id, 'salary_view'),
+    aerp_user_has_permission($user_id, 'stock_adjustment'),
 ];
 if (!in_array(true, $access_conditions, true)) {
     wp_die(__('You do not have sufficient permissions to access this page.'));
@@ -24,7 +24,8 @@ if (!in_array(true, $access_conditions, true)) {
 
 // Hàm kiểm tra user có role bất kỳ trong mảng không
 if (!function_exists('aerp_user_has_any_role')) {
-    function aerp_user_has_any_role($user_id, $roles = []) {
+    function aerp_user_has_any_role($user_id, $roles = [])
+    {
         foreach ($roles as $role) {
             if (aerp_user_has_role($user_id, $role)) return true;
         }
@@ -124,7 +125,7 @@ $all_hrm_menu = [
 ];
 
 // Lọc menu theo role/permission
-$management_hrm_menu = array_filter($all_hrm_menu, function($item) use ($user_id) {
+$management_hrm_menu = array_filter($all_hrm_menu, function ($item) use ($user_id) {
     // Nếu có trường 'permission' thì phải có permission đó
     if (isset($item['permission']) && !aerp_user_has_permission($user_id, $item['permission'])) {
         return false;
@@ -204,6 +205,12 @@ $all_order_menu = [
         'url' => home_url('/aerp-devices'),
         'color' => 'success',
         'permission' => 'product_view',
+        'badge_count' => function() {
+            global $wpdb;
+            return (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$wpdb->prefix}aerp_order_devices WHERE device_status = 'received'"
+            );
+        },
     ],
     [
         'icon' => 'fa-laptop-house',
@@ -217,7 +224,7 @@ $all_order_menu = [
 
 $management_order_menu = [];
 if ($order_active) {
-    $management_order_menu = array_filter($all_order_menu, function($item) use ($user_id) {
+    $management_order_menu = array_filter($all_order_menu, function ($item) use ($user_id) {
         if (isset($item['permission']) && !aerp_user_has_permission($user_id, $item['permission'])) {
             return false;
         }
@@ -260,7 +267,16 @@ if (function_exists('aerp_render_breadcrumb')) {
                     <div class="card category-card h-100">
                         <div class="card-body text-center d-flex flex-column">
                             <i class="fas <?php echo $item['icon']; ?> category-icon text-<?php echo $item['color']; ?>"></i>
-                            <h6 class="text-uppercase mt-2"><?php echo $item['title']; ?></h6>
+                            <?php
+                            $badge_html = '';
+                            if (isset($item['badge_count'])) {
+                                $count = is_callable($item['badge_count']) ? call_user_func($item['badge_count']) : (int)$item['badge_count'];
+                                if ($count > 0) {
+                                    $badge_html = '<span class="badge bg-danger ms-1 mb-2">' . intval($count) . '</span>';
+                                }
+                            }
+                            ?>
+                            <h6 class="text-uppercase mt-2"><?php echo $item['title']; ?><?php echo $badge_html; ?></h6>
                             <p class="fs-6 text-muted flex-grow-1"><?php echo $item['desc']; ?></p>
                             <a href="<?php echo esc_url($item['url']); ?>" class="btn btn-sm btn-outline-<?php echo $item['color']; ?>">Quản lý</a>
                         </div>
@@ -277,7 +293,16 @@ if (function_exists('aerp_render_breadcrumb')) {
                         <div class="card category-card h-100">
                             <div class="card-body text-center d-flex flex-column">
                                 <i class="fas <?php echo $item['icon']; ?> category-icon text-<?php echo $item['color']; ?>"></i>
-                                <h6 class="text-uppercase mt-2"><?php echo $item['title']; ?></h6>
+                                <?php
+                                $badge_html = '';
+                                if (isset($item['badge_count'])) {
+                                    $count = is_callable($item['badge_count']) ? call_user_func($item['badge_count']) : (int)$item['badge_count'];
+                                    if ($count > 0) {
+                                        $badge_html = '<span class="badge bg-danger ms-1 position-absolute" style="top:-10px">' . intval($count) . '</span>';
+                                    }
+                                }
+                                ?>
+                                <h6 class="text-uppercase mt-2 position-relative"><?php echo $item['title']; ?><?php echo $badge_html; ?></h6>
                                 <p class="fs-6 text-muted flex-grow-1"><?php echo $item['desc']; ?></p>
                                 <a href="<?php echo esc_url($item['url']); ?>" class="btn btn-sm btn-outline-<?php echo $item['color']; ?>">Quản lý</a>
                             </div>

@@ -55,12 +55,12 @@ if (function_exists('aerp_render_breadcrumb')) {
             <input type="hidden" name="position_id" value="<?php echo esc_attr($edit_id); ?>">
             <div class="mb-3">
                 <label for="position_name" class="form-label">Tên chức vụ</label>
-                <input type="text" class="form-control" id="position_name" name="position_name" 
+                <input type="text" class="form-control shadow-sm" id="position_name" name="position_name" 
                        value="<?php echo esc_attr($editing->name); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="position_desc" class="form-label">Mô tả</label>
-                <textarea class="form-control" id="position_desc" name="position_desc" 
+                <textarea class="form-control shadow-sm" id="position_desc" name="position_desc" 
                           rows="3"><?php echo esc_textarea($editing->description); ?></textarea>
             </div>
             <div class="d-flex gap-2">
