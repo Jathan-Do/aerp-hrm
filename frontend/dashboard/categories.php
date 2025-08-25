@@ -204,12 +204,20 @@ $all_order_menu = [
         'desc' => 'Quản lý thiết bị',
         'url' => home_url('/aerp-devices'),
         'color' => 'success',
-        'permission' => 'product_view',
-        'badge_count' => function() {
+        'permission' => 'device_view',
+        'badge_count' => function () {
             global $wpdb;
-            return (int) $wpdb->get_var(
-                "SELECT COUNT(*) FROM {$wpdb->prefix}aerp_order_devices WHERE device_status = 'received'"
-            );
+            $current_user_id = get_current_user_id();
+            $current_user_employee = $wpdb->get_row($wpdb->prepare(
+                "SELECT id, work_location_id FROM {$wpdb->prefix}aerp_hrm_employees WHERE user_id = %d",
+                $current_user_id
+            ));
+            $employee_current_id = $current_user_employee->id;
+            return (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$wpdb->prefix}aerp_order_devices WHERE device_status = 'received' AND (order_id IN (SELECT id FROM {$wpdb->prefix}aerp_order_orders WHERE employee_id = %d OR created_by = %d))",
+                $employee_current_id,
+                $employee_current_id
+            ));
         },
     ],
     [
@@ -218,7 +226,7 @@ $all_order_menu = [
         'desc' => 'Quản lý thiết bị trả lại',
         'url' => home_url('/aerp-device-returns'),
         'color' => 'success',
-        'permission' => 'product_view',
+        'permission' => 'device_view',
     ],
 ];
 

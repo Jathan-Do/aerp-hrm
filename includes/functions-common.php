@@ -341,3 +341,61 @@ function aerp_clear_table_cache()
         delete_transient($key);
     }
 }
+
+
+function aerp_get_login_redirect_url()
+{
+    // Nếu đã đăng nhập, lấy role hiện tại
+    if (is_user_logged_in()) {
+        $user_id = get_current_user_id();
+        // Ưu tiên: admin -> hr_manager -> department_lead -> accountant -> employee
+        if (aerp_user_has_role($user_id, 'admin')) {
+            return home_url('/aerp-dashboard');
+        }
+        if (aerp_user_has_role($user_id, 'hr_manager')) {
+            // return home_url('/aerp-quan-ly');
+            return home_url('/aerp-quan-ly');
+        }
+        if (aerp_user_has_role($user_id, 'department_lead')) {
+            // return home_url('/aerp-quan-ly');
+            return home_url('/aerp-categories');
+        }
+        if (aerp_user_has_role($user_id, 'accountant')) {
+            // return home_url('/aerp-ke-toan');
+            return home_url('/aerp-categories');
+        }
+        if (aerp_user_has_role($user_id, 'employee')) {
+            return home_url('/aerp-ho-so-nhan-vien');
+        }
+    }
+
+    // Mặc định về trang dashboard
+    return home_url('/aerp-ho-so-nhan-vien');
+}
+
+// Thêm filter để xử lý redirect sau khi đăng nhập
+add_filter('login_redirect', function ($redirect_to, $requested_redirect_to, $user) {
+    if (!is_wp_error($user) && $user) {
+        $user_id = $user->ID;
+        // Ưu tiên: admin -> hr_manager -> department_lead -> accountant -> employee
+        if (aerp_user_has_role($user_id, 'admin')) {
+            return home_url('/aerp-dashboard');
+        }
+        if (aerp_user_has_role($user_id, 'hr_manager')) {
+            // return home_url('/aerp-quan-ly');
+            return home_url('/aerp-quan-ly');
+        }
+        if (aerp_user_has_role($user_id, 'department_lead')) {
+            // return home_url('/aerp-quan-ly');
+            return home_url('/aerp-categories');
+        }
+        if (aerp_user_has_role($user_id, 'accountant')) {
+            // return home_url('/aerp-ke-toan');
+            return home_url('/aerp-categories');
+        }
+        if (aerp_user_has_role($user_id, 'employee')) {
+            return home_url('/aerp-ho-so-nhan-vien');
+        }
+    }
+    return $redirect_to;
+}, 10, 3);

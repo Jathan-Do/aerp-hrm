@@ -134,7 +134,7 @@ function aerp_hrm_init()
     require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-hr-profile.php';
     require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-task-list.php';
     require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-attendance.php';
-    require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-login.php';
+    // require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-login.php'; 
     require_once AERP_HRM_PATH . 'includes/shortcodes/shortcode-manager-dashboard.php';
 
     // Xử lý form và logic
@@ -246,31 +246,31 @@ register_activation_hook(__FILE__, function () {
 
     // Tạo các trang mặc định với shortcode
     $pages = [
-        [
-            'title'   => 'AERP Hồ sơ nhân viên',
-            'slug'    => 'aerp-ho-so-nhan-vien',
-            'content' => '[aerp_hr_profile]'
-        ],
+        // [
+        //     'title'   => 'AERP Hồ sơ nhân viên',
+        //     'slug'    => 'aerp-ho-so-nhan-vien',
+        //     'content' => '[aerp_hr_profile]'
+        // ],
         [
             'title'   => 'AERP Dashboard Quản lý',
             'slug'    => 'aerp-quan-ly',
             'content' => '[aerp_manager_dashboard]'
         ],
-        [
-            'title'   => 'AERP Chấm công',
-            'slug'    => 'aerp-cham-cong',
-            'content' => '[aerp_attendance]'
-        ],
-        [
-            'title'   => 'AERP Danh sách công việc',
-            'slug'    => 'aerp-danh-sach-cong-viec',
-            'content' => '[aerp_task_list]'
-        ],
-        [
-            'title'   => 'AERP Đăng nhập',
-            'slug'    => 'aerp-dang-nhap',
-            'content' => '[aerp_login]'
-        ],
+        // [
+        //     'title'   => 'AERP Chấm công',
+        //     'slug'    => 'aerp-cham-cong',
+        //     'content' => '[aerp_attendance]'
+        // ],
+        // [
+        //     'title'   => 'AERP Danh sách công việc',
+        //     'slug'    => 'aerp-danh-sach-cong-viec',
+        //     'content' => '[aerp_task_list]'
+        // ],
+        // [
+        //     'title'   => 'AERP Đăng nhập',
+        //     'slug'    => 'aerp-dang-nhap',
+        //     'content' => '[aerp_login]'
+        // ],
     ];
 
     foreach ($pages as $page) {
@@ -292,10 +292,10 @@ register_activation_hook(__FILE__, function () {
 // Xóa các trang khi deactivate plugin
 register_deactivation_hook(__FILE__, function () {
     $slugs = [
-        'aerp-ho-so-nhan-vien',
-        'aerp-cham-cong',
-        'aerp-danh-sach-cong-viec',
-        'aerp-dang-nhap',
+        // 'aerp-ho-so-nhan-vien',
+        // 'aerp-cham-cong',
+        // 'aerp-danh-sach-cong-viec',
+        // 'aerp-dang-nhap',
         'aerp-quan-ly',
     ];
     foreach ($slugs as $slug) {

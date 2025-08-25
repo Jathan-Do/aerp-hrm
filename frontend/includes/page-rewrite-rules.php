@@ -1,6 +1,12 @@
 <?php
 // === REWRITE RULES FOR FRONTEND DASHBOARD ===
 add_action('init', function () {
+    add_rewrite_rule('^aerp-dang-nhap/?$', 'index.php?aerp_login=1', 'top');
+    add_rewrite_rule('^aerp-ho-so-nhan-vien/?$', 'index.php?aerp_hr_profile=1', 'top');
+    add_rewrite_rule('^aerp-danh-sach-cong-viec/?$', 'index.php?aerp_task_list=1', 'top');
+    add_rewrite_rule('^aerp-danh-sach-cong-viec/page/([0-9]+)/?$', 'index.php?aerp_task_list=1&paged=$matches[1]', 'top');
+    add_rewrite_rule('^aerp-cham-cong/page/([0-9]+)/?$', 'index.php?aerp_attendance=1&paged=$matches[1]', 'top');
+    add_rewrite_rule('^aerp-cham-cong/?$', 'index.php?aerp_attendance=1', 'top');
     add_rewrite_rule('^aerp-dashboard/?$', 'index.php?aerp_dashboard=1', 'top');
     add_rewrite_rule('^aerp-categories/?$', 'index.php?aerp_categories=1', 'top');
     add_rewrite_rule('^aerp-departments/?$', 'index.php?aerp_departments=1', 'top');
@@ -23,6 +29,9 @@ add_action('init', function () {
 
 
     $rules = get_option('rewrite_rules');
+    if ($rules && (!isset($rules['^aerp-dang-nhap/?$']))) {
+        flush_rewrite_rules();
+    }
     if ($rules && (!isset($rules['^aerp-dashboard/?$']))) {
         flush_rewrite_rules();
     }
@@ -74,6 +83,9 @@ add_action('init', function () {
 });
 
 add_filter('query_vars', function ($vars) {
+    $vars[] = 'aerp_login';
+    $vars[] = 'aerp_attendance';
+    $vars[] = 'aerp_hr_profile';
     $vars[] = 'aerp_dashboard';
     $vars[] = 'aerp_categories';
     $vars[] = 'aerp_departments';
@@ -94,10 +106,27 @@ add_filter('query_vars', function ($vars) {
     $vars[] = 'aerp_permission';
     $vars[] = 'aerp_hrm_employees';
     $vars[] = 'section';
+    $vars[] = 'aerp_task_list';
     return $vars;
 });
 
 add_action('template_redirect', function () {
+    if (get_query_var('aerp_login')) {
+        include AERP_HRM_PATH . 'frontend/login-page.php';
+        exit;
+    }
+    if (get_query_var('aerp_attendance')) {
+        include AERP_HRM_PATH . 'frontend/attendance.php';
+        exit;
+    }
+    if (get_query_var('aerp_task_list')) {
+        include AERP_HRM_PATH . 'frontend/task-list.php';
+        exit;
+    }
+    if (get_query_var('aerp_hr_profile')) {
+        include AERP_HRM_PATH . 'frontend/employee-profile.php';
+        exit;
+    }
     if (get_query_var('aerp_dashboard')) {
         include AERP_HRM_PATH . 'frontend/dashboard/dashboard.php';
         exit;

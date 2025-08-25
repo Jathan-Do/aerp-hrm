@@ -3,6 +3,8 @@ if (!defined('ABSPATH')) {
     exit();
 }
 
+global $wpdb;
+
 $user_id = get_current_user_id();
 $employee = aerp_get_employee_by_user_id($user_id);
 
@@ -26,6 +28,7 @@ if (
         'date_effective' => sanitize_text_field($_POST['date_effective']),
         'description' => sanitize_textarea_field($_POST['description'])
     ]);
+    aerp_clear_table_cache();
     aerp_js_redirect(add_query_arg('adjustment_added', '1', remove_query_arg('adjustment_added')));
     exit;
 }
@@ -36,21 +39,21 @@ if (isset($_GET['adjustment_added'])) {
     $notification = 'Thêm thưởng/phạt thành công';
 }
 
-// Lấy bản ghi lương mới nhất
-global $wpdb;
-$current_month = date('Y-m');
-$current_month_start = $current_month . '-01';
-$salary = $wpdb->get_row($wpdb->prepare("
-    SELECT * FROM {$wpdb->prefix}aerp_hrm_salaries 
+// Lấy tháng cần xem (ưu tiên từ GET, nếu không thì lấy tháng hiện tại)
+$calc_month = isset($_GET['calc_month']) ? $_GET['calc_month'] : date('Y-m');
+$month_start = $calc_month . '-01';
+$month_end = date('Y-m-t', strtotime($month_start));
+
+// Lấy bản ghi lương mới nhất (nếu cần cho các phần khác)
+$salary = $wpdb->get_row($wpdb->prepare(
+    "SELECT * FROM {$wpdb->prefix}aerp_hrm_salaries 
     WHERE employee_id = %d 
       AND salary_month = %s
     ORDER BY created_at DESC 
-    LIMIT 1
-", $employee_id, $current_month_start));
+    LIMIT 1",
+    $employee_id, $month_start
+));
 
-$month = $salary ? date('Y-m', strtotime($salary->salary_month)) : '';
-$month_start = $month . '-01';
-$month_end = date('Y-m-t', strtotime($month_start));
 //Lấy config lương
 $config_init = $wpdb->get_row(
     $wpdb->prepare(
@@ -112,7 +115,11 @@ $latest_auto_rewards = $wpdb->get_results($wpdb->prepare("
 $work_days = intval($salary->work_days ?? 0);
 $total = $salary ? $salary->final_salary ?? 0 : 0;
 
-$adjustments = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}aerp_hrm_adjustments WHERE employee_id = %d AND date_effective BETWEEN %s AND %s ORDER BY date_effective DESC", $employee_id, $month_start, $month_end));
+// Khi lấy thưởng/phạt, dùng $month_start và $month_end này
+$adjustments = $wpdb->get_results($wpdb->prepare(
+    "SELECT * FROM {$wpdb->prefix}aerp_hrm_adjustments WHERE employee_id = %d AND date_effective BETWEEN %s AND %s ORDER BY date_effective DESC, id DESC",
+    $employee_id, $month_start, $month_end
+));
 $rewards = [];
 $fines = [];
 
@@ -202,7 +209,6 @@ $all_fines = array_filter($all_fines, function ($item) use ($month_start, $month
     return $date && $date >= strtotime($month_start) && $date <= strtotime($month_end);
 });
 
-$calc_month = isset($_GET['calc_month']) ? $_GET['calc_month'] : date('Y-m');
 $calc_data = null;
 if (isset($_GET['calc_month'])) {
     $month_start = date('Y-m-01 00:00:00', strtotime($calc_month));
@@ -349,503 +355,517 @@ if (isset($_GET['calc_month'])) {
 }
 
 ?>
-<!-- Quick Links -->
-<?php include(AERP_HRM_PATH . 'frontend/quick-links.php'); ?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
 
-<div class="aerp-hrm-dashboard">
-    <!-- Header Profile -->
-    <div class="aerp-profile-header">
-        <div class="aerp-profile-avatar">
-            <?php $initial = mb_strtoupper(mb_substr($employee->full_name, 0, 1)); ?>
-            <div class="aerp-avatar-circle"><?= esc_html($initial) ?></div>
-        </div>
-        <div class="aerp-profile-info">
-            <h2><?= esc_html($employee->full_name) ?></h2>
-            <div class="aerp-profile-meta">
-                <span><i class="dashicons dashicons-id"></i> Mã NV: <?= esc_html($employee->employee_code) ?></span>
-                <span><i class="dashicons dashicons-businessman"></i> <?= esc_html(aerp_get_position_name($employee->position_id)) ?></span>
-                <span><i class="dashicons dashicons-building"></i> <?= esc_html(aerp_get_department_name($employee->department_id)) ?></span>
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hồ sơ nhân viên</title>
+    <?php wp_head(); ?>
+</head>
+
+<body>
+    <!-- Quick Links -->
+    <?php include(AERP_HRM_PATH . 'frontend/quick-links.php'); ?>
+
+    <div class="aerp-hrm-dashboard">
+        <!-- Header Profile -->
+        <div class="aerp-profile-header">
+            <div class="aerp-profile-avatar">
+                <?php $initial = mb_strtoupper(mb_substr($employee->full_name, 0, 1)); ?>
+                <div class="aerp-avatar-circle"><?= esc_html($initial) ?></div>
             </div>
-            <div class="aerp-profile-contact">
-                <span><i class="dashicons dashicons-email"></i> <a href="mailto:<?= esc_attr($employee->email) ?>"><?= esc_html($employee->email) ?></a></span>
-                <span><i class="dashicons dashicons-calendar"></i> Ngày vào làm: <?= $employee->join_date ? date('d/m/Y', strtotime($employee->join_date)) : '—' ?></span>
-                <?php if ($employee->relative_name): ?>
-                    <span><i class="dashicons dashicons-groups"></i> Người thân: <?= esc_html($employee->relative_name) ?> (<?= esc_html($employee->relative_relationship) ?> – <?= esc_html($employee->relative_phone) ?>)</span>
-                <?php endif; ?>
+            <div class="aerp-profile-info">
+                <h2><?= esc_html($employee->full_name) ?></h2>
+                <div class="aerp-profile-meta">
+                    <span><i class="dashicons dashicons-id"></i> Mã NV: <?= esc_html($employee->employee_code) ?></span>
+                    <span><i class="dashicons dashicons-businessman"></i> <?= esc_html(aerp_get_position_name($employee->position_id)) ?></span>
+                    <span><i class="dashicons dashicons-building"></i> <?= esc_html(aerp_get_department_name($employee->department_id)) ?></span>
+                </div>
+                <div class="aerp-profile-contact">
+                    <span><i class="dashicons dashicons-email"></i> <a href="mailto:<?= esc_attr($employee->email) ?>"><?= esc_html($employee->email) ?></a></span>
+                    <span><i class="dashicons dashicons-calendar"></i> Ngày vào làm: <?= $employee->join_date ? date('d/m/Y', strtotime($employee->join_date)) : '—' ?></span>
+                    <?php if ($employee->relative_name): ?>
+                        <span><i class="dashicons dashicons-groups"></i> Người thân: <?= esc_html($employee->relative_name) ?> (<?= esc_html($employee->relative_relationship) ?> – <?= esc_html($employee->relative_phone) ?>)</span>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Salary Overview Cards -->
-    <div class="aerp-salary-overview" id="aerp-salary-overview">
-        <div class="aerp-card aerp-salary-summary">
-            <div class="aerp-card-header">
-                <h2><i class="dashicons dashicons-money"></i> Tổng quan lương tháng hiện tại (<?= date('m/Y') ?>)</h2>
-            </div>
-            <?php if ($salary): ?>
-                <div class="aerp-salary-stats">
-                    <div class="aerp-stat-card">
-                        <div class="aerp-stat-icon bg-blue">
-                            <i class="dashicons dashicons-money"></i>
-                        </div>
-                        <div class="aerp-stat-info">
-                            <span class="aerp-stat-label">Lương cơ bản</span>
-                            <span class="aerp-stat-value"><?= number_format($salary->base_salary, 0, ',', '.') ?> đ</span>
-                        </div>
-                    </div>
-
-                    <div class="aerp-stat-card">
-                        <div class="aerp-stat-icon bg-green">
-                            <i class="dashicons dashicons-money-alt"></i>
-                        </div>
-                        <div class="aerp-stat-info">
-                            <span class="aerp-stat-label">Phụ cấp</span>
-                            <span class="aerp-stat-value"><?= number_format($config_init->allowance, 0, ',', '.') ?> đ</span>
-                        </div>
-                    </div>
-
-                    <div class="aerp-stat-card">
-                        <div class="aerp-stat-icon bg-orange">
-                            <i class="dashicons dashicons-calendar-alt"></i>
-                        </div>
-                        <div class="aerp-stat-info">
-                            <span class="aerp-stat-label">Ngày công chuẩn</span>
-                            <span class="aerp-stat-value"><?= $salary->work_days ?></span>
-                        </div>
-                    </div>
-                    <div class="aerp-stat-card">
-                        <div class="aerp-stat-icon bg-teal">
-                            <i class="dashicons dashicons-calendar-alt"></i>
-                        </div>
-                        <div class="aerp-stat-info">
-                            <span class="aerp-stat-label">Ngày thực tế</span>
-                            <span class="aerp-stat-value"><?= $salary->actual_work_days ?></span>
-                        </div>
-                    </div>
-
-                    <div class="aerp-stat-card">
-                        <div class="aerp-stat-icon bg-purple">
-                            <i class="dashicons dashicons-star-filled"></i>
-                        </div>
-                        <div class="aerp-stat-info">
-                            <span class="aerp-stat-label">Điểm KPI</span>
-                            <span class="aerp-stat-value"><?= esc_html($total_kpi_init) ?></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="aerp-salary-total-card">
-                    <div class="aerp-total-item">
-                        <span>Tổng nhận:</span>
-                        <span class="aerp-total-value positive">
-                            <?php
-                            $tong_nhan = ($salary->base_salary ?? 0)
-                                + ($salary->auto_bonus ?? 0)
-                                + ($salary->bonus ?? 0)
-                                + ($config_init->allowance ?? 0)
-                                + ($salary->salary_per_day * $salary->ot_days);
-                            echo number_format($tong_nhan, 0, ',', '.') . ' đ';
-                            ?>
-                        </span>
-                    </div>
-                    <div class="aerp-total-item">
-                        <span>Thực lãnh:</span>
-                        <span class="aerp-total-value highlight"><?= number_format($total, 0, ',', '.') ?> đ</span>
-                    </div>
-                </div>
-            <?php else: ?>
-                <div class="aerp-no-data">
-                    <i class="dashicons dashicons-folder-open"></i>
-                    <p>Chưa có dữ liệu lương</p>
-                </div>
-            <?php endif; ?>
-            <form method="get" class="aerp-salary-month-form">
-                <input type="hidden" name="page" value="aerp_employee_profile">
-                <div class="form-group">
-                    <input type="month" id="calc_month" name="calc_month" value="<?= esc_attr($calc_month) ?>">
-                    <button type="submit" class="aerp-btn aerp-btn-primary"><i class="dashicons dashicons-calculator"></i> Tính lương</button>
-                </div>
-            </form>
-        </div>
-        <?php if ($salary): ?>
-            <div class="aerp-card aerp-salary-details">
+        <!-- Salary Overview Cards -->
+        <div class="aerp-salary-overview" id="aerp-salary-overview">
+            <div class="aerp-card aerp-salary-summary">
                 <div class="aerp-card-header">
-                    <h2><i class="dashicons dashicons-portfolio"></i> Chi tiết lương (<?= date('m/Y') ?>)</h2>
+                    <h2><i class="dashicons dashicons-money"></i> Tổng quan lương tháng hiện tại (<?= date('m/Y') ?>)</h2>
                 </div>
+                <?php if ($salary): ?>
+                    <div class="aerp-salary-stats">
+                        <div class="aerp-stat-card">
+                            <div class="aerp-stat-icon bg-blue">
+                                <i class="dashicons dashicons-money"></i>
+                            </div>
+                            <div class="aerp-stat-info">
+                                <span class="aerp-stat-label">Lương cơ bản</span>
+                                <span class="aerp-stat-value"><?= number_format($salary->base_salary, 0, ',', '.') ?> đ</span>
+                            </div>
+                        </div>
 
-                <div class="aerp-detail-sections">
-                    <div class="aerp-detail-section">
-                        <h3><i class="dashicons dashicons-plus"></i> Các khoản cộng</h3>
-                        <ul class="aerp-detail-list">
-                            <li>
-                                <span>Lương cơ bản</span>
-                                <span><?= number_format($salary->base_salary ?? 0, 0, ',', '.') ?> đ</span>
-                            </li>
-                            <li>
-                                <span>Phụ cấp</span>
-                                <span><?= number_format($config_init->allowance, 0, ',', '.') ?> đ</span>
-                            </li>
-                            <li>
-                                <span>Thưởng KPI</span>
-                                <span class="aerp-text-success">+<?= number_format($kpi_bonus_init, 0, ',', '.') ?> đ</span>
-                            </li>
-                            <li>
-                                <span>Thưởng động</span>
-                                <span class="aerp-text-success">+<?= number_format($salary->auto_bonus ?? 0, 0, ',', '.') ?> đ</span>
-                            </li>
-                            <li>
-                                <span>Thưởng khác</span>
-                                <span class="aerp-text-success">+<?= number_format($salary->bonus - $kpi_bonus_init ?? 0, 0, ',', '.') ?> đ</span>
-                            </li>
-                        </ul>
+                        <div class="aerp-stat-card">
+                            <div class="aerp-stat-icon bg-green">
+                                <i class="dashicons dashicons-money-alt"></i>
+                            </div>
+                            <div class="aerp-stat-info">
+                                <span class="aerp-stat-label">Phụ cấp</span>
+                                <span class="aerp-stat-value"><?= number_format($config_init->allowance, 0, ',', '.') ?> đ</span>
+                            </div>
+                        </div>
+
+                        <div class="aerp-stat-card">
+                            <div class="aerp-stat-icon bg-orange">
+                                <i class="dashicons dashicons-calendar-alt"></i>
+                            </div>
+                            <div class="aerp-stat-info">
+                                <span class="aerp-stat-label">Ngày công chuẩn</span>
+                                <span class="aerp-stat-value"><?= $salary->work_days ?></span>
+                            </div>
+                        </div>
+                        <div class="aerp-stat-card">
+                            <div class="aerp-stat-icon bg-teal">
+                                <i class="dashicons dashicons-calendar-alt"></i>
+                            </div>
+                            <div class="aerp-stat-info">
+                                <span class="aerp-stat-label">Ngày thực tế</span>
+                                <span class="aerp-stat-value"><?= $salary->actual_work_days ?></span>
+                            </div>
+                        </div>
+
+                        <div class="aerp-stat-card">
+                            <div class="aerp-stat-icon bg-purple">
+                                <i class="dashicons dashicons-star-filled"></i>
+                            </div>
+                            <div class="aerp-stat-info">
+                                <span class="aerp-stat-label">Điểm KPI</span>
+                                <span class="aerp-stat-value"><?= esc_html($total_kpi_init) ?></span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="aerp-detail-section">
-                        <h3><i class="dashicons dashicons-minus"></i> Các khoản trừ</h3>
-                        <ul class="aerp-detail-list">
-                            <li>
-                                <span>Phạt</span>
-                                <span class="aerp-text-danger">-<?= number_format($salary->deduction ?? 0, 0, ',', '.') ?> đ</span>
-                            </li>
-                            <li>
-                                <span>Ứng lương</span>
-                                <span class="aerp-text-danger">-<?= number_format($salary->advance_paid ?? 0, 0, ',', '.') ?> đ</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="aerp-detail-section">
-                        <h3><i class="dashicons dashicons-chart-area"></i> Thông tin khác</h3>
-                        <ul class="aerp-detail-list">
-                            <li>
-                                <span>Xếp loại</span>
-                                <span class="badge badge-info"><?= esc_html($salary->ranking ?: '--') ?></span>
-                            </li>
-                            <li>
-                                <span>Điểm chuyên cần</span>
-                                <span><?= esc_html($salary->points_total) ?></span>
-                            </li>
-                            <li>
-                                <span>Công/ngày</span>
-                                <span><?= isset($salary->salary_per_day) ? number_format($salary->salary_per_day, 0, ',', '.') . ' đ' : '' ?></span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
-    </div>
-    <!-- Cost Breakdown -->
-    <div class="aerp-card aerp-cost-breakdown">
-        <div class="aerp-card-header">
-            <h2><i class="dashicons dashicons-list-view"></i> Chi tiết tăng/giảm tháng hiện tại (<?= date('m/Y') ?>)</h2>
-        </div>
-
-        <div class="aerp-cost-items">
-            <?php if (!empty($latest_cost_items)): ?>
-                <?php foreach ($latest_cost_items as $item): ?>
-                    <div class="aerp-cost-item <?= $item['type'] === 'plus' ? 'positive' : 'negative' ?>">
-                        <div class="aerp-cost-icon">
-                            <?php if ($item['type'] === 'plus'): ?>
-                                <i class="dashicons dashicons-plus"></i>
-                            <?php else: ?>
-                                <i class="dashicons dashicons-minus"></i>
-                            <?php endif; ?>
-                        </div>
-                        <div class="aerp-cost-details">
-                            <span><?= esc_html($item['label']) ?></span>
-                            <strong><?= ($item['amount'] > 0 ? '+' : '') . number_format($item['amount'], 0, ',', '.') ?> đ</strong>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="aerp-no-data">
-                    <i class="dashicons dashicons-folder-open"></i>
-                    <p>Không có chi tiết tăng/giảm trong tháng này.</p>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
-    <?php if ($calc_data): ?>
-        <!-- Salary Calculation Results -->
-        <div class="aerp-card aerp-salary-calculation">
-            <div class="aerp-card-header">
-                <h2><i class="dashicons dashicons-calculator"></i> Tính lương tháng <?= date('m/Y', strtotime($calc_month)) ?></h2>
-            </div>
-
-            <div class="aerp-calculation-results">
-                <div class="aerp-result-section">
-                    <h3><i class="dashicons dashicons-products"></i> Thông tin cơ bản</h3>
-                    <div class="aerp-result-grid">
-                        <div class="aerp-result-item">
-                            <span>Lương cơ bản</span>
-                            <strong><?= number_format($calc_data['base'], 0, ',', '.') ?> đ</strong>
-                        </div>
-                        <div class="aerp-result-item">
-                            <span>Phụ cấp</span>
-                            <strong><?= number_format($calc_data['allowance'], 0, ',', '.') ?> đ</strong>
-                        </div>
-                        <div class="aerp-result-item">
-                            <span>Tổng ngày công</span>
-                            <strong><?= $calc_data['work_days_standard_full_month'] ?></strong>
-                        </div>
-                        <div class="aerp-result-item">
-                            <span>Công/ngày</span>
-                            <strong><?= number_format($calc_data['salary_per_day'], 0, ',', '.') ?> đ</strong>
-                        </div>
-                        <div class="aerp-result-item">
-                            <span>Ứng lương</span>
-                            <strong class="aerp-text-danger">-<?= number_format($calc_data['advance'], 0, ',', '.') ?> đ</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="aerp-result-section">
-                    <h3><i class="dashicons dashicons-calendar"></i> Chấm công</h3>
-                    <div class="aerp-result-grid">
-                        <div class="aerp-result-item">
-                            <span>Ngày nghỉ</span>
-                            <strong><?= $calc_data['off_days'] ?></strong>
-                        </div>
-                        <div class="aerp-result-item">
-                            <span>Tăng ca</span>
-                            <strong><?= $calc_data['ot_total'] ?></strong>
-                        </div>
-                        <div class="aerp-result-item">
-                            <span>Ngày làm thực tế</span>
-                            <strong><?= $calc_data['actual_work_days'] ?></strong>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="aerp-result-section">
-                    <h3><i class="dashicons dashicons-tickets-alt"></i> Thưởng & phạt</h3>
-                    <div class="aerp-result-grid">
-                        <div class="aerp-result-item">
-                            <span>Thưởng KPI</span>
-                            <strong class="aerp-text-success">+<?= number_format($calc_data['kpi_bonus'], 0, ',', '.') ?> đ</strong>
-                        </div>
-                        <div class="aerp-result-item">
-                            <span>Thưởng khác</span>
-                            <strong class="aerp-text-success">+<?= number_format($calc_data['bonus'] - $calc_data['kpi_bonus'] - $calc_data['auto_bonus'], 0, ',', '.') ?> đ</strong>
-                        </div>
-                        <div class="aerp-result-item">
-                            <span>Phạt</span>
-                            <strong class="aerp-text-danger">-<?= number_format($calc_data['deduction'], 0, ',', '.') ?> đ</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="aerp-result-section">
-                    <h3><i class="dashicons dashicons-media-spreadsheet"></i> Tổng hợp</h3>
-                    <div class="aerp-result-totals">
+                    <div class="aerp-salary-total-card">
                         <div class="aerp-total-item">
                             <span>Tổng nhận:</span>
-                            <strong class="aerp-total-value positive"><?= number_format($calc_data['tong_nhan'], 0, ',', '.') ?> đ</strong>
+                            <span class="aerp-total-value positive">
+                                <?php
+                                $tong_nhan = ($salary->base_salary ?? 0)
+                                    + ($salary->auto_bonus ?? 0)
+                                    + ($salary->bonus ?? 0)
+                                    + ($config_init->allowance ?? 0)
+                                    + ($salary->salary_per_day * $salary->ot_days);
+                                echo number_format($tong_nhan, 0, ',', '.') . ' đ';
+                                ?>
+                            </span>
                         </div>
                         <div class="aerp-total-item">
                             <span>Thực lãnh:</span>
-                            <strong class="aerp-total-value highlight"><?= number_format($calc_data['final_salary'], 0, ',', '.') ?> đ</strong>
+                            <span class="aerp-total-value highlight"><?= number_format($total, 0, ',', '.') ?> đ</span>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="aerp-no-data">
+                        <i class="dashicons dashicons-folder-open"></i>
+                        <p>Chưa có dữ liệu lương</p>
+                    </div>
+                <?php endif; ?>
+                <form method="get" class="aerp-salary-month-form">
+                    <input type="hidden" name="page" value="aerp_employee_profile">
+                    <div class="form-group">
+                        <input type="month" id="calc_month" name="calc_month" value="<?= esc_attr($calc_month) ?>">
+                        <button type="submit" class="aerp-btn aerp-btn-primary"><i class="dashicons dashicons-calculator"></i> Tính lương</button>
+                    </div>
+                </form>
+            </div>
+            <?php if ($salary): ?>
+                <div class="aerp-card aerp-salary-details">
+                    <div class="aerp-card-header">
+                        <h2><i class="dashicons dashicons-portfolio"></i> Chi tiết lương (<?= date('m/Y') ?>)</h2>
+                    </div>
+
+                    <div class="aerp-detail-sections">
+                        <div class="aerp-detail-section">
+                            <h3><i class="dashicons dashicons-plus"></i> Các khoản cộng</h3>
+                            <ul class="aerp-detail-list">
+                                <li>
+                                    <span>Lương cơ bản</span>
+                                    <span><?= number_format($salary->base_salary ?? 0, 0, ',', '.') ?> đ</span>
+                                </li>
+                                <li>
+                                    <span>Phụ cấp</span>
+                                    <span><?= number_format($config_init->allowance, 0, ',', '.') ?> đ</span>
+                                </li>
+                                <li>
+                                    <span>Thưởng KPI</span>
+                                    <span class="aerp-text-success">+<?= number_format($kpi_bonus_init, 0, ',', '.') ?> đ</span>
+                                </li>
+                                <li>
+                                    <span>Thưởng động</span>
+                                    <span class="aerp-text-success">+<?= number_format($salary->auto_bonus ?? 0, 0, ',', '.') ?> đ</span>
+                                </li>
+                                <li>
+                                    <span>Thưởng khác</span>
+                                    <span class="aerp-text-success">+<?= number_format($salary->bonus - $kpi_bonus_init ?? 0, 0, ',', '.') ?> đ</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="aerp-detail-section">
+                            <h3><i class="dashicons dashicons-minus"></i> Các khoản trừ</h3>
+                            <ul class="aerp-detail-list">
+                                <li>
+                                    <span>Phạt</span>
+                                    <span class="aerp-text-danger">-<?= number_format($salary->deduction ?? 0, 0, ',', '.') ?> đ</span>
+                                </li>
+                                <li>
+                                    <span>Ứng lương</span>
+                                    <span class="aerp-text-danger">-<?= number_format($salary->advance_paid ?? 0, 0, ',', '.') ?> đ</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="aerp-detail-section">
+                            <h3><i class="dashicons dashicons-chart-area"></i> Thông tin khác</h3>
+                            <ul class="aerp-detail-list">
+                                <li>
+                                    <span>Xếp loại</span>
+                                    <span class="badge badge-info"><?= esc_html($salary->ranking ?: '--') ?></span>
+                                </li>
+                                <li>
+                                    <span>Điểm chuyên cần</span>
+                                    <span><?= esc_html($salary->points_total) ?></span>
+                                </li>
+                                <li>
+                                    <span>Công/ngày</span>
+                                    <span><?= isset($salary->salary_per_day) ? number_format($salary->salary_per_day, 0, ',', '.') . ' đ' : '' ?></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <!-- Cost Breakdown -->
+        <div class="aerp-card aerp-cost-breakdown">
+            <div class="aerp-card-header">
+                <h2><i class="dashicons dashicons-list-view"></i> Chi tiết tăng/giảm tháng hiện tại (<?= date('m/Y') ?>)</h2>
+            </div>
+
+            <div class="aerp-cost-items">
+                <?php if (!empty($latest_cost_items)): ?>
+                    <?php foreach ($latest_cost_items as $item): ?>
+                        <div class="aerp-cost-item <?= $item['type'] === 'plus' ? 'positive' : 'negative' ?>">
+                            <div class="aerp-cost-icon">
+                                <?php if ($item['type'] === 'plus'): ?>
+                                    <i class="dashicons dashicons-plus"></i>
+                                <?php else: ?>
+                                    <i class="dashicons dashicons-minus"></i>
+                                <?php endif; ?>
+                            </div>
+                            <div class="aerp-cost-details">
+                                <span><?= esc_html($item['label']) ?></span>
+                                <strong><?= ($item['amount'] > 0 ? '+' : '') . number_format($item['amount'], 0, ',', '.') ?> đ</strong>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="aerp-no-data">
+                        <i class="dashicons dashicons-folder-open"></i>
+                        <p>Không có chi tiết tăng/giảm trong tháng này.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php if ($calc_data): ?>
+            <!-- Salary Calculation Results -->
+            <div class="aerp-card aerp-salary-calculation">
+                <div class="aerp-card-header">
+                    <h2><i class="dashicons dashicons-calculator"></i> Tính lương tháng <?= date('m/Y', strtotime($calc_month)) ?></h2>
+                </div>
+
+                <div class="aerp-calculation-results">
+                    <div class="aerp-result-section">
+                        <h3><i class="dashicons dashicons-products"></i> Thông tin cơ bản</h3>
+                        <div class="aerp-result-grid">
+                            <div class="aerp-result-item">
+                                <span>Lương cơ bản</span>
+                                <strong><?= number_format($calc_data['base'], 0, ',', '.') ?> đ</strong>
+                            </div>
+                            <div class="aerp-result-item">
+                                <span>Phụ cấp</span>
+                                <strong><?= number_format($calc_data['allowance'], 0, ',', '.') ?> đ</strong>
+                            </div>
+                            <div class="aerp-result-item">
+                                <span>Tổng ngày công</span>
+                                <strong><?= $calc_data['work_days_standard_full_month'] ?></strong>
+                            </div>
+                            <div class="aerp-result-item">
+                                <span>Công/ngày</span>
+                                <strong><?= number_format($calc_data['salary_per_day'], 0, ',', '.') ?> đ</strong>
+                            </div>
+                            <div class="aerp-result-item">
+                                <span>Ứng lương</span>
+                                <strong class="aerp-text-danger">-<?= number_format($calc_data['advance'], 0, ',', '.') ?> đ</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="aerp-result-section">
+                        <h3><i class="dashicons dashicons-calendar"></i> Chấm công</h3>
+                        <div class="aerp-result-grid">
+                            <div class="aerp-result-item">
+                                <span>Ngày nghỉ</span>
+                                <strong><?= $calc_data['off_days'] ?></strong>
+                            </div>
+                            <div class="aerp-result-item">
+                                <span>Tăng ca</span>
+                                <strong><?= $calc_data['ot_total'] ?></strong>
+                            </div>
+                            <div class="aerp-result-item">
+                                <span>Ngày làm thực tế</span>
+                                <strong><?= $calc_data['actual_work_days'] ?></strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="aerp-result-section">
+                        <h3><i class="dashicons dashicons-tickets-alt"></i> Thưởng & phạt</h3>
+                        <div class="aerp-result-grid">
+                            <div class="aerp-result-item">
+                                <span>Thưởng KPI</span>
+                                <strong class="aerp-text-success">+<?= number_format($calc_data['kpi_bonus'], 0, ',', '.') ?> đ</strong>
+                            </div>
+                            <div class="aerp-result-item">
+                                <span>Thưởng khác</span>
+                                <strong class="aerp-text-success">+<?= number_format($calc_data['bonus'] - $calc_data['kpi_bonus'] - $calc_data['auto_bonus'], 0, ',', '.') ?> đ</strong>
+                            </div>
+                            <div class="aerp-result-item">
+                                <span>Phạt</span>
+                                <strong class="aerp-text-danger">-<?= number_format($calc_data['deduction'], 0, ',', '.') ?> đ</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="aerp-result-section">
+                        <h3><i class="dashicons dashicons-media-spreadsheet"></i> Tổng hợp</h3>
+                        <div class="aerp-result-totals">
+                            <div class="aerp-total-item">
+                                <span>Tổng nhận:</span>
+                                <strong class="aerp-total-value positive"><?= number_format($calc_data['tong_nhan'], 0, ',', '.') ?> đ</strong>
+                            </div>
+                            <div class="aerp-total-item">
+                                <span>Thực lãnh:</span>
+                                <strong class="aerp-total-value highlight"><?= number_format($calc_data['final_salary'], 0, ',', '.') ?> đ</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    <?php endif; ?>
-    <!-- Rewards & Fines -->
-    <div class="aerp-card aerp-rewards-fines">
-        <div class="aerp-card-header">
-            <h2><i class="dashicons dashicons-awards"></i> Thưởng & Phạt tháng hiện tại (<?= date('m/Y') ?>)</h2>
-            <button type="button" class="aerp-btn aerp-btn-primary" data-open-adjustment-popup>
-                <i class="dashicons dashicons-plus"></i> Thêm mới
-            </button>
-        </div>
-
-        <?php if (!empty($notification)): ?>
-            <div id="aerp-hrm-toast" class="aerp-hrm-toast">
-                <span><?= esc_html($notification) ?></span>
-                <button onclick="closeToast()">X</button>
-            </div>
         <?php endif; ?>
-
-        <div class="aerp-rf-tabs">
-            <div class="aerp-rf-tab active" data-tab="rewards">
-                <i class="dashicons dashicons-awards"></i> Thưởng (<?= count($all_rewards) ?>)
+        <!-- Rewards & Fines -->
+        <div class="aerp-card aerp-rewards-fines">
+            <div class="aerp-card-header">
+                <h2><i class="dashicons dashicons-awards"></i> Thưởng & Phạt tháng hiện tại (<?= date('m/Y') ?>)</h2>
+                <button type="button" class="aerp-btn aerp-btn-primary" data-open-adjustment-popup>
+                    <i class="dashicons dashicons-plus"></i> Thêm mới
+                </button>
             </div>
-            <div class="aerp-rf-tab" data-tab="fines">
-                <i class="dashicons dashicons-warning"></i> Phạt (<?= count($all_fines) ?>)
-            </div>
-        </div>
 
-        <div class="aerp-rf-content active" id="rewards">
-            <?php if (empty($all_rewards)): ?>
-                <div class="aerp-no-data">
-                    <i class="dashicons dashicons-folder-open"></i>
-                    <p>Không có mục thưởng</p>
-                </div>
-            <?php else: ?>
-                <div class="aerp-rf-items">
-                    <?php foreach ($all_rewards as $r): ?>
-                        <div class="aerp-rf-item positive">
-                            <div class="aerp-rf-icon">
-                                <i class="dashicons dashicons-awards"></i>
-                            </div>
-                            <div class="aerp-rf-details">
-                                <div class="aerp-rf-amount">+<?= number_format($r->amount, 0, ',', '.') ?> đ</div>
-                                <div class="aerp-rf-reason"><?= esc_html($r->reason) ?></div>
-                                <div class="aerp-rf-meta">
-                                    <?php if (!empty($r->date)): ?>
-                                        <span class="rf-date"><i class="dashicons dashicons-calendar"></i> <?= date('d/m/Y', strtotime($r->date)) ?></span>
-                                    <?php endif; ?>
-                                    <?php if (!empty($r->description)): ?>
-                                        <span class="rf-desc"><i class="dashicons dashicons-format-status"></i> <?= esc_html($r->description) ?></span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
+            <?php if (!empty($notification)): ?>
+                <div id="aerp-hrm-toast" class="aerp-hrm-toast">
+                    <span><?= esc_html($notification) ?></span>
+                    <button onclick="closeToast()">X</button>
                 </div>
             <?php endif; ?>
-        </div>
 
-        <div class="aerp-rf-content" id="fines">
-            <?php if (empty($all_fines)): ?>
-                <div class="aerp-no-data">
-                    <i class="dashicons dashicons-folder-open"></i>
-                    <p>Không có mục phạt</p>
+            <div class="aerp-rf-tabs">
+                <div class="aerp-rf-tab active" data-tab="rewards">
+                    <i class="dashicons dashicons-awards"></i> Thưởng (<?= count($all_rewards) ?>)
                 </div>
-            <?php else: ?>
-                <div class="aerp-rf-items">
-                    <?php foreach ($all_fines as $f): ?>
-                        <div class="aerp-rf-item negative">
-                            <div class="aerp-rf-icon">
-                                <i class="dashicons dashicons-warning"></i>
-                            </div>
-                            <div class="aerp-rf-details">
-                                <div class="aerp-rf-amount">-<?= number_format($f->amount, 0, ',', '.') ?> đ</div>
-                                <div class="aerp-rf-reason"><?= esc_html($f->reason) ?></div>
-                                <div class="aerp-rf-meta">
-                                    <?php if (!empty($f->date)): ?>
-                                        <span class="rf-date"><i class="dashicons dashicons-calendar"></i> <?= date('d/m/Y', strtotime($f->date)) ?></span>
-                                    <?php endif; ?>
-                                    <?php if (!empty($f->description)): ?>
-                                        <span class="rf-desc"><i class="dashicons dashicons-format-status"></i> <?= esc_html($f->description) ?></span>
-                                    <?php endif; ?>
+                <div class="aerp-rf-tab" data-tab="fines">
+                    <i class="dashicons dashicons-warning"></i> Phạt (<?= count($all_fines) ?>)
+                </div>
+            </div>
+
+            <div class="aerp-rf-content active" id="rewards">
+                <?php if (empty($all_rewards)): ?>
+                    <div class="aerp-no-data">
+                        <i class="dashicons dashicons-folder-open"></i>
+                        <p>Không có mục thưởng</p>
+                    </div>
+                <?php else: ?>
+                    <div class="aerp-rf-items">
+                        <?php foreach ($all_rewards as $r): ?>
+                            <div class="aerp-rf-item positive">
+                                <div class="aerp-rf-icon">
+                                    <i class="dashicons dashicons-awards"></i>
+                                </div>
+                                <div class="aerp-rf-details">
+                                    <div class="aerp-rf-amount">+<?= number_format($r->amount, 0, ',', '.') ?> đ</div>
+                                    <div class="aerp-rf-reason"><?= esc_html($r->reason) ?></div>
+                                    <div class="aerp-rf-meta">
+                                        <?php if (!empty($r->date)): ?>
+                                            <span class="rf-date"><i class="dashicons dashicons-calendar"></i> <?= date('d/m/Y', strtotime($r->date)) ?></span>
+                                        <?php endif; ?>
+                                        <?php if (!empty($r->description)): ?>
+                                            <span class="rf-desc"><i class="dashicons dashicons-format-status"></i> <?= esc_html($r->description) ?></span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
 
-    <!-- Salary Timeline -->
-    <?php
-    $configs = $wpdb->get_results($wpdb->prepare("
+            <div class="aerp-rf-content" id="fines">
+                <?php if (empty($all_fines)): ?>
+                    <div class="aerp-no-data">
+                        <i class="dashicons dashicons-folder-open"></i>
+                        <p>Không có mục phạt</p>
+                    </div>
+                <?php else: ?>
+                    <div class="aerp-rf-items">
+                        <?php foreach ($all_fines as $f): ?>
+                            <div class="aerp-rf-item negative">
+                                <div class="aerp-rf-icon">
+                                    <i class="dashicons dashicons-warning"></i>
+                                </div>
+                                <div class="aerp-rf-details">
+                                    <div class="aerp-rf-amount">-<?= number_format($f->amount, 0, ',', '.') ?> đ</div>
+                                    <div class="aerp-rf-reason"><?= esc_html($f->reason) ?></div>
+                                    <div class="aerp-rf-meta">
+                                        <?php if (!empty($f->date)): ?>
+                                            <span class="rf-date"><i class="dashicons dashicons-calendar"></i> <?= date('d/m/Y', strtotime($f->date)) ?></span>
+                                        <?php endif; ?>
+                                        <?php if (!empty($f->description)): ?>
+                                            <span class="rf-desc"><i class="dashicons dashicons-format-status"></i> <?= esc_html($f->description) ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Salary Timeline -->
+        <?php
+        $configs = $wpdb->get_results($wpdb->prepare("
         SELECT * FROM {$wpdb->prefix}aerp_hrm_salary_config
         WHERE employee_id = %d ORDER BY start_date DESC
     ", $employee_id));
-    if ($configs):
-    ?>
-        <div class="aerp-card aerp-salary-timeline">
-            <div class="aerp-card-header">
-                <h2><i class="dashicons dashicons-chart-area"></i> Lộ trình lương</h2>
-            </div>
+        if ($configs):
+        ?>
+            <div class="aerp-card aerp-salary-timeline">
+                <div class="aerp-card-header">
+                    <h2><i class="dashicons dashicons-chart-area"></i> Lộ trình lương</h2>
+                </div>
 
-            <div class="aerp-timeline-container">
-                <?php foreach ($configs as $config): ?>
-                    <div class="aerp-timeline-item">
-                        <div class="aerp-timeline-date">
-                            <?= date('d/m/Y', strtotime($config->start_date)) ?> - <?= date('d/m/Y', strtotime($config->end_date)) ?>
-                        </div>
-                        <div class="aerp-timeline-content">
-                            <div class="aerp-timeline-dot"></div>
-                            <div class="aerp-timeline-info">
-                                <div class="aerp-timeline-salary">
-                                    <i class="dashicons dashicons-money"></i>
-                                    <?= number_format($config->base_salary, 0, ',', '.') ?> đ
-                                    <?php if ($config->allowance > 0): ?>
-                                        <span class="aerp-timeline-allowance">
-                                            + <?= number_format($config->allowance, 0, ',', '.') ?> đ phụ cấp
-                                        </span>
-                                    <?php endif; ?>
+                <div class="aerp-timeline-container">
+                    <?php foreach ($configs as $config): ?>
+                        <div class="aerp-timeline-item">
+                            <div class="aerp-timeline-date">
+                                <?= date('d/m/Y', strtotime($config->start_date)) ?> - <?= date('d/m/Y', strtotime($config->end_date)) ?>
+                            </div>
+                            <div class="aerp-timeline-content">
+                                <div class="aerp-timeline-dot"></div>
+                                <div class="aerp-timeline-info">
+                                    <div class="aerp-timeline-salary">
+                                        <i class="dashicons dashicons-money"></i>
+                                        <?= number_format($config->base_salary, 0, ',', '.') ?> đ
+                                        <?php if ($config->allowance > 0): ?>
+                                            <span class="aerp-timeline-allowance">
+                                                + <?= number_format($config->allowance, 0, ',', '.') ?> đ phụ cấp
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
+    </div>
+
+    <!-- Popup form thêm thưởng/phạt -->
+    <div class="aerp-popup" id="aerp-adjustment-popup">
+        <div class="aerp-popup-overlay"></div>
+        <div class="aerp-popup-content">
+            <div class="aerp-popup-header">
+                <h3><i class="dashicons dashicons-plus"></i> Thêm thưởng/phạt</h3>
+                <button class="aerp-popup-close">&times;</button>
+            </div>
+            <div class="aerp-popup-body">
+                <form method="post" class="aerp-form">
+                    <?php wp_nonce_field('aerp_add_adjustment_action', 'aerp_add_adjustment_nonce'); ?>
+
+                    <div class="form-group">
+                        <label for="adjustment-type"><i class="dashicons dashicons-tag"></i> Loại</label>
+                        <select class="aerp-hrm-custom-select" id="adjustment-type" name="type" required>
+                            <option value="">-- Chọn loại --</option>
+                            <option value="reward">Thưởng</option>
+                            <option value="fine">Phạt</option>
+                        </select>
                     </div>
-                <?php endforeach; ?>
+
+                    <div class="form-group">
+                        <label for="adjustment-amount"><i class="dashicons dashicons-money"></i> Số tiền</label>
+                        <input type="number" id="adjustment-amount" name="amount" placeholder="Nhập số tiền" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adjustment-reason"><i class="dashicons dashicons-format-status"></i> Lý do</label>
+                        <input type="text" id="adjustment-reason" name="reason" placeholder="Nhập lý do" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adjustment-date"><i class="dashicons dashicons-calendar"></i> Ngày hiệu lực</label>
+                        <input type="date" id="adjustment-date" name="date_effective" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adjustment-description"><i class="dashicons dashicons-edit"></i> Ghi chú</label>
+                        <textarea id="adjustment-description" name="description" rows="3" placeholder="Nhập ghi chú (nếu có)"></textarea>
+                    </div>
+
+                    <div class="aerp-form-actions">
+                        <button type="submit" name="aerp_add_adjustment" class="aerp-btn aerp-btn-primary">
+                            <i class="dashicons dashicons-yes"></i> Lưu lại
+                        </button>
+                        <button type="button" class="aerp-btn aerp-btn-secondary aerp-popup-close">
+                            <i class="dashicons dashicons-no"></i> Hủy bỏ
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    <?php endif; ?>
-
-</div>
-
-<!-- Popup form thêm thưởng/phạt -->
-<div class="aerp-popup" id="aerp-adjustment-popup">
-    <div class="aerp-popup-overlay"></div>
-    <div class="aerp-popup-content">
-        <div class="aerp-popup-header">
-            <h3><i class="dashicons dashicons-plus"></i> Thêm thưởng/phạt</h3>
-            <button class="aerp-popup-close">&times;</button>
-        </div>
-        <div class="aerp-popup-body">
-            <form method="post" class="aerp-form">
-                <?php wp_nonce_field('aerp_add_adjustment_action', 'aerp_add_adjustment_nonce'); ?>
-
-                <div class="form-group">
-                    <label for="adjustment-type"><i class="dashicons dashicons-tag"></i> Loại</label>
-                    <select class="aerp-hrm-custom-select" id="adjustment-type" name="type" required>
-                        <option value="">-- Chọn loại --</option>
-                        <option value="reward">Thưởng</option>
-                        <option value="fine">Phạt</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="adjustment-amount"><i class="dashicons dashicons-money"></i> Số tiền</label>
-                    <input type="number" id="adjustment-amount" name="amount" placeholder="Nhập số tiền" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="adjustment-reason"><i class="dashicons dashicons-format-status"></i> Lý do</label>
-                    <input type="text" id="adjustment-reason" name="reason" placeholder="Nhập lý do" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="adjustment-date"><i class="dashicons dashicons-calendar"></i> Ngày hiệu lực</label>
-                    <input type="date" id="adjustment-date" name="date_effective" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="adjustment-description"><i class="dashicons dashicons-edit"></i> Ghi chú</label>
-                    <textarea id="adjustment-description" name="description" rows="3" placeholder="Nhập ghi chú (nếu có)"></textarea>
-                </div>
-
-                <div class="aerp-form-actions">
-                    <button type="submit" name="aerp_add_adjustment" class="aerp-btn aerp-btn-primary">
-                        <i class="dashicons dashicons-yes"></i> Lưu lại
-                    </button>
-                    <button type="button" class="aerp-btn aerp-btn-secondary aerp-popup-close">
-                        <i class="dashicons dashicons-no"></i> Hủy bỏ
-                    </button>
-                </div>
-            </form>
-        </div>
     </div>
-</div>
+    <script>
+        jQuery(document).ready(function($) {
+            // Toggle tabs
+            $('.aerp-rf-tab').on('click', function() {
+                $('.aerp-rf-tab').removeClass('active');
+                $(this).addClass('active');
 
-
-
-<script>
-    jQuery(document).ready(function($) {
-        // Toggle tabs
-        $('.aerp-rf-tab').on('click', function() {
-            $('.aerp-rf-tab').removeClass('active');
-            $(this).addClass('active');
-
-            $('.aerp-rf-content').removeClass('active');
-            $('#' + $(this).data('tab')).addClass('active');
+                $('.aerp-rf-content').removeClass('active');
+                $('#' + $(this).data('tab')).addClass('active');
+            });
         });
-    });
-</script>
+    </script>
+    <?php wp_footer(); ?>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

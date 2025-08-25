@@ -79,8 +79,18 @@
                     <?php
                         // Đếm số lượng đơn hàng có status là 'new'
                         global $wpdb;
+                        $current_user_id = get_current_user_id();
+                        $current_user_employee = $wpdb->get_row($wpdb->prepare(
+                            "SELECT id, work_location_id FROM {$wpdb->prefix}aerp_hrm_employees WHERE user_id = %d",
+                            $current_user_id
+                        ));
+                        $employee_current_id = $current_user_employee->id;
                         $order_new_count = (int) $wpdb->get_var(
-                            "SELECT COUNT(*) FROM {$wpdb->prefix}aerp_order_orders WHERE status = 'new'"
+                            $wpdb->prepare(
+                                "SELECT COUNT(*) FROM {$wpdb->prefix}aerp_order_orders WHERE status = 'new' AND (employee_id = %d OR created_by = %d)",
+                                $employee_current_id,
+                                $employee_current_id
+                            )
                         );
                     ?>
                     <span class="badge text-bg-secondary ms-2 rounded-pill bg-danger"><?php echo $order_new_count; ?></span>
@@ -91,6 +101,29 @@
             </a>
             <a class="nav-link <?php echo aerp_menu_active('aerp-order-statuses'); ?>" href="<?php echo home_url('/aerp-order-statuses'); ?>">
                 <span class="ms-4"><i class="fas fa-tags me-2"></i> <span class="menu-text">Trạng thái đơn hàng</span></span>
+            </a>
+            <a class="nav-link <?php echo aerp_menu_active('aerp-devices'); ?>" href="<?php echo home_url('/aerp-devices'); ?>">
+                <span class="ms-4"><i class="fas fa-laptop me-2"></i> <span class="menu-text">Quản lý thiết bị</span><?php
+                        // Đếm số lượng đơn hàng có status là 'new'
+                        global $wpdb;
+                        $current_user_id = get_current_user_id();
+                        $current_user_employee = $wpdb->get_row($wpdb->prepare(
+                            "SELECT id, work_location_id FROM {$wpdb->prefix}aerp_hrm_employees WHERE user_id = %d",
+                            $current_user_id
+                        ));
+                        $employee_current_id = $current_user_employee->id;
+                        $device_count = (int) $wpdb->get_var(
+                            $wpdb->prepare(
+                                "SELECT COUNT(*) 
+                                 FROM {$wpdb->prefix}aerp_order_devices d
+                                 INNER JOIN {$wpdb->prefix}aerp_order_orders o ON d.order_id = o.id
+                                 WHERE d.device_status = 'received' AND (o.employee_id = %d OR o.created_by = %d)",
+                                 $employee_current_id,
+                                 $employee_current_id
+                            )
+                        );
+                    ?>
+                    <span class="badge text-bg-secondary ms-2 rounded-pill bg-danger"><?php echo $device_count; ?></span></span>
             </a>
         </div>
         <div class="px-3 py-2 collapsible-menu-header">
