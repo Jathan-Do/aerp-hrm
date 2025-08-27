@@ -319,7 +319,7 @@ class AERP_Frontend_Table
                     if (!empty($this->filters)) {
                         foreach ($this->filters as $key => $value) {
                             // Bỏ qua các tham số đã có sẵn trong form tìm kiếm hoặc do table tự quản lý
-                            if (in_array($key, ['s', 'orderby', 'order', 'paged', 'search_term']) || empty($value)) {
+                            if (in_array($key, ['per_page', 's', 'orderby', 'order', 'paged', 'search_term']) || empty($value)) {
                                 continue;
                             }
                             echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr(stripslashes($value)) . '">';
@@ -337,6 +337,18 @@ class AERP_Frontend_Table
                     data-table-wrapper="<?php echo esc_attr($this->table_wrapper); ?>"
                     data-ajax-action="<?php echo esc_attr($this->ajax_action); ?>"
                     onsubmit="return false;" style="border: 1px solid rgb(212, 216, 219); border-radius: 0.375rem;">
+                    <?php
+                    // Giữ lại các tham số filter từ form chính để đảm bảo chúng không bị mất khi thay đổi số bản ghi
+                    if (!empty($this->filters)) {
+                        foreach ($this->filters as $key => $value) {
+                            // Bỏ qua các tham số đã có sẵn trong form hoặc do table tự quản lý
+                            if (in_array($key, ['per_page', 'paged', 'orderby', 'order', 's', 'search_term']) || empty($value)) {
+                                continue;
+                            }
+                            echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr(stripslashes($value)) . '">';
+                        }
+                    }
+                    ?>
                     <label for="per_page">Số lượng bản ghi:</label>
                     <input type="number" name="per_page" class="form-control shadow-sm" style="width: 80px;" min="<?php echo esc_attr(intval($this->min_per_page)); ?>" max="<?php echo esc_attr(intval($this->max_per_page)); ?>" step="1" value="<?php echo esc_attr(intval($this->per_page)); ?>" title="Số lượng bản ghi/trang">
                     <button type="submit" class="btn btn-primary">Áp dụng</button>

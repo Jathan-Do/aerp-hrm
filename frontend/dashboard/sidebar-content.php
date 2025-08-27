@@ -9,20 +9,20 @@
             <i class="fas fa-users me-2"></i> Nhân sự <i class="fas fa-chevron-down float-end"></i>
         </div> -->
         <!-- <div class="collapsible-menu-content"> -->
-        <a class="nav-link <?php echo aerp_menu_active('aerp-dashboard'); ?>" href="<?php echo home_url('/aerp-dashboard'); ?>">
+        <a class="nav-link <?php echo aerp_menu_active('aerp-dashboard'); ?>" href="<?php echo home_url('/aerp-dashboard'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Dashboard">
             <i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span>
         </a>
-        <a class="nav-link <?php echo aerp_menu_active('aerp-categories'); ?>" href="<?php echo home_url('/aerp-categories'); ?>">
+        <a class="nav-link <?php echo aerp_menu_active('aerp-categories'); ?>" href="<?php echo home_url('/aerp-categories'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Danh Mục">
             <i class="fas fa-th-large me-2"></i> <span class="menu-text">Danh Mục</span>
         </a>
-        <div class="px-3 py-2 collapsible-menu-header">
+        <div class="px-3 py-2 collapsible-menu-header fw-bold" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Nhân sự">
             <i class="fas fa-users me-2"></i> <span class="menu-text">Nhân sự</span> <i class="fas fa-chevron-down float-end"></i>
         </div>
         <div class="collapsible-menu-content">
-            <a class="nav-link <?php echo aerp_menu_active('aerp-hrm-employees'); ?>" href="<?php echo home_url('/aerp-hrm-employees'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-hrm-employees'); ?>" href="<?php echo home_url('/aerp-hrm-employees'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Danh sách">
                 <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Danh sách</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-hrm-employees/?action=add'); ?>" href="<?php echo home_url('/aerp-hrm-employees/?action=add'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-hrm-employees/?action=add'); ?>" href="<?php echo home_url('/aerp-hrm-employees/?action=add'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Thêm mới">
                 <span class="ms-4"><i class="fas fa-plus me-2"></i> <span class="menu-text">Thêm mới</span></span>
             </a>
         </div>
@@ -32,14 +32,14 @@
     <?php if ($crm_active): ?>
         <!-- CRM Menu -->
 
-        <div class="px-3 py-2 collapsible-menu-header">
+        <div class="px-3 py-2 collapsible-menu-header fw-bold" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Khách Hàng">
             <i class="fas fa-address-book me-2"></i> <span class="menu-text">Khách Hàng</span> <i class="fas fa-chevron-down float-end"></i>
         </div>
         <div class="collapsible-menu-content">
-            <a class="nav-link <?php echo aerp_menu_active('aerp-crm-dashboard'); ?>" href="<?php echo home_url('/aerp-crm-dashboard'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-crm-dashboard'); ?>" href="<?php echo home_url('/aerp-crm-dashboard'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Dashboard">
                 <span class="ms-4"><i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customers'); ?>" href="<?php echo home_url('/aerp-crm-customers'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-crm-customers'); ?>" href="<?php echo home_url('/aerp-crm-customers'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Danh sách">
                 <span class="ms-4">
                     <i class="fas fa-list me-2"></i>
                     <span class="menu-text">Danh sách</span>
@@ -53,26 +53,26 @@
                     <span class="badge text-bg-secondary ms-2 rounded-pill bg-danger"><?php echo $customer_new_count; ?></span>
                 </span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customers/?action=add'); ?>" href="<?php echo home_url('/aerp-crm-customers/?action=add'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-crm-customers/?action=add'); ?>" href="<?php echo home_url('/aerp-crm-customers/?action=add'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Thêm mới">
                 <span class="ms-4"><i class="fas fa-plus me-2"></i> <span class="menu-text">Thêm mới</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customer-types'); ?>" href="<?php echo home_url('/aerp-crm-customer-types'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-crm-customer-types'); ?>" href="<?php echo home_url('/aerp-crm-customer-types'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Loại khách hàng">
                 <span class="ms-4"><i class="fas fa-tags me-2"></i> <span class="menu-text">Loại khách hàng</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-crm-customer-sources'); ?>" href="<?php echo home_url('/aerp-crm-customer-sources'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-crm-customer-sources'); ?>" href="<?php echo home_url('/aerp-crm-customer-sources'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Nguồn khách hàng">
                 <span class="ms-4"><i class="fas fa-globe me-2"></i> <span class="menu-text">Nguồn khách hàng</span></span>
             </a>
         </div>
     <?php endif; ?>
     <?php if ($order_active): ?>
-        <div class="px-3 py-2 collapsible-menu-header">
+        <div class="px-3 py-2 collapsible-menu-header fw-bold" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Đơn hàng">
             <i class="fas fa-file-invoice me-2"></i> <span class="menu-text">Đơn hàng</span> <i class="fas fa-chevron-down float-end"></i>
         </div>
         <div class="collapsible-menu-content">
-            <a class="nav-link <?php echo aerp_menu_active('aerp-report-order'); ?>" href="<?php echo home_url('/aerp-report-order'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-report-order'); ?>" href="<?php echo home_url('/aerp-report-order'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Dashboard">
                 <span class="ms-4"><i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-order-orders'); ?>" href="<?php echo home_url('/aerp-order-orders'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-order-orders'); ?>" href="<?php echo home_url('/aerp-order-orders'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Danh sách">
                 <span class="ms-4">
                     <i class="fas fa-list me-2"></i>
                     <span class="menu-text">Danh sách</span>
@@ -96,13 +96,13 @@
                     <span class="badge text-bg-secondary ms-2 rounded-pill bg-danger"><?php echo $order_new_count; ?></span>
                 </span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-order-orders/?action=add'); ?>" href="<?php echo home_url('/aerp-order-orders/?action=add'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-order-orders/?action=add'); ?>" href="<?php echo home_url('/aerp-order-orders/?action=add'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Thêm mới">
                 <span class="ms-4"><i class="fas fa-plus me-2"></i> <span class="menu-text">Thêm mới</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-order-statuses'); ?>" href="<?php echo home_url('/aerp-order-statuses'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-order-statuses'); ?>" href="<?php echo home_url('/aerp-order-statuses'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Trạng thái đơn hàng">
                 <span class="ms-4"><i class="fas fa-tags me-2"></i> <span class="menu-text">Trạng thái đơn hàng</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-devices'); ?>" href="<?php echo home_url('/aerp-devices'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-devices'); ?>" href="<?php echo home_url('/aerp-devices'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Quản lý thiết bị">
                 <span class="ms-4"><i class="fas fa-laptop me-2"></i> <span class="menu-text">Quản lý thiết bị</span><?php
                         // Đếm số lượng đơn hàng có status là 'new'
                         global $wpdb;
@@ -126,33 +126,33 @@
                     <span class="badge text-bg-secondary ms-2 rounded-pill bg-danger"><?php echo $device_count; ?></span></span>
             </a>
         </div>
-        <div class="px-3 py-2 collapsible-menu-header">
+        <div class="px-3 py-2 collapsible-menu-header fw-bold" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Quản lý kho">
             <i class="fas fa-warehouse me-2"></i> <span class="menu-text">Quản lý kho</span> <i class="fas fa-chevron-down float-end"></i>
         </div>
         <div class="collapsible-menu-content">
-            <a class="nav-link <?php echo aerp_menu_active('aerp-stock-timeline'); ?>" href="<?php echo home_url('/aerp-stock-timeline'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-stock-timeline'); ?>" href="<?php echo home_url('/aerp-stock-timeline'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Dashboard">
                 <span class="ms-4"><i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-warehouses'); ?>" href="<?php echo home_url('/aerp-warehouses'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-warehouses'); ?>" href="<?php echo home_url('/aerp-warehouses'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Danh sách">
                 <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Danh sách</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-warehouses/?action=add'); ?>" href="<?php echo home_url('/aerp-warehouses/?action=add'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-warehouses/?action=add'); ?>" href="<?php echo home_url('/aerp-warehouses/?action=add'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Thêm mới">
                 <span class="ms-4"><i class="fas fa-plus me-2"></i> <span class="menu-text">Thêm mới</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-warehouses/?action=stock'); ?>" href="<?php echo home_url('/aerp-warehouses/?action=stock'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-warehouses/?action=stock'); ?>" href="<?php echo home_url('/aerp-warehouses/?action=stock'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tồn kho">
                 <span class="ms-4"><i class="fas fa-boxes me-2"></i> <span class="menu-text">Tồn kho</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-inventory-transfers'); ?>" href="<?php echo home_url('/aerp-inventory-transfers'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-inventory-transfers'); ?>" href="<?php echo home_url('/aerp-inventory-transfers'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Chuyển kho">
                 <span class="ms-4"><i class="fas fa-exchange-alt me-2"></i> <span class="menu-text">Chuyển kho</span></span>
             </a>
-            <a class="nav-link <?php echo aerp_menu_active('aerp-inventory-logs'); ?>" href="<?php echo home_url('/aerp-inventory-logs'); ?>">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-inventory-logs'); ?>" href="<?php echo home_url('/aerp-inventory-logs'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Nhập/ Xuất kho">
                 <span class="ms-4"><i class="fas fa-dolly me-2"></i> <span class="menu-text">Nhập/ Xuất kho</span></span>
             </a>
         </div>
     <?php endif; ?>
     <!-- Setting Menu -->
     <div class="">
-        <a class="nav-link <?php echo aerp_menu_active('aerp-setting'); ?>" href="<?php echo home_url('/aerp-setting'); ?>">
+        <a class="nav-link  <?php echo aerp_menu_active('aerp-setting'); ?>" href="<?php echo home_url('/aerp-setting'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Cài đặt">
             <i class="fas fa-cog me-2"></i> <span class="menu-text">Cài đặt</span>
         </a>
     </div>

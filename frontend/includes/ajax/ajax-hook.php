@@ -462,6 +462,35 @@ function aerp_hrm_filter_attendance_callback()
 
 add_action('wp_ajax_aerp_order_search_employees', function() {
     $q = isset($_GET['q']) ? sanitize_text_field($_GET['q']) : '';
+    $employee_id = isset($_GET['employee_id']) ? intval($_GET['employee_id']) : 0;
+    
+    // Nếu có employee_id cụ thể, tìm theo ID đó
+    if ($employee_id > 0) {
+        global $wpdb;
+        $employee = $wpdb->get_row($wpdb->prepare(
+            "SELECT e.id, e.full_name, wl.name as work_location_name
+             FROM {$wpdb->prefix}aerp_hrm_employees e
+             LEFT JOIN {$wpdb->prefix}aerp_hrm_work_locations wl ON e.work_location_id = wl.id
+             WHERE e.id = %d AND e.status = 'active'",
+            $employee_id
+        ));
+        
+        if ($employee) {
+            $display_name = $employee->full_name;
+            if (!empty($employee->work_location_name)) {
+                $display_name .= ' - ' . $employee->work_location_name;
+            }
+            wp_send_json([[
+                'id' => $employee->id,
+                'text' => $display_name,
+            ]]);
+        } else {
+            wp_send_json([]);
+        }
+        return;
+    }
+    
+    // Tìm kiếm theo tên nếu không có ID cụ thể
     $employees = function_exists('aerp_get_employees_with_location_select2') ? aerp_get_employees_with_location_select2($q) : [];
     $results = [];
     $count = 0;

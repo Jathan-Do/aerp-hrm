@@ -50,15 +50,21 @@ if (!defined('ABSPATH')) exit;
         .nav-link {
             color: white;
             padding: 10px 20px;
+            font-weight: bold;
         }
-
+        .nav-link.light{
+            color:rgb(182, 183, 184);
+            font-weight: normal;
+        }
         .nav-link:hover {
             background: #34495e;
             color: white;
         }
-
+        .nav-link.light.active,
         .nav-link.active {
             background: rgb(61, 85, 109);
+            color: white;
+            font-weight: bold;
         }
 
         .menu-text {
