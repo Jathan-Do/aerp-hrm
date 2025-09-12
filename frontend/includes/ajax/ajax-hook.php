@@ -327,6 +327,23 @@ function aerp_hrm_filter_salary_config_callback()
     wp_send_json_success(['html' => $html]);
 }
 
+add_action('wp_ajax_aerp_hrm_filter_commission_scheme', 'aerp_hrm_filter_commission_scheme_callback');
+add_action('wp_ajax_nopriv_aerp_hrm_filter_commission_scheme', 'aerp_hrm_filter_commission_scheme_callback');
+function aerp_hrm_filter_commission_scheme_callback()
+{
+    $filters = [
+        'search_term' => sanitize_text_field($_POST['s'] ?? ''),
+        'paged' => intval($_POST['paged'] ?? 1),
+        'orderby' => sanitize_text_field($_POST['orderby'] ?? ''),
+        'order' => sanitize_text_field($_POST['order'] ?? ''),
+    ];
+    $table = new AERP_Frontend_Commission_Table();
+    $table->set_filters($filters);
+    ob_start();
+    $table->render();
+    $html = ob_get_clean();
+    wp_send_json_success(['html' => $html]);
+}
 add_action('wp_ajax_aerp_hrm_filter_task', 'aerp_hrm_filter_task_callback');
 add_action('wp_ajax_nopriv_aerp_hrm_filter_task', 'aerp_hrm_filter_task_callback');
 function aerp_hrm_filter_task_callback()

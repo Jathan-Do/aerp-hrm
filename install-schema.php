@@ -167,6 +167,8 @@ function aerp_hrm_install_schema()
         end_date DATE NOT NULL,
         base_salary DOUBLE DEFAULT 0,
         allowance DOUBLE DEFAULT 0,
+        salary_mode ENUM('fixed','piecework','both') DEFAULT 'fixed',
+        commission_scheme_id BIGINT DEFAULT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     ) $charset_collate;";
 
@@ -321,6 +323,17 @@ function aerp_hrm_install_schema()
         user_id BIGINT NOT NULL,
         permission_id BIGINT NOT NULL,
         PRIMARY KEY (user_id, permission_id)
+    ) $charset_collate;";
+
+    // 26. Commission schemes (Danh mục khoản % lợi nhuận) – bản rút gọn 1 khoảng
+    $sqls[] = "CREATE TABLE {$wpdb->prefix}aerp_hrm_commission_schemes (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        note TEXT,
+        min_profit DECIMAL(15,0) DEFAULT 0,
+        max_profit DECIMAL(15,0) DEFAULT NULL,
+        percent DOUBLE DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     ) $charset_collate;";
 
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';

@@ -122,6 +122,14 @@ $all_hrm_menu = [
         'color' => 'secondary',
         'show_for' => ['admin'],
     ],
+    [
+        'icon' => 'fa-money-bill-wave',
+        'title' => 'Danh mục hoa hồng',
+        'desc' => 'Quản lý danh mục hoa hồng',
+        'url' => home_url('/aerp-hrm-commission-schemes'),
+        'color' => 'primary',
+        'show_for' => ['admin'],
+    ],
 ];
 
 // Lọc menu theo role/permission

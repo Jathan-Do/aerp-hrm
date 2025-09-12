@@ -14,16 +14,26 @@ class AERP_Salary_Manager
 
         // SỬA: Lấy ngày đầu tháng cần tính lương, không lấy ngày hiện tại
         $target_date = date('Y-m-01', strtotime($month));
-        $config = $wpdb->get_row($wpdb->prepare("
-        SELECT * FROM {$wpdb->prefix}aerp_hrm_salary_config
-        WHERE employee_id = %d
-          AND start_date <= %s
-          AND end_date >= %s
-        ORDER BY start_date DESC
-        LIMIT 1
-    ", $employee_id, $target_date, $target_date));
+        // Lấy cấu hình hợp lệ theo ngày; hỗ trợ cấu hình không giới hạn (0000-00-00 hoặc NULL)
+        $table_cfg = $wpdb->prefix . 'aerp_hrm_salary_config';
+        // ƯU TIÊN cấu hình bao phủ target_date; nếu không có thì mới fallback cấu hình không giới hạn
+        $sql_cfg = "SELECT * FROM {$table_cfg}
+            WHERE employee_id = %d AND (
+                (start_date <= %s AND end_date >= %s)
+                OR ( (start_date IS NULL OR start_date = '0000-00-00' OR start_date = '')
+                     AND (end_date IS NULL OR end_date = '0000-00-00' OR end_date = '') )
+            )
+            ORDER BY
+                CASE WHEN (start_date <= %s AND end_date >= %s) THEN 0 ELSE 1 END ASC,
+                start_date DESC,
+                created_at DESC
+            LIMIT 1";
+        $config = $wpdb->get_row($wpdb->prepare($sql_cfg, $employee_id, $target_date, $target_date, $target_date, $target_date));
 
         if (!$config) return false;
+
+        $salary_mode = $config->salary_mode ?? 'fixed';
+        $commission_scheme_id = isset($config->commission_scheme_id) ? intval($config->commission_scheme_id) : 0;
 
         $base      = floatval($config->base_salary);
         $allowance = floatval($config->allowance);
@@ -173,8 +183,77 @@ class AERP_Salary_Manager
             }
         }
 
+        // 9b. Hoa hồng theo lợi nhuận đơn hàng (nếu plugin Order hoạt động và có cấu hình)
+        $commission_amount = 0;
+        $order_active = (function_exists('aerp_order_init'));
+        if (!$order_active && function_exists('is_plugin_active')) {
+            $order_active = is_plugin_active('aerp-order/aerp-order.php');
+        } else if (!$order_active) {
+            // Try to include plugin.php to use is_plugin_active
+            if (file_exists(ABSPATH . 'wp-admin/includes/plugin.php')) {
+                require_once ABSPATH . 'wp-admin/includes/plugin.php';
+                $order_active = is_plugin_active('aerp-order/aerp-order.php');
+            }
+        }
+
+        if ($order_active && in_array($salary_mode, ['piecework','both'], true) && $commission_scheme_id) {
+            // Verify order tables exist (đúng tên bảng của plugin Order)
+            $tbl_orders = $wpdb->prefix . 'aerp_order_orders';
+            $tbl_items = $wpdb->prefix . 'aerp_order_items';
+            $tbl_contents = $wpdb->prefix . 'aerp_order_content_lines';
+            $has_orders   = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tbl_orders)) === $tbl_orders;
+            $has_items    = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tbl_items)) === $tbl_items;
+            $has_contents = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tbl_contents)) === $tbl_contents;
+
+            if ($has_orders && $has_items && $has_contents) {
+                // Lấy các đơn trong tháng của nhân viên
+                $orders = $wpdb->get_results($wpdb->prepare(
+                    "SELECT id, employee_id, order_date, cost FROM {$tbl_orders} WHERE employee_id = %d AND order_date BETWEEN %s AND %s",
+                    $employee_id, $month_start, $month_end
+                ));
+
+                if ($orders) {
+                    // Load single-interval commission scheme
+                    $scheme = $wpdb->get_row($wpdb->prepare(
+                        "SELECT min_profit, max_profit, percent FROM {$wpdb->prefix}aerp_hrm_commission_schemes WHERE id = %d",
+                        $commission_scheme_id
+                    ));
+                    foreach ($orders as $o) {
+                        $order_id = intval($o->id);
+                        $content_total = (float)$wpdb->get_var($wpdb->prepare(
+                            "SELECT COALESCE(SUM(total_price),0) FROM {$tbl_contents} WHERE order_id = %d",
+                            $order_id
+                        ));
+                        $items_total = (float)$wpdb->get_var($wpdb->prepare(
+                            "SELECT COALESCE(SUM(quantity * unit_price),0) FROM {$tbl_items} WHERE order_id = %d",
+                            $order_id
+                        ));
+                        $external_cost_total = (float)$wpdb->get_var($wpdb->prepare(
+                            "SELECT COALESCE(SUM(external_cost),0) FROM {$tbl_items} WHERE order_id = %d AND purchase_type = 'external'",
+                            $order_id
+                        ));
+                        $order_cost = (float)($o->cost ?? 0);
+                        $profit = $content_total - $order_cost - $items_total - $external_cost_total;
+
+                        if ($profit <= 0 || empty($scheme)) {
+                            continue;
+                        }
+                        $min = (float)$scheme->min_profit;
+                        $max = isset($scheme->max_profit) ? (float)$scheme->max_profit : null;
+                        $percent = ($profit >= $min && ($max === null || $profit <= $max)) ? (float)$scheme->percent : 0;
+                        if ($percent > 0) {
+                            $commission_amount += $profit * ($percent / 100);
+                        }
+                    }
+                }
+            }
+        }
+
         // 10. Tổng lương
         $final_salary = $total_salary + $bonus + $auto_bonus - $deduction - $advance;
+        if (in_array($salary_mode, ['piecework','both'], true)) {
+            $final_salary += $commission_amount;
+        }
 
         // 11. Ghi vào bảng lương (update nếu đã có, insert nếu chưa)
         $data = [

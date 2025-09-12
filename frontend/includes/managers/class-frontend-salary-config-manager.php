@@ -17,6 +17,8 @@ class AERP_Frontend_Salary_Config_Manager {
         $end_date    = sanitize_text_field($_POST['end_date']);
         $base_salary = floatval($_POST['base_salary']);
         $allowance   = floatval($_POST['allowance']);
+        $salary_mode = sanitize_text_field($_POST['salary_mode'] ?? 'fixed');
+        $commission_scheme_id = isset($_POST['commission_scheme_id']) ? absint($_POST['commission_scheme_id']) : null;
 
         $edit_id = absint($_POST['config_id'] ?? 0);
         if ($edit_id) {
@@ -26,7 +28,9 @@ class AERP_Frontend_Salary_Config_Manager {
                     'start_date'   => $start_date,
                     'end_date'     => $end_date,
                     'base_salary'  => $base_salary,
-                    'allowance'    => $allowance
+                    'allowance'    => $allowance,
+                    'salary_mode'  => $salary_mode,
+                    'commission_scheme_id' => $commission_scheme_id
                 ],
                 ['id' => $edit_id, 'employee_id' => $employee_id]
             );
@@ -39,6 +43,8 @@ class AERP_Frontend_Salary_Config_Manager {
                     'end_date'    => $end_date,
                     'base_salary' => $base_salary,
                     'allowance'   => $allowance,
+                    'salary_mode' => $salary_mode,
+                    'commission_scheme_id' => $commission_scheme_id,
                     'created_at'  => (new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh')))->format('Y-m-d H:i:s')
                 ]
             );

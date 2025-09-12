@@ -74,7 +74,7 @@ function aerp_hrm_init()
     require_once AERP_HRM_PATH . 'frontend/includes/table/class-adjustment-table.php';
     require_once AERP_HRM_PATH . 'frontend/includes/table/class-attachment-table.php';
     require_once AERP_HRM_PATH . 'frontend/includes/table/class-attendance-table.php';
-
+    require_once AERP_HRM_PATH . 'frontend/includes/table/class-commission-table.php';
     // Load các class cần thiết khác
     require_once AERP_HRM_PATH . 'includes/class-excel-export-helper.php';
 
@@ -123,7 +123,7 @@ function aerp_hrm_init()
         'class-frontend-adjustment-manager.php',
         'class-frontend-attachment-manager.php',
         'class-frontend-attendance-manager.php',
-
+        'class-frontend-commission-manager.php',
     ];
     foreach ($includes as $file) {
         require_once AERP_HRM_PATH . 'frontend/includes/managers/' . $file;
@@ -186,6 +186,7 @@ function aerp_hrm_init()
         'AERP_Frontend_Adjustment_Manager',
         'AERP_Frontend_Attachment_Manager',
         'AERP_Frontend_Attendance_Manager',
+        'AERP_Frontend_Commission_Manager',
     ];
     foreach ($managers as $manager) {
         if (method_exists($manager, 'handle_submit')) {

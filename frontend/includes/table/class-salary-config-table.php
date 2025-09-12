@@ -14,12 +14,13 @@ class AERP_Frontend_Salary_Config_Table extends AERP_Frontend_Table
             'end_date'    => 'Đến ngày',
             'base_salary' => 'Lương cơ bản',
             'allowance'   => 'Phụ cấp',
+            'salary_mode' => 'Kiểu tính lương',
             'created_at'  => 'Ngày tạo',
             'actions'     => 'Thao tác',
         ];
 
-        $sortable = ['id', 'start_date', 'end_date', 'base_salary', 'allowance', 'created_at'];
-        $searchable = ['base_salary', 'allowance'];
+        $sortable = ['id', 'start_date', 'end_date', 'base_salary', 'allowance', 'salary_mode', 'created_at'];
+        $searchable = ['base_salary', 'allowance', 'salary_mode'];
 
         parent::__construct(array_merge([
             'table_name' => $GLOBALS['wpdb']->prefix . 'aerp_hrm_salary_config',
@@ -102,5 +103,16 @@ class AERP_Frontend_Salary_Config_Table extends AERP_Frontend_Table
         }
 
         return [$filters, $params];
+    }
+
+    protected function column_salary_mode($item)
+    {
+        $mode = $item->salary_mode ?? 'fixed';
+        $options = [
+            'fixed' => 'Lương cứng',
+            'piecework' => 'Lương khoán (hoa hồng lợi nhuận)',
+            'both' => 'Cả hai (cứng + khoán)'
+        ];
+        return $options[$mode] ?? 'Lương cứng';
     }
 }

@@ -18,6 +18,7 @@ add_action('init', function () {
     add_rewrite_rule('^aerp-ranking-settings/?$', 'index.php?aerp_ranking_settings=1', 'top');
     add_rewrite_rule('^aerp-reward-settings/?$', 'index.php?aerp_reward_settings=1', 'top');
     add_rewrite_rule('^aerp-kpi-settings/?$', 'index.php?aerp_kpi_settings=1', 'top');
+    add_rewrite_rule('^aerp-hrm-commission-schemes/?$', 'index.php?aerp_commission_schemes=1', 'top');
     add_rewrite_rule('^aerp-salary-summary/?$', 'index.php?aerp_salary_summary=1', 'top');
     add_rewrite_rule('^aerp-salary-summary/view/([0-9]+)/?$', 'index.php?aerp_salary_summary=1&action=view&id=$matches[1]', 'top');
     add_rewrite_rule('^aerp-role/?$', 'index.php?aerp_role=1', 'top');
@@ -65,6 +66,9 @@ add_action('init', function () {
     if ($rules && !isset($rules['^aerp-kpi-settings/?$'])) {
         flush_rewrite_rules();
     }
+    if ($rules && !isset($rules['^aerp-hrm-commission-schemes/?$'])) {
+        flush_rewrite_rules();
+    }
     if ($rules && !isset($rules['^aerp-salary-summary/?$'])) {
         flush_rewrite_rules();
     }
@@ -100,6 +104,7 @@ add_filter('query_vars', function ($vars) {
     $vars[] = 'aerp_ranking_settings';
     $vars[] = 'aerp_reward_settings';
     $vars[] = 'aerp_kpi_settings';
+    $vars[] = 'aerp_commission_schemes';
     $vars[] = 'aerp_salary_summary';
     $vars[] = 'id';
     $vars[] = 'aerp_role';
@@ -284,6 +289,24 @@ add_action('template_redirect', function () {
                 break;
             default:
                 include AERP_HRM_PATH . 'frontend/dashboard/kpi-setting/list.php';
+                break;
+        }
+        exit;
+    }
+    if (get_query_var('aerp_commission_schemes')) {
+        $action = $_GET['action'] ?? '';
+        switch ($action) {
+            case 'add':
+                include AERP_HRM_PATH . 'frontend/dashboard/commission/form-commission-scheme.php';
+                break;
+            case 'edit':
+                include AERP_HRM_PATH . 'frontend/dashboard/commission/form-commission-scheme.php';
+                break;
+            case 'delete':
+                AERP_Frontend_Commission_Manager::handle_single_delete();
+                break;
+            default:
+                include AERP_HRM_PATH . 'frontend/dashboard/commission/page-commission-list.php';
                 break;
         }
         exit;

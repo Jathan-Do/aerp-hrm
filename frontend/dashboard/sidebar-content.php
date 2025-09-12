@@ -149,6 +149,20 @@
                 <span class="ms-4"><i class="fas fa-dolly me-2"></i> <span class="menu-text">Nhập/ Xuất kho</span></span>
             </a>
         </div>
+        <div class="px-3 py-2 collapsible-menu-header fw-bold" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Kế toán">
+            <i class="fas fa-calculator me-2"></i> <span class="menu-text">Kế toán</span> <i class="fas fa-chevron-down float-end"></i>
+        </div>
+        <div class="collapsible-menu-content">
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-acc-reports'); ?>" href="<?php echo home_url('/aerp-acc-reports'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Dashboard">
+                <span class="ms-4"><i class="fas fa-tachometer-alt me-2"></i> <span class="menu-text">Dashboard</span></span>
+            </a>
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-acc-receipts'); ?>" href="<?php echo home_url('/aerp-acc-receipts'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Phiếu thu">
+                <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Phiếu thu</span></span>
+            </a>
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-acc-payments'); ?>" href="<?php echo home_url('/aerp-acc-payments'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Phiếu chi">
+                <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Phiếu chi</span></span>
+            </a>
+        </div>
     <?php endif; ?>
     <!-- Setting Menu -->
     <div class="">

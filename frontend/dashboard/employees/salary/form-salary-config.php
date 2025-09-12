@@ -41,6 +41,7 @@ ob_start();
         </a>
     </div>
 </div>
+
 <?php
 if (function_exists('aerp_render_breadcrumb')) {
     aerp_render_breadcrumb([
@@ -65,20 +66,55 @@ if (function_exists('aerp_render_breadcrumb')) {
                 <input type="text" class="form-control shadow-sm" value="<?= esc_html($employee->full_name) ?>" disabled>
             </div>
             <div class="mb-3">
-                <label class="form-label" for="start_date">Từ ngày</label>
-                <input type="date" class="form-control shadow-sm bg-body" name="start_date" id="start_date" value="<?= esc_attr($config->start_date ?? '') ?>" required>
+                <label class="form-label" for="salary_mode">Kiểu tính lương</label>
+                <select class="form-select shadow-sm" name="salary_mode" id="salary_mode">
+                    <?php
+                    $mode = $config->salary_mode ?? 'fixed';
+                    $options = [
+                        'fixed' => 'Lương cứng',
+                        'piecework' => 'Lương khoán (hoa hồng lợi nhuận)',
+                        'both' => 'Cả hai (cứng + khoán)'
+                    ];
+                    foreach ($options as $val => $label) {
+                        printf('<option value="%s" %s>%s</option>', esc_attr($val), selected($mode, $val, false), esc_html($label));
+                    }
+                    ?>
+                </select>
             </div>
-            <div class="mb-3">
-                <label class="form-label" for="end_date">Đến ngày</label>
-                <input type="date" class="form-control shadow-sm bg-body" name="end_date" id="end_date" value="<?= esc_attr($config->end_date ?? '') ?>" required>
+            <?php $mode_current = $config->salary_mode ?? 'fixed'; $show_fixed_group = in_array($mode_current, ['fixed','both'], true); ?>
+            <div id="fixed-fields-group" style="display:<?= $show_fixed_group ? 'block' : 'none' ?>;">
+                <div class="mb-3">
+                    <label class="form-label" for="start_date">Từ ngày</label>
+                    <input type="date" class="form-control shadow-sm bg-body" name="start_date" id="start_date" value="<?= esc_attr($config->start_date ?? '') ?>" <?= $show_fixed_group ? 'required' : '' ?>>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="end_date">Đến ngày</label>
+                    <input type="date" class="form-control shadow-sm bg-body" name="end_date" id="end_date" value="<?= esc_attr($config->end_date ?? '') ?>" <?= $show_fixed_group ? 'required' : '' ?>>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="base_salary">Lương cơ bản</label>
+                    <input type="number" class="form-control shadow-sm" name="base_salary" step="1000" value="<?= esc_attr($config->base_salary ?? '') ?>" <?= $show_fixed_group ? 'required' : '' ?>>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="allowance">Phụ cấp</label>
+                    <input type="number" class="form-control shadow-sm" name="allowance" step="1000" value="<?= esc_attr($config->allowance ?? '') ?>" <?= $show_fixed_group ? 'required' : '' ?>>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label" for="base_salary">Lương cơ bản</label>
-                <input type="number" class="form-control shadow-sm" name="base_salary" step="1000" required value="<?= esc_attr($config->base_salary ?? '') ?>">
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="allowance">Phụ cấp</label>
-                <input type="number" class="form-control shadow-sm" name="allowance" step="1000" required value="<?= esc_attr($config->allowance ?? '') ?>">
+            <?php $show_commission = in_array(($config->salary_mode ?? 'fixed'), ['piecework','both'], true); ?>
+            <div class="mb-3" id="commission-settings-group" style="display:<?= $show_commission ? 'block' : 'none' ?>;">
+                <label class="form-label" for="commission_scheme_id">Danh mục % lợi nhuận</label>
+                <select class="form-select shadow-sm" name="commission_scheme_id" id="commission_scheme_id">
+                    <option value="">-- Chọn danh mục --</option>
+                    <?php
+                    global $wpdb;
+                    $schemes = $wpdb->get_results("SELECT id, name FROM {$wpdb->prefix}aerp_hrm_commission_schemes ORDER BY id DESC");
+                    $selected_scheme = intval($config->commission_scheme_id ?? 0);
+                    foreach ($schemes as $s) {
+                        printf('<option value="%d" %s>%s</option>', $s->id, selected($selected_scheme, $s->id, false), esc_html($s->name));
+                    }
+                    ?>
+                </select>
+                <small class="text-muted">Áp dụng khi chọn lương khoán hoặc cả hai.</small>
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" name="aerp_save_salary_config" class="btn btn-primary">
@@ -89,6 +125,43 @@ if (function_exists('aerp_render_breadcrumb')) {
         </form>
     </div>
 </div>
+<script>
+    (function(){
+        var modeSelect = document.getElementById('salary_mode');
+        var fixedGroup = document.getElementById('fixed-fields-group');
+        var commissionGroup = document.getElementById('commission-settings-group');
+        function setRequired(group, enable){
+            if (!group) return;
+            var inputs = group.querySelectorAll('input, select, textarea');
+            inputs.forEach(function(el){
+                if (enable) { el.setAttribute('required','required'); }
+                else { el.removeAttribute('required'); }
+            });
+        }
+        function updateVisibility(){
+            var v = modeSelect ? modeSelect.value : 'fixed';
+            if (v === 'piecework') {
+                if (fixedGroup) fixedGroup.style.display = 'none';
+                if (commissionGroup) commissionGroup.style.display = 'block';
+                setRequired(fixedGroup, false);
+            } else if (v === 'fixed') {
+                if (fixedGroup) fixedGroup.style.display = 'block';
+                if (commissionGroup) commissionGroup.style.display = 'none';
+                setRequired(fixedGroup, true);
+                var sel = document.getElementById('commission_scheme_id');
+                if (sel) sel.value = '';
+            } else { // both
+                if (fixedGroup) fixedGroup.style.display = 'block';
+                if (commissionGroup) commissionGroup.style.display = 'block';
+                setRequired(fixedGroup, true);
+            }
+        }
+        if (modeSelect) {
+            modeSelect.addEventListener('change', updateVisibility);
+            updateVisibility();
+        }
+    })();
+</script>
 <?php
 $content = ob_get_clean();
 $title = $edit_id ? 'Sửa cấu hình lương' : 'Thêm cấu hình lương';
