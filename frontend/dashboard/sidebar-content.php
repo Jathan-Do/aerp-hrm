@@ -162,6 +162,9 @@
             <a class="nav-link light <?php echo aerp_menu_active('aerp-acc-payments'); ?>" href="<?php echo home_url('/aerp-acc-payments'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Phiếu chi">
                 <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Phiếu chi</span></span>
             </a>
+            <a class="nav-link light <?php echo aerp_menu_active('aerp-acc-deposits'); ?>" href="<?php echo home_url('/aerp-acc-deposits'); ?>" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Phiếu nộp tiền">
+                <span class="ms-4"><i class="fas fa-list me-2"></i> <span class="menu-text">Phiếu nộp tiền</span></span>
+            </a>
         </div>
     <?php endif; ?>
     <!-- Setting Menu -->
