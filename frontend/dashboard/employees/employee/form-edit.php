@@ -305,7 +305,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                                                 value="<?= esc_attr($perm->id) ?>"
                                                 <?= $is_checked && !$has_via_role ? 'checked' : '' ?>
                                                 <?= $has_via_role ? 'disabled' : '' ?>>
-                                            <?= esc_html($perm->name) ?><?php if ($perm->description) echo ' - ' . esc_html($perm->description); ?>
+                                            <?php if ($perm->description) echo esc_html($perm->description); ?>
                                             <?php if ($has_via_role): ?>
                                                 <span class="perm-via-role" style="color:#888;font-weight:bold;  font-size:12px;">(Đã có qua nhóm quyền)</span>
                                             <?php endif; ?>

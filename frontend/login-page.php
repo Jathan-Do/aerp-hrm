@@ -48,13 +48,13 @@ if (isset($_GET['login'])) {
                     </label>
                     <input type="password" name="pwd" id="user_pass" required autocomplete="current-password" placeholder="Nhập mật khẩu">
                 </div>
-
+<!-- 
                 <div class="form-group remember-me">
                     <label>
                         <input type="checkbox" name="rememberme" value="forever">
                         <span>Ghi nhớ đăng nhập</span>
                     </label>
-                </div>
+                </div> -->
 
                 <div class="form-actions">
                     <button type="submit" class="aerp-login-btn">

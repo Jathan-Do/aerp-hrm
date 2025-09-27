@@ -276,7 +276,7 @@ if (function_exists('aerp_render_breadcrumb')) {
                                     <?php foreach ($perms as $perm): ?>
                                         <label title="<?= esc_attr($perm->description ?: $perm->name) ?>">
                                             <input type="checkbox" class="perm-checkbox" data-perm-id="<?= esc_attr($perm->id) ?>" name="user_permissions[]" value="<?= esc_attr($perm->id) ?>">
-                                            <?= esc_html($perm->name) ?><?php if ($perm->description) echo ' - ' . esc_html($perm->description); ?>
+                                            <?php if ($perm->description) echo esc_html($perm->description); ?>
                                         </label>
                                     <?php endforeach; ?>
                                 </div>
