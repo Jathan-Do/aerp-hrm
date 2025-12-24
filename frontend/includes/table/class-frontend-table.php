@@ -355,7 +355,7 @@ class AERP_Frontend_Table
                 </form>
                 <div class="position-relative">
                     <a href="#" id="aerp-column-options-button" class="btn btn-secondary action">Tùy chọn cột</a>
-                    <div id="aerp-column-options-dropdown" class="dropdown-menu position-absolute bg-white border-1 border-secondary-subtle card-body" style="display:none; top: 48px; right:0; max-height: 400px; width: 200px; overflow-y: auto">
+                    <div id="aerp-column-options-dropdown" class="dropdown-menu position-absolute bg-white border-1 border-secondary-subtle card-body" style="display:none; top: 48px; right:0; max-height: 400px; width: 200px; overflow-y: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
                         <div id="aerp-column-options-form">
                             <?php wp_nonce_field('aerp_save_column_preferences', 'aerp_column_prefs_nonce'); ?>
                             <input type="hidden" name="option_key" value="<?php echo esc_attr($this->hidden_columns_option_key); ?>" />
@@ -590,7 +590,7 @@ class AERP_Frontend_Table
             return;
         }
 
-        echo '<div class="tablenav-pages d-flex align-items-center justify-content-md-end justify-content-center">';
+        echo '<div class="tablenav-pages d-flex align-items-center justify-content-md-end flex-wrap justify-content-center gap-2">';
 
         // Display current page info and total items
         if ($total_items > 0) {
@@ -599,7 +599,30 @@ class AERP_Frontend_Table
             echo '<span class="displaying-num">' . sprintf('Hiển thị %s-%s trên tổng %s mục', number_format_i18n($start_item), number_format_i18n($end_item), number_format_i18n($total_items)) . '</span>';
         }
 
-        echo '<span class="pagination-links aerp-pagination">';
+        // Jump to page form
+        if ($total_pages > 1) {
+            echo '<span class="d-none d-md-inline vr"></span>';
+            echo '<div class="aerp-jump-to-page d-flex align-items-center gap-2">';
+            echo '<span class="text-muted">Trang</span>';
+            echo '<form method="get" class="d-inline-flex align-items-center gap-1 aerp-table-ajax-form" data-table-wrapper="' . esc_attr($this->table_wrapper) . '" data-ajax-action="' . esc_attr($this->ajax_action) . '" onsubmit="return false;">';
+            
+            // Preserve existing query parameters
+            if (!empty($this->filters)) {
+                foreach ($this->filters as $key => $value) {
+                    if (in_array($key, ['paged', 'per_page', 'orderby', 'order', 's', 'search_term']) || empty($value)) {
+                        continue;
+                    }
+                    echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr(stripslashes($value)) . '">';
+                }
+            }
+            
+            echo '<input type="number" name="paged" class="form-control form-control-sm shadow-sm" style="width: 60px;" min="1" max="' . $total_pages . '" value="' . $current_page . '" title="Nhập số trang">';
+            echo '</form>';
+            echo '<span class="text-muted small">/ ' . $total_pages . '</span>';
+            echo '</div>';
+        }
+
+        echo '<span class="pagination-links aerp-pagination p-0">';
 
         // First page button
         if ($current_page > 1) {
@@ -656,17 +679,54 @@ class AERP_Frontend_Table
 
         echo '</span>'; // .pagination-links
         echo '</div>'; // .tablenav-pages
-
-        // Thêm CSS để ẩn các nút trống và cải thiện giao diện
-        echo '<style>
-        .aerp-pagination .page-numbers:empty,
-        .aerp-pagination .page-numbers:blank,
-        .aerp-pagination a.page-numbers:not([href]) {
-            display: none !important;
-        }
-            #aerp-column-options-form >p:last-child{
-            margin-bottom:0;
-        </style>';
+        
+        // Thêm JavaScript cho Jump to page
+        echo '<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Jump to page functionality
+            const jumpForms = document.querySelectorAll(".aerp-jump-to-page form");
+            jumpForms.forEach(function(form) {
+                const input = form.querySelector("input[name=\'paged\']");
+                
+                if (input) {
+                    // Validate input on change
+                    input.addEventListener("input", function() {
+                        const value = parseInt(this.value);
+                        const max = parseInt(this.getAttribute("max"));
+                        const min = parseInt(this.getAttribute("min"));
+                        
+                        if (value > max) {
+                            this.value = max;
+                        } else if (value < min) {
+                            this.value = min;
+                        }
+                        
+                    });
+                    
+                    // Handle form submission
+                    form.addEventListener("submit", function(e) {
+                        e.preventDefault();
+                        const pageValue = parseInt(input.value);
+                        const currentPage = parseInt(input.getAttribute("value"));
+                        const max = parseInt(this.getAttribute("max"));
+                        if (pageValue !== currentPage && pageValue >= 1 && pageValue <= max) {
+                            // Trigger AJAX form submission
+                            const event = new Event("submit", { bubbles: true, cancelable: true });
+                            form.dispatchEvent(event);
+                        }
+                    });
+                    
+                    // Handle Enter key
+                    input.addEventListener("keypress", function(e) {
+                        if (e.key === "Enter") {
+                            // e.preventDefault();
+                            form.dispatchEvent(new Event("submit"));
+                        }
+                    });
+                }
+            });
+        });
+        </script>';
     }
 
     public function process_bulk_action()

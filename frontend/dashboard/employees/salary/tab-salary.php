@@ -72,9 +72,11 @@ $table->process_bulk_action();
         <div id="aerp-salary-table-wrapper" data-employee-id="<?= esc_attr($employee_id) ?>">
             <?php $table->render(); ?>
         </div>
-        <form method="post" action="<?= home_url('/aerp-salary/export') ?>" class="mt-3 d-flex gap-2">
+        <form method="post" action="<?= admin_url('admin-post.php') ?>" class="mt-3 d-flex gap-2">
             <?php wp_nonce_field('aerp_export_excel', 'aerp_export_nonce'); ?>
             <input type="hidden" name="employee_id" value="<?= esc_attr($employee_id) ?>">
+            <input type="hidden" name="action" value="aerp_export_excel_common">
+            <input type="hidden" name="callback" value="salary_employee_export">
             <input class="form-control shadow-sm w-auto" type="month" name="salary_month" value="<?= esc_attr($selected_month ?: date('Y-m')) ?>">
             <button type="submit" name="aerp_export_excel" class="btn btn-outline-primary">📥 Xuất Excel</button>
         </form>

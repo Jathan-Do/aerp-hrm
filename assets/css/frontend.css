@@ -1909,3 +1909,26 @@
     margin-right: 2px;
     vertical-align: -2px;
 }
+
+/* Toàn bộ thanh cuộn */
+::-webkit-scrollbar {
+  width: 10px;      /* scrollbar dọc */
+  height: 10px;     /* scrollbar ngang */
+}
+
+/* Phần nền */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+/* Phần kéo */
+::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 10px;
+}
+
+/* Khi hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
