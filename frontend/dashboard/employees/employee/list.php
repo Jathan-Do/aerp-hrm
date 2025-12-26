@@ -136,6 +136,12 @@ if (function_exists('aerp_render_breadcrumb')) {
         <div id="aerp-employee-table-wrapper">
             <?php $table->render(); ?>
         </div>
+        <form method="post" action="<?= admin_url('admin-post.php') ?>" class="mt-3 d-flex gap-2">
+            <?php wp_nonce_field('aerp_export_excel', 'aerp_export_nonce'); ?>
+            <input type="hidden" name="action" value="aerp_export_excel_common">
+            <input type="hidden" name="callback" value="employee_list_export">
+            <button type="submit" name="aerp_export_excel" class="btn btn-success">📥 Xuất Excel</button>
+        </form>
     </div>
 </div>
 <?php

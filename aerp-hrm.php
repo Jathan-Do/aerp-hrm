@@ -334,7 +334,6 @@ function aerp_handle_common_export_excel()
 
     // ✅ Ánh xạ callback → file
     $export_map = [
-        'hrm_summary_report_export' => 'export-hrm.php',
         'employee_list_export'      => 'export-list-employee.php',
         'salary_employee_export'    => 'export-salary-employee.php',
         'salary_summary_export' => 'export-salary-summary.php',
@@ -342,6 +341,8 @@ function aerp_handle_common_export_excel()
         'stock_timeline_export' => 'export-stock-timeline.php',
         'movement_report_export' => 'export-movement-report.php',
         'aerp_dashboard_export' => 'export-dashboard.php',
+        'order_list_export' => 'export-list-order.php',
+        'customer_list_export' => 'export-list-customer.php',
         // thêm các callback khác tại đây
     ];
 
