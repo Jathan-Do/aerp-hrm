@@ -2,6 +2,8 @@
 // Get current user
 $current_user = wp_get_current_user();
 $user_id = $current_user->ID;
+$employee = aerp_get_employee_by_user_id($user_id);
+$user_fullname = $employee ? $employee->full_name : '';
 
 if (!is_user_logged_in()) {
     wp_die(__('You must be logged in to access this page.'));
@@ -44,12 +46,12 @@ $order_active = function_exists('aerp_order_init') || is_plugin_active('aerp-ord
 
 ob_start();
 ?>
-<div class="d-flex flex-column-reverse flex-md-row justify-content-between align-items-md-center mb-4">
+<div class="d-flex flex-column-reverse flex-md-row justify-content-between align-items-md-center mb-5">
     <h2>Cài đặt AERP</h2>
     <div class="user-info text-end">
-        Welcome, <?php echo esc_html($current_user->display_name); ?>
+        Hi, <?php echo esc_html($user_fullname); ?>
         <a href="<?php echo wp_logout_url(site_url('/aerp-dang-nhap')); ?>" class="btn btn-sm btn-outline-danger ms-2">
-            <i class="fas fa-sign-out-alt"></i> Logout
+            <i class="fas fa-sign-out-alt"></i> Đăng xuất
         </a>
     </div>
 </div>
@@ -75,7 +77,9 @@ if (function_exists('aerp_render_breadcrumb')) {
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 <strong>Cảnh báo:</strong> Các tùy chọn này sẽ xóa vĩnh viễn dữ liệu khi bạn gỡ plugin. Hãy chắc chắn trước khi lưu cài đặt.
             </div>
-            <?php if ($message) {
+            <?php
+            $message = get_transient('aerp_setting_message');
+            if ($message) {
                 echo '<div class="notice notice-success alert alert-success alert-dismissible fade show" role="alert">' . esc_html($message) . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
                 delete_transient('aerp_setting_message');
             } ?>

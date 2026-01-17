@@ -4,6 +4,8 @@ if (!defined('ABSPATH')) exit;
 // Get current user
 $current_user = wp_get_current_user();
 $user_id = $current_user->ID;
+$employee = aerp_get_employee_by_user_id($user_id);
+$user_fullname = $employee ? $employee->full_name : '';
 
 if (!is_user_logged_in()) {
     wp_die(__('You must be logged in to access this page.'));

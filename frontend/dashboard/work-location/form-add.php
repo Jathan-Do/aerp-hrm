@@ -5,6 +5,8 @@ if (!defined('ABSPATH')) {
 
 $current_user = wp_get_current_user();
 $user_id = $current_user->ID;
+$employee = aerp_get_employee_by_user_id($user_id);
+$user_fullname = $employee ? $employee->full_name : '';
 // Check if user is logged in and has admin capabilities
 if (!is_user_logged_in() || !aerp_user_has_role($user_id, 'admin')) {
     wp_die(__('You do not have sufficient permissions to access this page.'));
@@ -13,12 +15,12 @@ if (!is_user_logged_in() || !aerp_user_has_role($user_id, 'admin')) {
 
 ob_start();
 ?>
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-5">
     <h2>Thêm chi nhánh mới</h2>
     <div class="user-info">
-        Welcome, <?php echo esc_html($current_user->display_name); ?>
+        Hi, <?php echo esc_html($user_fullname); ?>
         <a href="<?php echo wp_logout_url(site_url('/aerp-dang-nhap')); ?>" class="btn btn-sm btn-outline-danger ms-2">
-            <i class="fas fa-sign-out-alt"></i> Logout
+            <i class="fas fa-sign-out-alt"></i> Đăng xuất
         </a>
     </div>
 </div>

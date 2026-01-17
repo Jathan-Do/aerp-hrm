@@ -4,6 +4,8 @@ if (!defined('ABSPATH')) exit;
 // Get current user
 $current_user = wp_get_current_user();
 $user_id = $current_user->ID;
+$employee = aerp_get_employee_by_user_id($user_id);
+$user_fullname = $employee ? $employee->full_name : '';
 
 if (!is_user_logged_in()) {
     wp_die(__('You must be logged in to access this page.'));
@@ -32,12 +34,12 @@ $config = $edit_id ? AERP_Frontend_Salary_Config_Manager::get_by_id($edit_id) : 
 
 ob_start();
 ?>
-<div class="d-flex flex-column-reverse flex-md-row justify-content-between align-items-md-center mb-4">
+<div class="d-flex flex-column-reverse flex-md-row justify-content-between align-items-md-center mb-5">
     <h2><?= $edit_id ? 'Sửa cấu hình lương' : 'Thêm cấu hình lương' ?></h2>
     <div class="user-info text-end">
-        Chào, <?php echo esc_html($current_user->display_name); ?>
+        Hi, <?php echo esc_html($user_fullname); ?>
         <a href="<?php echo wp_logout_url(home_url()); ?>" class="btn btn-sm btn-outline-danger ms-2">
-            <i class="fas fa-sign-out-alt"></i> Thoát
+            <i class="fas fa-sign-out-alt"></i> Đăng xuất
         </a>
     </div>
 </div>

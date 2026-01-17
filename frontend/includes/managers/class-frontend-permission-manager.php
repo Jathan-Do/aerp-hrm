@@ -11,6 +11,8 @@ class AERP_Frontend_Permission_Manager
 
         $current_user = wp_get_current_user();
         $user_id = $current_user->ID;
+$employee = aerp_get_employee_by_user_id($user_id);
+$user_fullname = $employee ? $employee->full_name : '';
         if (!is_user_logged_in() || !aerp_user_has_role($user_id, 'admin')) {
             wp_die(__('Bạn không có quyền thực hiện thao tác này.'));
         }

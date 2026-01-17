@@ -6,6 +6,8 @@ function aerp_dashboard_export()
     $month = sanitize_text_field($_POST['report_month'] ?? date('Y-m'));
     $current_user = wp_get_current_user();
     $user_id = $current_user->ID;
+$employee = aerp_get_employee_by_user_id($user_id);
+$user_fullname = $employee ? $employee->full_name : '';
 
     // Lấy thông tin employee và work_location_id
     $employee = function_exists('aerp_get_employee_by_user_id') ? aerp_get_employee_by_user_id($user_id) : null;

@@ -1932,3 +1932,14 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #666;
 }
+
+
+#aerp-notification-container{
+    top: 96px;
+}
+/* Responsive */
+@media (max-width: 768px) {
+    #aerp-notification-container{
+        top: 160px;
+    }
+}
