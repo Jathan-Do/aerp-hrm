@@ -31,7 +31,7 @@ ob_start();
 <?php
 if (function_exists('aerp_render_breadcrumb')) {
     aerp_render_breadcrumb([
-        ['label' => 'Trang chủf', 'url' => home_url('/aerp-dashboard'), 'icon' => 'fas fa-home'],
+        ['label' => 'Trang chủ', 'url' => home_url('/aerp-dashboard'), 'icon' => 'fas fa-home'],
         ['label' => 'Danh mục % lợi nhuận', 'url' => home_url('/aerp-hrm-commission-schemes')],
         ['label' => $scheme_id ? 'Sửa' : 'Thêm']
     ]);
