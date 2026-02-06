@@ -14,16 +14,6 @@ class AERP_HRM_Settings_Manager
             6
         );
 
-        // Menu chính: Danh mục
-        add_submenu_page(
-            'aerp_employees',
-            'Danh mục',
-            'Danh mục',
-            'manage_options',
-            'aerp_categories',
-            [__CLASS__, 'categories_page']
-        );
-
         // Menu chính: Lương tổng hợp
         add_submenu_page(
             'aerp_categories',
@@ -32,36 +22,6 @@ class AERP_HRM_Settings_Manager
             'manage_options',
             'aerp_salary_summary',
             [__CLASS__, 'salary_page']
-        );
-
-        // Menu chính: Báo cáo
-        add_submenu_page(
-            'aerp_employees',
-            'Báo cáo nhân sự',
-            'Báo cáo',
-            'manage_options',
-            'aerp_hrm_reports',
-            [__CLASS__, 'aerp_hrm_reports_page']
-        );
-
-        // Menu chính: Bản quyền
-        add_submenu_page(
-            'aerp_employees',
-            'Bản quyền module',
-            'Bản quyền',
-            'manage_options',
-            'aerp_license',
-            ['AERP_HRM_Settings_Manager', 'license_page']
-        );
-
-        // Menu chính: Cài đặt
-        add_submenu_page(
-            'aerp_employees',
-            'Cài đặt',
-            'Cài đặt',
-            'manage_options',
-            'aerp_hrm_settings',
-            [__CLASS__, 'settings_page']
         );
 
         // Menu chính: Google Drive
@@ -349,36 +309,6 @@ class AERP_HRM_Settings_Manager
         // );
     }
 
-    public static function aerp_hrm_reports_page()
-    {
-        $report_month = sanitize_text_field($_GET['report_month'] ?? date('Y-m'));
-        $report_month = $report_month . '-01'; // ✅ fix về đúng định dạng DATE
-
-        // Lấy dữ liệu thống kê
-        $summary        = AERP_Report_Manager::get_summary($report_month);
-        $performance    = AERP_Report_Manager::get_performance_data($report_month);
-        $tenure         = AERP_Report_Manager::get_tenure_data();
-        $departments    = AERP_Report_Manager::get_department_data();
-        $salary_stats   = AERP_Report_Manager::get_salary_data($report_month);
-
-        // Load script mới
-        wp_enqueue_script('aerp-admin-charts', AERP_HRM_URL . 'assets/js/admin-charts.js', ['jquery', 'chartjs'], time(), true);
-
-        // Gửi sang JS
-        wp_localize_script('aerp-admin-charts', 'performanceData', $performance);
-        wp_localize_script('aerp-admin-charts', 'tenureData', $tenure);
-        wp_localize_script('aerp-admin-charts', 'departmentData', $departments);
-        wp_localize_script('aerp-admin-charts', 'salaryData', $salary_stats);
-
-        // Biến tắt gọn cho template
-        $total_employees = $summary['total'];
-        $joined          = $summary['joined'];
-        $resigned        = $summary['resigned'];
-
-        // Đẩy sang file hiển thị
-        include AERP_HRM_PATH . 'admin/views/reports/reports.php';
-    }
-
     public static function reward_settings_page()
     {
         if (isset($_GET['edit'])) {
@@ -481,109 +411,6 @@ class AERP_HRM_Settings_Manager
         }
 
         include_once AERP_HRM_PATH . 'admin/views/positions/list.php';
-    }
-
-    public static function license_page()
-    {
-        // if (!aerp_user_has_permission(get_current_user_id(), 'license_manage')) {
-        //     wp_die('Bạn không có quyền truy cập trang này!');
-        // }
-        if (isset($_POST['aerp_license_update']) && check_admin_referer('aerp_license_action', 'aerp_license_nonce')) {
-            $data = [];
-
-            foreach ($_POST['module_license'] as $slug => $key) {
-                $license_key = sanitize_text_field($key);
-
-                // ✅ Tạm thời nếu có key → active luôn
-                // $status = !empty($license_key) ? 'active' : 'invalid';
-                $status = ($license_key === 'demo-hrm-key') ? 'active' : 'invalid';
-
-
-                // 🔒 Khi có API thật, bạn sẽ thay phần này bằng gọi wp_remote_get()
-
-                $data[$slug] = [
-                    'license_key' => $license_key,
-                    'status'      => $status
-                ];
-            }
-
-
-
-            update_option('aerp_license_keys', $data);
-
-            echo '<div class="updated"><p>Đã lưu thông tin bản quyền.</p></div>';
-        }
-
-        $licenses = get_option('aerp_license_keys', []);
-        $modules = [
-            'hrm'  => 'Quản lý nhân sự',
-            'crm'  => 'Khách hàng',
-            'order' => 'Đơn hàng',
-            'stock' => 'Kho hàng',
-            'finance' => 'Tài chính',
-        ];
-?>
-        <div class="wrap">
-            <h1>Quản lý bản quyền AERP</h1>
-            <p style="color:#888;">* Nếu bạn đã mua bản quyền, vui lòng nhập key vào ô bên dưới. VD: demo-hrm-key</p>
-            <p>Nhập mã license bạn nhận được khi mua plugin. Nếu chưa có, bạn có thể <a href="https://yourdomain.com/mua-ban-quyen" target="_blank">mua license tại đây</a>.</p>
-
-            <form method="post">
-                <?php wp_nonce_field('aerp_license_action', 'aerp_license_nonce'); ?>
-                <table class="form-table">
-                    <?php foreach ($modules as $slug => $label): ?>
-                        <tr>
-                            <th><label for="module_<?= esc_attr($slug) ?>"><?= esc_html($label) ?></label></th>
-                            <td>
-                                <input type="text" name="module_license[<?= esc_attr($slug) ?>]" class="regular-text"
-                                    value="<?= esc_attr($licenses[$slug]['license_key'] ?? '') ?>">
-                                <span class="description"><?= isset($licenses[$slug]['status']) && $licenses[$slug]['status'] === 'active'
-                                                                ? '<span style="color:green;">(Đã kích hoạt)</span>'
-                                                                : '<span style="color:red;">(Chưa kích hoạt)</span>' ?></span>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </table>
-                <p>
-                    <input type="submit" name="aerp_license_update" class="button button-primary" value="Lưu thông tin">
-                </p>
-            </form>
-        </div>
-    <?php
-    }
-
-    public static function settings_page()
-    {
-        if (isset($_POST['aerp_hrm_save_settings']) && check_admin_referer('aerp_hrm_settings_action', 'aerp_hrm_settings_nonce')) {
-            $delete_data = isset($_POST['aerp_hrm_delete_data_on_uninstall']) ? 1 : 0;
-            update_option('aerp_hrm_delete_data_on_uninstall', $delete_data);
-            echo '<div class="updated"><p>Đã lưu cài đặt.</p></div>';
-        }
-        $delete_data = get_option('aerp_hrm_delete_data_on_uninstall', 0);
-    ?>
-        <div class="wrap">
-            <h1>Cài đặt AERP HRM</h1>
-            <form method="post">
-                <?php wp_nonce_field('aerp_hrm_settings_action', 'aerp_hrm_settings_nonce'); ?>
-                <table class="form-table">
-                    <tr>
-                        <th scope="row">Xóa dữ liệu khi gỡ plugin?</th>
-                        <td>
-                            <input type="checkbox" name="aerp_hrm_delete_data_on_uninstall" value="1" <?php checked($delete_data, 1); ?> />
-                            <label for="aerp_hrm_delete_data_on_uninstall">Xóa toàn bộ dữ liệu khi gỡ plugin</label>
-                        </td>
-                    </tr>
-                </table>
-                <p><button type="submit" name="aerp_hrm_save_settings" class="button button-primary">Lưu cài đặt</button></p>
-            </form>
-        </div>
-<?php
-    }
-
-    // Thêm hàm hiển thị trang Danh mục
-    public static function categories_page()
-    {
-        include_once AERP_HRM_PATH . 'admin/views/categories/list.php';
     }
 
     public static function work_locations_page()
